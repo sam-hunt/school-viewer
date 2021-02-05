@@ -1,7 +1,15 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { Feature, FeatureCollection, Point } from 'geojson';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
+
+/**
+ * Workaround for this issue in production builds
+ * @see https://github.com/mapbox/mapbox-gl-js/issues/10173
+ */
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 interface IMapboxGLMapProps<T = any> {
     lng: number;
