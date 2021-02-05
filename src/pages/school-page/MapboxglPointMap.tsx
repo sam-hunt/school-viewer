@@ -1,9 +1,8 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Feature, FeatureCollection, Point } from 'geojson';
 
-interface IMapboxGLMapProps<T = any> {
+interface IMapboxGLMapProps {
     lng: number;
     lat: number;
     zoom: number;
@@ -56,7 +55,7 @@ const MapboxGLPointMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, width, 
         if (!map) {
             initializeMap({ setMap, mapContainer });
         }
-    }, [map, lat, lng, zoom]);
+    }, [map, lat, lng, zoom, marker]);
 
     return <div className="mapboxgl-container" ref={el => ((mapContainer as any).current = el)} style={{ height, width }} />;
 };

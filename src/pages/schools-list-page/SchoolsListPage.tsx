@@ -13,9 +13,9 @@ function SchoolsListPage() {
   const optimizedSchoolsList = useMemo(() => schoolsList?.map((school, index) => ({
     schoolId: school.schoolId,
     i: index,
-    name: school.name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase(),
+    name: school.name.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"").toLowerCase(),
   })), [schoolsList]);
-  const optimizedAutocompleteValue = autocompleteValue.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+  const optimizedAutocompleteValue = autocompleteValue.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"").toLowerCase();
 
   return (
     <section id="schools-list-section">
@@ -31,7 +31,7 @@ function SchoolsListPage() {
           .filter((item: { schoolId: string, name: string }) => item.name.includes(optimizedAutocompleteValue))
           .map((school: { schoolId: string, name: string }) =>
             <Link
-              to={'/school/'+school.schoolId}
+              to={`${process.env.PUBLIC_URL}/school/${school.schoolId}`}
               key={school.schoolId}
               className="school-list-item"
             >

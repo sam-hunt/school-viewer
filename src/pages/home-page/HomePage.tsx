@@ -15,7 +15,7 @@ function HomePage() {
     const [mapGrouping, setMapGrouping] = React.useState<keyof ISchoolListItem>('count');
     const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
     const history = useHistory();
-    const onFeatureClick = (feature: ISchoolFeature) => history.push(`/school/${feature.properties.schoolId}`)
+    const onFeatureClick = (feature: ISchoolFeature) => history.push(`${process.env.PUBLIC_URL}/school/${feature.properties.schoolId}`)
 
     let features: FeatureCollection = {
         type: 'FeatureCollection',
