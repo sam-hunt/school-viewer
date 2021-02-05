@@ -23,14 +23,16 @@ function HomePage() {
     };
 
     if (!schoolsListPending && !schoolsListError && schoolsList) {
-        features.features = schoolsList!.map((school: ISchoolListItem): ISchoolFeature => ({
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: [+school.lng, +school.lat],
-            },
-            properties: school,
-        }));
+        features.features = schoolsList!
+            .filter(school => school.lat && school.lng)
+            .map((school: ISchoolListItem): ISchoolFeature => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [+school.lng, +school.lat],
+                },
+                properties: school,
+            }));
     }
 
     return (

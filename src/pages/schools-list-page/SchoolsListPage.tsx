@@ -10,8 +10,9 @@ function SchoolsListPage() {
   const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
 
   // Memoize optimized search strings so we don't have to do it on each key press
-  const optimizedSchoolsList = useMemo(() => schoolsList?.map(school => ({
+  const optimizedSchoolsList = useMemo(() => schoolsList?.map((school, index) => ({
     schoolId: school.schoolId,
+    i: index,
     name: school.name.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase(),
   })), [schoolsList]);
   const optimizedAutocompleteValue = autocompleteValue.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
@@ -34,7 +35,7 @@ function SchoolsListPage() {
               key={school.schoolId}
               className="school-list-item"
             >
-            {school.name}
+            {schoolsList![(school as any).i].name}
             </Link>
           )
         }
