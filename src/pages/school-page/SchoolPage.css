@@ -1,0 +1,36 @@
+section#school-section {
+    display: grid;
+    grid-template: 64px 1fr / 11vw 1fr 11vw;
+    align-items: center;
+    justify-items: center;
+    min-height: 80vh;
+}
+
+section#school-section .breadcrumb {
+    position: absolute;
+    margin: 24px;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+section#school-section h1 {
+    grid-column: 2;
+    grid-row: 1;
+    display: inline-block;
+}
+
+section#school-section .loading-spinner {
+    grid-column: 2;
+    grid-row: 3;
+    padding-top: 25vh
+}
+
+
+section#school-section .school-details {
+    grid-column: 2;
+    grid-row: 2;
+    max-height: 75vh;
+    overflow-y: scroll;
+    width: 100%;
+    height: 100%;
+}
