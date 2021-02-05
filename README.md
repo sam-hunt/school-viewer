@@ -5,6 +5,7 @@ Built with React, Typescript, Mapbox GLJS, and D3 v6.
 
 ![Map View](screenshot1.png?raw=true "Map View")
 ![School Search](screenshot2.png?raw=true "School Search")
+![School View](screenshot3.png?raw=true "School View")
 
 ## Available Scripts
 
