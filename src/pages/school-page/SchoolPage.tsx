@@ -27,6 +27,7 @@ function SchoolPage() {
       properties: school,
     } as any;
   }
+  const randColor = () => `hsl(${Math.round(Math.random() * 360)}, 70%, 50%)`;
   const enrolments = [
     { color: '#b2cefe', label: 'Māori', value: school?.maori || 0, id: 'Māori' },
     { color: '#fea3aa', label: 'Pacific', value: school?.pacific || 0, id: 'Pacific' },
@@ -39,7 +40,7 @@ function SchoolPage() {
 
   return (
     <section id="school-section">
-      <div className="breadcrumb"><Link to={`${process.env.PUBLIC_URL}/schools`}>schools</Link> / {schoolId}</div>
+      <div className="breadcrumb"><Link to='/schools'>schools</Link> / {schoolId}</div>
       <h1>{school?.orgName || 'Loading...'}</h1>
       <div className="school">
         {schoolPending && <LoadingSpinner />}

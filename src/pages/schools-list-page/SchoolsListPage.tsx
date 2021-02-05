@@ -31,7 +31,7 @@ function SchoolsListPage() {
           .filter((item: { schoolId: string, name: string }) => item.name.includes(optimizedAutocompleteValue))
           .map((school: { schoolId: string, name: string }) =>
             <Link
-              to={`${process.env.PUBLIC_URL}/school/${school.schoolId}`}
+              to={'/school/'+school.schoolId}
               key={school.schoolId}
               className="school-list-item"
             >
