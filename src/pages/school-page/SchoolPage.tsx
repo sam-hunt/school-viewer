@@ -117,7 +117,7 @@ function SchoolPage() {
             <tr><td>Name</td><td>{school?.contact1Name}</td></tr>
             <tr><td>Phone</td><td><a href={'tel:'+school?.telephone.replace(/[.,\s\-_()]/g,"")}>{school?.telephone}</a></td></tr>
             <tr><td>Email</td><td><a href={'mailto:'+school?.email}>{school?.email}</a></td></tr>
-            <tr><td>Web</td><td><a href="{school?.url}">{school?.url}</a></td></tr>
+            <tr><td>Web</td><td><a href={school?.url}>{school?.url}</a></td></tr>
           </div>
           <div id="school-misc" className="panel bordered">
             <h2>Miscellaneous</h2>
