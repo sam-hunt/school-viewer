@@ -1,6 +1,10 @@
-# Getting Started with Create React App
+# School Viewer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A small visualiser for the Schooling Directory API Provided by the New Zealand Government.
+Built with React, Typescript, Mapbox GLJS, and D3 v6.
+
+![Map View](screenshot1.png?raw=true "Map View")
+![School Search](screenshot2.png?raw=true "School Search")
 
 ## Available Scripts
 
@@ -13,11 +17,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
