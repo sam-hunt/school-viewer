@@ -6,9 +6,11 @@ import mapboxgl from 'mapbox-gl';
  * Workaround for this issue in production builds
  * @see https://github.com/mapbox/mapbox-gl-js/issues/10173
  */
-// @ts-ignore
-// eslint-disable-next-line import/no-webpack-loader-syntax
-mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+if (process.env.NODE_ENV === 'production') {
+    // @ts-ignore
+    // eslint-disable-next-line import/no-webpack-loader-syntax
+    mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+}
 
 interface IMapboxGLMapProps {
     lng: number;
@@ -23,6 +25,7 @@ const MapboxGLPointMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, width, 
     const mapContainer = useRef(null);
     const [map, setMap] = useState<mapboxgl.Map | null>(null);
     const [marker, setMarker ] = useState<mapboxgl.Marker | null>(null);
+    const [markerPos, setMarkerPos] = useState<string>('');
 
     useEffect(() => {
         mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY as string;
@@ -54,8 +57,9 @@ const MapboxGLPointMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, width, 
                 .setLngLat([lng, lat])
                 .addTo(map);
             setMarker(marker);
+            setMarkerPos(`${lat},${lng}`);
         };
-        if (map && marker) {
+        if (map && marker && markerPos !== `${lat},${lng}`) {
             marker.remove();
             addMarker(map);
         }
@@ -63,7 +67,7 @@ const MapboxGLPointMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, width, 
         if (!map) {
             initializeMap({ setMap, mapContainer });
         }
-    }, [map, lat, lng, zoom, marker]);
+    }, [map, lat, lng, zoom, marker, markerPos]);
 
     return <div className="mapboxgl-container" ref={el => ((mapContainer as any).current = el)} style={{ height, width }} />;
 };
