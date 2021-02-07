@@ -27,7 +27,6 @@ function SchoolPage() {
       properties: school,
     } as any;
   }
-  const randColor = () => `hsl(${Math.round(Math.random() * 360)}, 70%, 50%)`;
   const enrolments = [
     { color: '#b2cefe', label: 'Māori', value: school?.maori || 0, id: 'Māori' },
     { color: '#fea3aa', label: 'Pacific', value: school?.pacific || 0, id: 'Pacific' },
