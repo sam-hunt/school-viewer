@@ -44,3 +44,12 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+## TODO:
+
+- Add a down carot icon in the dataset picker on the cluster map page so that it's clear it's a dropdown
+- Add mobile CSS Support with media queries and css grid 
+- Add a search icon and placeholder the text to the name filter input on the school list page
+- Add active tab coloring and page name labels to the navbar somehow so it's clear how to navigate between pages
+- Add zoom controls to the map on the main cluster view page
