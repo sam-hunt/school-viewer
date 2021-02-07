@@ -80,3 +80,10 @@ section#school-section .panel td {
     font-size: 18px !important;
     font-weight: bold;
 }
+
+table {
+    border-collapse: collapse;
+}
+tr.address-row {
+    border-bottom: 2px solid var(--primary-color)
+}

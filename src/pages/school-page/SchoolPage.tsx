@@ -48,34 +48,36 @@ function SchoolPage() {
           <div id="school-details" className="panel bordered">
             <h2>Details</h2>
             <table>
-              <tr><td>Organisation Name</td><td>{school?.orgName}</td></tr>
-              <tr><td>Organisation Type</td><td>{school?.orgType}</td></tr>
+              <tbody>
+                <tr><td>Organisation Name</td><td>{school?.orgName}</td></tr>
+                <tr><td>Organisation Type</td><td>{school?.orgType}</td></tr>
+              </tbody>
             </table>
           </div>
           <div id="school-location" className="panel bordered">
             <h2>Location</h2>
             <table className="details">
-              <tr>
-                <td>Address 1</td>
-                <td>
-                  {school?.add1Line1}<br />
-                  {school?.add1Suburb}{school?.add1Suburb && <br />}
-                  {school?.add1City}<br />
-                </td>
-              </tr>
-              <hr></hr>
-              <tr>
-              <td>Address 2</td>
-                <td>
-                  {school?.add2Line1}<br />
-                  {school?.add2Suburb}{school?.add2Suburb && <br />}
-                  {school?.add2City}<br />
-                  {school?.add2PostalCode}<br />
-                </td>
-              </tr>
-              <hr></hr>
-              <tr><td>Latitude</td><td>{school?.latitude}</td></tr>
-              <tr><td>Longitude</td><td>{school?.longitude}</td></tr>
+              <tbody>
+                <tr className="address-row">
+                  <td>Address 1</td>
+                  <td>
+                    {school?.add1Line1}<br />
+                    {school?.add1Suburb}{school?.add1Suburb && <br />}
+                    {school?.add1City}<br />
+                  </td>
+                </tr>
+                <tr className="address-row">
+                <td>Address 2</td>
+                  <td>
+                    {school?.add2Line1}<br />
+                    {school?.add2Suburb}{school?.add2Suburb && <br />}
+                    {school?.add2City}<br />
+                    {school?.add2PostalCode}<br />
+                  </td>
+                </tr>
+                <tr><td>Latitude</td><td>{school?.latitude}</td></tr>
+                <tr><td>Longitude</td><td>{school?.longitude}</td></tr>
+              </tbody>
             </table>
             <span className="map">
             <MapboxGLPointMap
@@ -113,22 +115,30 @@ function SchoolPage() {
           </div>
           <div id="school-contact" className="panel bordered">
             <h2>Contact</h2>
-            <tr><td>Name</td><td>{school?.contact1Name}</td></tr>
-            <tr><td>Phone</td><td><a href={'tel:'+school?.telephone.replace(/[.,\s\-_()]/g,"")}>{school?.telephone}</a></td></tr>
-            <tr><td>Email</td><td><a href={'mailto:'+school?.email}>{school?.email}</a></td></tr>
-            <tr><td>Web</td><td><a href={school?.url}>{school?.url}</a></td></tr>
+            <table>
+              <tbody>
+                <tr><td>Name</td><td>{school?.contact1Name}</td></tr>
+                <tr><td>Phone</td><td><a href={'tel:'+school?.telephone.replace(/[.,\s\-_()]/g,"")}>{school?.telephone}</a></td></tr>
+                <tr><td>Email</td><td><a href={'mailto:'+school?.email}>{school?.email}</a></td></tr>
+                <tr><td>Web</td><td><a href={school?.url}>{school?.url}</a></td></tr>
+              </tbody>
+            </table>
           </div>
           <div id="school-misc" className="panel bordered">
             <h2>Miscellaneous</h2>
-            <tr><td>Definition</td><td>{school?.definition}</td></tr>
-            <tr><td>Roll Date</td><td>{school?.rollDate}</td></tr>
-            <tr><td>Decile</td><td>{school?.decile}</td></tr>
-            <tr><td>Isolation Index</td><td>{school?.isolationIndex}</td></tr>
-            <tr><td>CoEducation Status</td><td>{school?.coEdStatus}</td></tr>
-            <tr><td>Education Region</td><td>{school?.educationRegion}</td></tr>
-            <tr><td>General Electorate</td><td>{school?.generalElectorate}</td></tr>
-            <tr><td>Māori Electorate</td><td>{school?.maoriElectorate}</td></tr>
-            <tr><td>School Donations</td><td>{school?.schoolDonations}</td></tr>
+            <table>
+              <tbody>
+                <tr><td>Definition</td><td>{school?.definition}</td></tr>
+                <tr><td>Roll Date</td><td>{school?.rollDate}</td></tr>
+                <tr><td>Decile</td><td>{school?.decile}</td></tr>
+                <tr><td>Isolation Index</td><td>{school?.isolationIndex}</td></tr>
+                <tr><td>CoEducation Status</td><td>{school?.coEdStatus}</td></tr>
+                <tr><td>Education Region</td><td>{school?.educationRegion}</td></tr>
+                <tr><td>General Electorate</td><td>{school?.generalElectorate}</td></tr>
+                <tr><td>Māori Electorate</td><td>{school?.maoriElectorate}</td></tr>
+                <tr><td>School Donations</td><td>{school?.schoolDonations}</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>}
       </div>
