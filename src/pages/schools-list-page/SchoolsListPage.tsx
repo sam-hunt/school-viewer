@@ -21,6 +21,7 @@ function SchoolsListPage() {
     <section id="schools-list-section">
       <h1>Find a School</h1>
       <input
+        placeholder="🔍"
         className="autocomplete"
         type="text" value={autocompleteValue}
         onChange={(e) => setAutocompleteValue(e.target.value)}>

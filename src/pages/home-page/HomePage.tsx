@@ -57,6 +57,7 @@ function HomePage() {
                 <option value="other">Other Enrolments</option>
                 <option value="total">Total Enrolments</option>
             </select>
+            
             {schoolsListPending && <LoadingSpinner />}
             {/* {!schoolsListPending && !schoolsListError && <pre>{JSON.stringify(schoolsList, null, 4)}</pre>} */}
             {schoolsListError && <p className="schoolsListError">{JSON.stringify(schoolsListError)}</p>}
