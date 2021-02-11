@@ -6,6 +6,8 @@ import { Link, useParams } from 'react-router-dom';
 import MapboxGLPointMap from './MapboxglPointMap';
 import { Pie } from '@nivo/pie';
 import './SchoolPage.css';
+import { Bar } from '@nivo/bar';
+import { alignBox } from '@nivo/core';
 
 function SchoolPage() {
 
@@ -87,30 +89,44 @@ function SchoolPage() {
             </span>
           </div>
           <div id="school-enrolments" className="panel bordered">
-            <h2>Enrolments</h2>
+            <h2>Enrolments ({enrolments.reduce((acc, val) => acc + parseInt(val.value as any, 10), 0)})</h2>
             <div>
-            <Pie
-              width={768}
-              height={512}
-              isInteractive={false}
-              margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
-              data={enrolments}
-              colors={{ datum: 'data.color' }}
-              startAngle={-90}
-              innerRadius={0.6}
-              padAngle={0.5}
-              cornerRadius={5}
-              radialLabel={(d: any) => `${d.id}: ${d.value}`}
-              radialLabelsLinkColor={{
-                  from: 'color',
-              }}
-              radialLabelsLinkStrokeWidth={3}
-              radialLabelsTextColor={{
-                  from: 'color',
-                  modifiers: [['darker', 1.2]],
-              }}
-              enableSliceLabels={false}
-            />
+            { window.innerWidth > 640 ? 
+              <Pie
+                width={768}
+                height={512}
+                isInteractive={false}
+                margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
+                data={enrolments}
+                colors={{ datum: 'data.color' }}
+                startAngle={-90}
+                innerRadius={0.6}
+                padAngle={0.5}
+                cornerRadius={5}
+                radialLabel={(d: any) => `${d.id}: ${d.value}`}
+                radialLabelsLinkColor={{
+                    from: 'color',
+                }}
+                radialLabelsLinkStrokeWidth={3}
+                radialLabelsTextColor={{
+                    from: 'color',
+                    modifiers: [['darker', 1.2]],
+                }}
+                enableSliceLabels={false}
+              /> :
+              <Bar
+                layout='horizontal'
+                enableGridX={false}
+                enableGridY={false}
+                labelTextColor='#fff'
+                enableLabel={true}
+                width={300}
+                height={200}
+                data={enrolments}
+                colors={{ datum: 'data.color' }}
+                margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+              />
+            }
             </div>
           </div>
           <div id="school-contact" className="panel bordered">

@@ -41,3 +41,9 @@ section#schools-list-section .school-list {
     display: inline-block;
     padding: 20px;
 }
+
+@media (max-width: 640px) {
+    input.autocomplete  {
+        max-width: 90vw;
+    }
+}

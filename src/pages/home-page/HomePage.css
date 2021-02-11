@@ -30,3 +30,25 @@ section#home-section .mapboxgl-container {
     grid-column-end: 4;
     grid-row: 2;
 }
+
+@media (max-width: 640px) {
+    section#home-section {
+        grid-template: 32px 64px 1fr / 1fr;
+    }
+    section#home-section h1 {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 20px;
+        display: block;
+    }
+    section#home-section select {
+        font-size: 20px;
+        justify-self: center;
+        grid-column: 1;
+        grid-row: 2;
+    }
+    section#home-section .mapboxgl-container {
+        grid-column: 1;
+        grid-row: 3;
+    }
+}

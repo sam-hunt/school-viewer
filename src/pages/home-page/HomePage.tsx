@@ -37,7 +37,7 @@ function HomePage() {
 
     return (
         <section id="home-section">
-            <h1>New Zealand Schooling Directory&nbsp;
+            <h1>NZ Schools Directory&nbsp;
                 <HelperIcon width={'430px'} height={'120px'} tooltipText={<p>
                     Use the scroll-wheel or select a cluster to zoom<br />
                     Select a school to see more information<br />

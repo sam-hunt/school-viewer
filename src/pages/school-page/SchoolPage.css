@@ -87,3 +87,30 @@ table {
 tr.address-row {
     border-bottom: 2px solid var(--primary-color)
 }
+
+@media (max-width: 640px) {
+    section#school-section {
+        grid-template: 1fr / 1fr;
+    }
+    section#school-section table * {
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+    }
+    section#school-section .panel td {
+        padding: 8px 5px;
+    }
+    tr {
+        border-bottom: 2px solid var(--primary-color);
+    }
+    #school-location {
+        grid-template: 64px 1fr 1fr / 1fr;
+    }
+    #school-location .map {
+        grid-column: 1;
+        grid-row: 3;
+    }
+    section#school-section .breadcrumb {
+        display: none;
+    }
+}
