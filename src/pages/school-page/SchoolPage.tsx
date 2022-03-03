@@ -153,6 +153,7 @@ function SchoolPage() {
                 <tr><td>General Electorate</td><td>{school?.generalElectorate}</td></tr>
                 <tr><td>Māori Electorate</td><td>{school?.maoriElectorate}</td></tr>
                 <tr><td>School Donations</td><td>{school?.schoolDonations}</td></tr>
+                <tr><td>Authority</td><td>{school?.authority}</td></tr>
               </tbody>
             </table>
           </div>

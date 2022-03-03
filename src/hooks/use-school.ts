@@ -36,6 +36,7 @@ const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
             "School_Id" as "schoolId",
             "Org_Name" as "orgName",
             "Org_Type" as "orgType",
+            "Authority" as "authority",
             
             "Add1_City" as "add1City",
             "Add1_Suburb" as "add1Suburb",

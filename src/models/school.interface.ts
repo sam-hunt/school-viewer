@@ -3,6 +3,7 @@ export interface ISchool {
     schoolId: string
     orgName: string
     orgType: string
+    authority: string
 
     // Address1
     add1City: string
