@@ -1,6 +1,6 @@
 import React from 'react';
 import { Feature, FeatureCollection, Point } from 'geojson';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSchoolList } from 'hooks/use-school';
 import LoadingSpinner from 'components/loading-spinner/LoadingSpinner';
 import './HomePage.css'
@@ -14,8 +14,8 @@ function HomePage() {
 
     const [mapGrouping, setMapGrouping] = React.useState<keyof ISchoolListItem>('count');
     const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
-    const history = useHistory();
-    const onFeatureClick = (feature: ISchoolFeature) => history.push(`/school/${feature.properties.schoolId}`)
+    const navigate = useNavigate();
+    const onFeatureClick = (feature: ISchoolFeature) => navigate(`/school/${feature.properties.schoolId}`)
 
     let features: FeatureCollection = {
         type: 'FeatureCollection',
@@ -36,14 +36,13 @@ function HomePage() {
     }
 
     return (
-        <section id="home-section">
+        <>
             <h1>NZ Schools Directory&nbsp;
                 <HelperIcon width={'430px'} height={'120px'} tooltipText={<p>
                     Use the scroll-wheel or select a cluster to zoom<br />
                     Select a school to see more information<br />
                     Hover over a school to see its name<br />
-                    Click away to hide displayed school names<br /></p>}>\
-                </HelperIcon>
+                    Click away to hide displayed school names<br /></p>} />
             </h1>
 
             <select name="map-group" id="map-group" defaultValue={mapGrouping} onChange={(e) => setMapGrouping(e.target.value as keyof ISchoolListItem)}>
@@ -68,11 +67,10 @@ function HomePage() {
                     lat={-41} lng={173} zoom={5}
                     features={features}
                     onFeatureClick={onFeatureClick}
-                    clusterByProperty={mapGrouping} >
-                </MapboxGLClusteredMap>
+                    clusterByProperty={mapGrouping} />
             }
             
-        </section>
+        </>
     );
 }
 

@@ -7,7 +7,6 @@ import MapboxGLPointMap from './MapboxglPointMap';
 import { Pie } from '@nivo/pie';
 import './SchoolPage.css';
 import { Bar } from '@nivo/bar';
-import { alignBox } from '@nivo/core';
 
 function SchoolPage() {
 
@@ -82,10 +81,7 @@ function SchoolPage() {
               </tbody>
             </table>
             <span className="map">
-            <MapboxGLPointMap
-              height={'100%'} width={'100%'}
-              lat={school!.latitude} lng={school!.longitude} zoom={6}>
-            </MapboxGLPointMap>
+            <MapboxGLPointMap height={'100%'} width={'100%'} lat={school!.latitude} lng={school!.longitude} zoom={6} />
             </span>
           </div>
           <div id="school-enrolments" className="panel bordered">
@@ -103,16 +99,16 @@ function SchoolPage() {
                 innerRadius={0.6}
                 padAngle={0.5}
                 cornerRadius={5}
-                radialLabel={(d: any) => `${d.id}: ${d.value}`}
-                radialLabelsLinkColor={{
+                arcLabel={(d) => `${d.id}: ${d.value}`}
+                arcLinkLabelsColor={{
                     from: 'color',
                 }}
-                radialLabelsLinkStrokeWidth={3}
-                radialLabelsTextColor={{
+                arcLinkLabelsThickness={3}
+                arcLinkLabelsTextColor={{
                     from: 'color',
                     modifiers: [['darker', 1.2]],
                 }}
-                enableSliceLabels={false}
+                enableArcLabels={false} // ?
               /> :
               <Bar
                 layout='horizontal'
