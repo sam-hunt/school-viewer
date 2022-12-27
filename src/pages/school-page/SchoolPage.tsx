@@ -42,7 +42,11 @@ export const SchoolPage = () => {
       <div className="breadcrumb"><Link to='/schools'>schools</Link> / {schoolId}</div>
       <h1>{school?.orgName || 'Loading...'}</h1>
       <div className="school">
-        {schoolPending && <LoadingSpinner />}
+        {schoolPending && (
+          <div className="loader-wrapper">
+            <LoadingSpinner />
+          </div>
+        )}
         {/* {!schoolPending && !schoolError && <pre>{JSON.stringify(school, null, 4)}</pre>} */}
         {!schoolPending && !schoolError && <div>
           <div id="school-details" className="panel bordered">

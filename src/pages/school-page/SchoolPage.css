@@ -12,10 +12,19 @@ section#school-section h1 {
     display: inline-block;
 }
 
-section#school-section .loading-spinner {
+section#school-section .loader-wrapper {
     grid-column: 2;
     grid-row: 3;
-    padding-top: 25vh
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section#school-section .loading-spinner {
+    align-self: center;
+    justify-self: center;
 }
 
 section#school-section h1 {
