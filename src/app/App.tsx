@@ -1,9 +1,8 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import AboutPage from '../pages/about-page/AboutPage';
-import HomePage from '../pages/home-page/HomePage';
-import SchoolPage from '../pages/school-page/SchoolPage';
-import SchoolsListPage from '../pages/schools-list-page/SchoolsListPage';
+import { AboutPage } from '../pages/about-page/AboutPage';
+import { HomePage } from '../pages/home-page/HomePage';
+import { SchoolPage } from '../pages/school-page/SchoolPage';
+import { SchoolsListPage } from '../pages/schools-list-page/SchoolsListPage';
 import { Layout } from './Layout';
 import { NotFound } from './NotFound';
 import './App.css';

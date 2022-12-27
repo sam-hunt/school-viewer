@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import './SchoolsListPage.css';
+import { useMemo, useState } from 'react';
 import { useSchoolList } from 'hooks/use-school';
 import { Link } from 'react-router-dom';
-import LoadingSpinner from 'components/loading-spinner/LoadingSpinner';
+import { LoadingSpinner } from 'components/loading-spinner/LoadingSpinner';
+import './SchoolsListPage.css';
 
-function SchoolsListPage() {
-
+export const SchoolsListPage = () => {
   const [autocompleteValue, setAutocompleteValue] = useState<string>('');
   const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
 
@@ -44,6 +43,3 @@ function SchoolsListPage() {
     </section>
   );
 }
-
-export default SchoolsListPage;
-

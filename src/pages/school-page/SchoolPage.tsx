@@ -1,14 +1,13 @@
-import LoadingSpinner from 'components/loading-spinner/LoadingSpinner';
+import { LoadingSpinner } from 'components/loading-spinner/LoadingSpinner';
 import { FeatureCollection } from 'geojson';
 import { useSchool } from 'hooks/use-school';
-import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import MapboxGLPointMap from './MapboxglPointMap';
+import { MapboxGLPointMap } from './MapboxglPointMap';
 import { Pie } from '@nivo/pie';
-import './SchoolPage.css';
 import { Bar } from '@nivo/bar';
+import './SchoolPage.css';
 
-function SchoolPage() {
+export const SchoolPage = () => {
 
   const { schoolId } = useParams() as { schoolId: string };
   const [school, schoolError, schoolPending] = useSchool(schoolId);
@@ -157,7 +156,4 @@ function SchoolPage() {
       </div>
     </section>
   );
-
 }
-
-export default SchoolPage;
