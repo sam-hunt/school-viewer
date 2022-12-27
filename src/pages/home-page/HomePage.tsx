@@ -10,7 +10,7 @@ import './HomePage.css'
 
 type ISchoolFeature = Feature<Point, { schoolId: string, name: string, total: number }>;
 
-export const HomePage = () => {
+export const HomePage: React.FC = () => {
   const [mapGrouping, setMapGrouping] = useState<keyof ISchoolListItem>('count');
   const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export const HomePage = () => {
   }
 
   return (
-    <>
+    <section id="home-section">
       <h1>NZ Schools Directory&nbsp;
         <HelperIcon width={'430px'} height={'120px'} tooltipText={<p>
           Use the scroll-wheel or select a cluster to zoom<br />
@@ -58,7 +58,7 @@ export const HomePage = () => {
 
       {schoolsListPending && <LoadingSpinner />}
       {/* {!schoolsListPending && !schoolsListError && <pre>{JSON.stringify(schoolsList, null, 4)}</pre>} */}
-      {schoolsListError && <p className="schoolsListError">{JSON.stringify(schoolsListError)}</p>}
+      {!!schoolsListError && <p className="schoolsListError">{JSON.stringify(schoolsListError)}</p>}
 
       {!schoolsListPending && !schoolsListError &&
         <MapboxGLClusteredMap
@@ -68,6 +68,6 @@ export const HomePage = () => {
           onFeatureClick={onFeatureClick}
           clusterByProperty={mapGrouping} />
       }
-    </>
+    </section>
   );
 }
