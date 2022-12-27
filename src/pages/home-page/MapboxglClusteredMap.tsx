@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, useEffect, useState } from 'react';
 import { Feature, FeatureCollection, Point } from 'geojson';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
@@ -19,18 +19,19 @@ interface IMapboxGLMapProps<T = any> {
   width: CSSProperties['width'];
   features: FeatureCollection;
   onFeatureClick?: (feature: Feature<Point, T>) => void;
-  clusterByProperty: keyof T;
+  clusterByProperty: keyof T & string;
 };
 
 export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, width, height, features, onFeatureClick, clusterByProperty }) => {
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
-  const mapContainer = useRef(null);
+  const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
 
   useEffect(() => {
+    if (!mapContainerEl) return;
     mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY as string;
-    const initializeMap = ({ setMap, mapContainer }: any) => {
+    const initializeMap = ({ setMap, mapContainerEl }: any) => {
       const map = new mapboxgl.Map({
-        container: mapContainer.current,
+        container: mapContainerEl,
         style: 'mapbox://styles/mapbox/dark-v10', // stylesheet location
         center: [lng, lat],
         zoom,
@@ -149,18 +150,18 @@ export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zo
             .addTo(map);
         });
         if (onFeatureClick) {
-          map.on('click', 'unclustered-point', function (e) { onFeatureClick((e as any).features[0]); });
+          map.on('click', 'unclustered-point', (e) => { onFeatureClick((e as any).features[0]); });
         }
-        map.on('mouseenter', 'clusters', function () {
+        map.on('mouseenter', 'clusters', () => {
           map.getCanvas().style.cursor = 'pointer';
         });
-        map.on('mouseleave', 'clusters', function () {
+        map.on('mouseleave', 'clusters', () => {
           map.getCanvas().style.cursor = '';
         });
-        map.on('mouseenter', 'unclustered-point', function () {
+        map.on('mouseenter', 'unclustered-point', () => {
           map.getCanvas().style.cursor = 'pointer';
         });
-        map.on('mouseleave', 'unclustered-point', function () {
+        map.on('mouseleave', 'unclustered-point', () => {
           map.getCanvas().style.cursor = '';
         });
       }
@@ -175,9 +176,11 @@ export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zo
     }
 
     if (!map) {
-      initializeMap({ setMap, mapContainer });
+      initializeMap({ setMap, mapContainerEl });
     }
-  }, [map, lat, lng, zoom, features, onFeatureClick, clusterByProperty]);
+  }, [map, lat, lng, zoom, features, onFeatureClick, clusterByProperty, mapContainerEl]);
 
-  return <div className="mapboxgl-container" ref={el => ((mapContainer as any).current = el)} style={{ height, width }} />;
+  return (
+    <div className="mapboxgl-container" ref={el => {setMapContainerEl(el!)}} style={{ height, width }} />
+  );
 };
