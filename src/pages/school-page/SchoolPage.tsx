@@ -5,7 +5,6 @@ import { Link, useParams } from 'react-router-dom';
 import { MapboxGLPointMap } from './MapboxglPointMap';
 import { Pie } from '@nivo/pie';
 import { Bar } from '@nivo/bar';
-import './SchoolPage.css';
 
 export const SchoolPage = () => {
 
@@ -71,7 +70,7 @@ export const SchoolPage = () => {
                   </td>
                 </tr>
                 <tr className="address-row">
-                <td>Address 2</td>
+                  <td>Address 2</td>
                   <td>
                     {school?.add2Line1}<br />
                     {school?.add2Suburb}{school?.add2Suburb && <br />}
@@ -84,48 +83,48 @@ export const SchoolPage = () => {
               </tbody>
             </table>
             <span className="map">
-            <MapboxGLPointMap height={'100%'} width={'100%'} lat={school!.latitude} lng={school!.longitude} zoom={6} />
+              <MapboxGLPointMap height={'100%'} width={'100%'} lat={school!.latitude} lng={school!.longitude} zoom={6} />
             </span>
           </div>
           <div id="school-enrolments" className="panel bordered">
             <h2>Enrolments ({enrolments.reduce((acc, val) => acc + parseInt(val.value as any, 10), 0)})</h2>
             <div>
-            { window.innerWidth > 640 ? 
-              <Pie
-                width={768}
-                height={512}
-                isInteractive={false}
-                margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
-                data={enrolments}
-                colors={{ datum: 'data.color' }}
-                startAngle={-90}
-                innerRadius={0.6}
-                padAngle={0.5}
-                cornerRadius={5}
-                arcLabel={(d) => `${d.id}: ${d.value}`}
-                arcLinkLabelsColor={{
+              {window.innerWidth > 640 ?
+                <Pie
+                  width={768}
+                  height={512}
+                  isInteractive={false}
+                  margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
+                  data={enrolments}
+                  colors={{ datum: 'data.color' }}
+                  startAngle={-90}
+                  innerRadius={0.6}
+                  padAngle={0.5}
+                  cornerRadius={5}
+                  arcLabel={(d) => `${d.id}: ${d.value}`}
+                  arcLinkLabelsColor={{
                     from: 'color',
-                }}
-                arcLinkLabelsThickness={3}
-                arcLinkLabelsTextColor={{
+                  }}
+                  arcLinkLabelsThickness={3}
+                  arcLinkLabelsTextColor={{
                     from: 'color',
                     modifiers: [['darker', 1.2]],
-                }}
-                enableArcLabels={false} // ?
-              /> :
-              <Bar
-                layout='horizontal'
-                enableGridX={false}
-                enableGridY={false}
-                labelTextColor='#fff'
-                enableLabel={true}
-                width={300}
-                height={200}
-                data={enrolments}
-                colors={{ datum: 'data.color' }}
-                margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
-              />
-            }
+                  }}
+                  enableArcLabels={false} // ?
+                /> :
+                <Bar
+                  layout='horizontal'
+                  enableGridX={false}
+                  enableGridY={false}
+                  labelTextColor='#fff'
+                  enableLabel={true}
+                  width={300}
+                  height={200}
+                  data={enrolments}
+                  colors={{ datum: 'data.color' }}
+                  margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                />
+              }
             </div>
           </div>
           <div id="school-contact" className="panel bordered">
@@ -133,8 +132,8 @@ export const SchoolPage = () => {
             <table>
               <tbody>
                 <tr><td>Name</td><td>{school?.contact1Name}</td></tr>
-                <tr><td>Phone</td><td><a href={'tel:'+school?.telephone.replace(/[.,\s\-_()]/g,"")}>{school?.telephone}</a></td></tr>
-                <tr><td>Email</td><td><a href={'mailto:'+school?.email}>{school?.email}</a></td></tr>
+                <tr><td>Phone</td><td><a href={'tel:' + school?.telephone.replace(/[.,\s\-_()]/g, "")}>{school?.telephone}</a></td></tr>
+                <tr><td>Email</td><td><a href={'mailto:' + school?.email}>{school?.email}</a></td></tr>
                 <tr><td>Web</td><td><a href={school?.url}>{school?.url}</a></td></tr>
               </tbody>
             </table>

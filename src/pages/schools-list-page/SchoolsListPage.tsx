@@ -1,45 +1,55 @@
+import SearchIcon from '@mui/icons-material/Search';
 import { useMemo, useState } from 'react';
 import { useSchoolList } from 'hooks/use-school';
-import { Link } from 'react-router-dom';
-import { LoadingSpinner } from 'components/loading-spinner/LoadingSpinner';
-import './SchoolsListPage.css';
+import { Box, Stack, CircularProgress, Container, TextField, Typography } from '@mui/material';
+import { PaginatedSchoolsTable } from './PaginatedSchoolsTable';
 
 export const SchoolsListPage = () => {
-  const [autocompleteValue, setAutocompleteValue] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
+
+  const schoolsMap = useMemo(() => schoolsList?.reduce((acc, school) => acc.set(school.schoolId, school), new Map()), [schoolsList]);
 
   // Memoize optimized search strings so we don't have to do it on each key press
   const optimizedSchoolsList = useMemo(() => schoolsList?.map((school, index) => ({
-    schoolId: school.schoolId,
+    id: school.schoolId,
     i: index,
-    name: school.name.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"").toLowerCase(),
+    name: school.name.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, "").toLowerCase(),
   })), [schoolsList]);
-  const optimizedAutocompleteValue = autocompleteValue.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"").toLowerCase();
+  const optimizedSearchValue = useMemo(() => searchTerm.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, "").toLowerCase(), [searchTerm]);
+
+  const filteredSchoolsList = useMemo(
+    () => optimizedSchoolsList?.filter(s => s.name.includes(optimizedSearchValue)).map(optimizedSchoolItem => schoolsMap?.get(optimizedSchoolItem.id)),
+    [optimizedSchoolsList, optimizedSearchValue, schoolsMap],
+  );
 
   return (
     <section id="schools-list-section">
-      <h1>Find a School</h1>
-      <input
-        placeholder="🔍"
-        className="autocomplete"
-        type="text" value={autocompleteValue}
-        onChange={(e) => setAutocompleteValue(e.target.value)}>
-      </input>
-      <div className="school-list">
-        {schoolsListPending && <LoadingSpinner />}
-        {!schoolsListPending && !schoolsListError && optimizedSchoolsList!
-          .filter((item: { schoolId: string, name: string }) => item.name.includes(optimizedAutocompleteValue))
-          .map((school: { schoolId: string, name: string }) =>
-            <Link
-              to={'/school/'+school.schoolId}
-              key={school.schoolId}
-              className="school-list-item"
-            >
-            {schoolsList![(school as any).i].name}
-            </Link>
-          )
-        }
-      </div>
-    </section>
+      <Container>
+        <Stack direction="row" my={3} alignItems="center">
+          <Typography variant="h4" component="h1">Find a school</Typography>
+          <Box flexGrow={1} />
+          <TextField
+            value={searchTerm}
+            onChange={v => {
+              setSearchTerm(v.target.value.toLowerCase());
+            }}
+            sx={{ minWidth: 300 }}
+            placeholder="Search"
+            InputProps={{
+              startAdornment:
+                <SearchIcon sx={{ mr: 1 }} />,
+            }}
+          />
+        </Stack>
+        {!!schoolsListError && <Typography variant="h3" color="error">{schoolsListError.toString()}</Typography>}
+        {filteredSchoolsList && filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList!} />}
+        {schoolsListPending && (
+          <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
+            <CircularProgress />
+          </Stack>
+        )}
+      </Container>
+    </section >
   );
 }

@@ -1,6 +1,8 @@
 export interface ISchoolListItem {
   schoolId: string;
   name: string;
+  city: string;
+  url: string;
   lat: number;
   lng: number;
   maori: number;

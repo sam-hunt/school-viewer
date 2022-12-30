@@ -6,11 +6,10 @@ import { ISchoolListItem } from 'models/school-list-item.interface';
 import { HelperIcon } from 'components/helper-icon/HelperIcon';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { useState } from 'react';
-import './HomePage.css'
 
 type ISchoolFeature = Feature<Point, { schoolId: string, name: string, total: number }>;
 
-export const HomePage: React.FC = () => {
+export const ClustersPage: React.FC = () => {
   const [mapGrouping, setMapGrouping] = useState<keyof ISchoolListItem>('count');
   const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
   const navigate = useNavigate();

@@ -1,37 +1,30 @@
-nav {
-    height: 64px;
-    display: grid;
-    grid-template: 1fr / 1fr 64px;
+body {
+    margin: 0;
 }
 
-nav .left {
-    grid-column: 1;
-    justify-self: left;
-    display: flex;
-    align-items: center;
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-nav a {
-    width: 64px;
-    height: 64px;
+*::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
 }
 
-h1 {
-    padding: 0 16px;
+*::-webkit-scrollbar-track {
+  background: var(--bg-color);        /* color of the tracking area */
 }
 
-nav .right {
-    grid-column: 2;
-    justify-self: end;
+*::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid var(--bg-color);  /* creates padding around scroll thumb */
 }
 
-svg.icon.links {
-    padding: 16px;
-}
-
-footer {
-    font-size: 12px;
-    position: absolute;
-    right: 0;
-    bottom: 0;
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-color);    /* color of the scroll thumb */
 }

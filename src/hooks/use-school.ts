@@ -1,7 +1,7 @@
 import { ISchoolListItem } from 'models/school-list-item.interface';
 import { ISchool } from 'models/school.interface';
-import * as React from 'react';
 import { usePromise, UsePromise } from './use-promise';
+import { useCallback } from 'react';
 
 /**
  * The response structure of a request to the NZ Government Schools Directory API
@@ -93,23 +93,25 @@ const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
 const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
   const url = new URL(apiQueryUrl);
   const sql = `
-        SELECT
-            "School_Id" as "schoolId",
-            "Org_Name" as "name",
-            "Latitude"::double precision as "lat",
-            "Longitude"::double precision as "lng",
-            "Māori"::int as "maori",
-            "Pacific"::int as "pacific",
-            "European"::int as "european",
-            "Asian"::int as "asian",
-            "MELAA"::int as "melaa",
-            "International"::int as "international",
-            "Other"::int as "other",
-            "Total"::int as "total",
-            1 as "count"
-        FROM
-            "${schoolsDirectoryResourceId}"
-        `.trim().replace(/\s\s+/g, ' ');
+    SELECT
+      "School_Id" as "schoolId",
+      "Org_Name" as "name",
+      "Add1_City" as "city",
+      "URL" as "url",
+      "Latitude"::double precision as "lat",
+      "Longitude"::double precision as "lng",
+      "Māori"::int as "maori",
+      "Pacific"::int as "pacific",
+      "European"::int as "european",
+      "Asian"::int as "asian",
+      "MELAA"::int as "melaa",
+      "International"::int as "international",
+      "Other"::int as "other",
+      "Total"::int as "total",
+      1 as "count"
+    FROM
+      "${schoolsDirectoryResourceId}"
+    `.trim().replace(/\s\s+/g, ' ');
   url.search = new URLSearchParams({ sql }).toString();
 
   const apiResult: IApiResult = await fetch(url.toString()).then(r => r.json())
@@ -122,7 +124,7 @@ const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
 }
 
 export const useSchool = (schoolId: string): UsePromise<ISchool> =>
-  usePromise<ISchool | null>(React.useCallback(() => fetchSchool(schoolId), [schoolId]), null);
+  usePromise<ISchool | null>(useCallback(() => fetchSchool(schoolId), [schoolId]), null);
 
 export const useSchoolList = (): UsePromise<ISchoolListItem[]> =>
-  usePromise<ISchoolListItem[] | null>(React.useCallback(() => fetchSchoolList(), []), null);
+  usePromise<ISchoolListItem[] | null>(useCallback(() => fetchSchoolList(), []), null);
