@@ -23,7 +23,7 @@ const noWrapCss = {
 
 export const PaginatedSchoolsTable = ({ schools }: IPaginatedSchoolsTableProps) => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(12);
 
   // Reset to first page when filtering changes
   useEffect(() => setPage(0), [schools]);
@@ -68,7 +68,7 @@ export const PaginatedSchoolsTable = ({ schools }: IPaginatedSchoolsTableProps) 
             <TableRow key={school.schoolId}>
               <TableCell sx={{ width: 300 }} scope='row'>
                 <Link
-                  to={'/school/' + school.schoolId}
+                  to={'/schools/' + school.schoolId}
                   key={school.schoolId}
                   className="school-list-item"
                 >
@@ -97,7 +97,7 @@ export const PaginatedSchoolsTable = ({ schools }: IPaginatedSchoolsTableProps) 
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[10, 25]}
+              rowsPerPageOptions={[12, 24]}
               colSpan={4}
               count={schools.length}
               rowsPerPage={rowsPerPage}

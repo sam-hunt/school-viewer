@@ -16,7 +16,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="" element={<Navigate replace to="/schools" />} />
             <Route path="/schools" element={<SchoolsListPage />} />
-            <Route path="/school/:schoolId" element={<SchoolPage />} />
+            <Route path="/schools/:schoolId" element={<SchoolPage />} />
             <Route path="/clusters" element={<ClustersPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="*" element={<NotFound />} />

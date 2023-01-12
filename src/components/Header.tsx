@@ -1,4 +1,4 @@
-import InfoIcon from '@mui/icons-material/Info';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import SearchIcon from '@mui/icons-material/Search';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
@@ -60,7 +60,7 @@ export const Header = () => {
           </NavLink>
           <NavLink to='/about' style={({ isActive }) => isActive ? activeLinkStyle : inactiveLinkStyle}>
             <Stack direction="row" alignItems="center" spacing={0.5}>
-              <InfoIcon />
+              <InfoOutlinedIcon />
               <Typography
                 variant="h6"
                 component="div"

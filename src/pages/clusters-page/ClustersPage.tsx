@@ -1,72 +1,100 @@
 import { Feature, FeatureCollection, Point } from 'geojson';
 import { useNavigate } from 'react-router-dom';
 import { useSchoolList } from 'hooks/use-school';
-import { LoadingSpinner } from 'components/loading-spinner/LoadingSpinner';
 import { ISchoolListItem } from 'models/school-list-item.interface';
-import { HelperIcon } from 'components/helper-icon/HelperIcon';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
+import HelpIcon from '@mui/icons-material/Help';
 
 type ISchoolFeature = Feature<Point, { schoolId: string, name: string, total: number }>;
 
 export const ClustersPage: React.FC = () => {
   const [mapGrouping, setMapGrouping] = useState<keyof ISchoolListItem>('count');
   const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
+  const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
   const navigate = useNavigate();
-  const onFeatureClick = (feature: ISchoolFeature) => navigate(`/school/${feature.properties.schoolId}`)
 
-  let features: FeatureCollection = {
-    type: 'FeatureCollection',
-    features: [],
-  };
+  const onFeatureClick = (feature: ISchoolFeature) => navigate(`/schools/${feature.properties.schoolId}`);
 
-  if (!schoolsListPending && !schoolsListError && schoolsList) {
-    features.features = schoolsList!
-      .filter(school => school.lat && school.lng)
-      .map((school: ISchoolListItem): ISchoolFeature => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [+school.lng, +school.lat],
-        },
-        properties: school,
-      }));
-  }
+  const features: FeatureCollection = useMemo(() => {
+    const featureCollection: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    if (!schoolsListPending && !schoolsListError && schoolsList) {
+      featureCollection.features = schoolsList!
+        .filter(school => school.lat && school.lng)
+        .map((school: ISchoolListItem): ISchoolFeature => ({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [+school.lng, +school.lat],
+          },
+          properties: school,
+        }));
+    }
+    return featureCollection;
+  }, [schoolsList, schoolsListPending, schoolsListError]);
+
+  const mapHeight = `calc(${mapContainerEl?.clientHeight || '85vh'} - 50px)`;
+  const mapWidth = mapContainerEl?.clientWidth || '95vw';
 
   return (
-    <section id="home-section">
-      <h1>NZ Schools Directory&nbsp;
-        <HelperIcon width={'430px'} height={'120px'} tooltipText={<p>
-          Use the scroll-wheel or select a cluster to zoom<br />
-          Select a school to see more information<br />
-          Hover over a school to see its name<br />
-          Click away to hide displayed school names<br /></p>} />
-      </h1>
+    <Stack id="home-section" component="section">
+      <Container>
+        <Stack direction="row" alignItems="center" my={3}>
+          <Typography variant="h4" component="h1" flex="1">NZ Schools Directory</Typography>
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">Cluster Metric</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={mapGrouping}
+              label="Cluster Metric"
+              onChange={(e) => setMapGrouping(e.target.value as keyof ISchoolListItem)}
+              sx={{ width: 250 }}
+            >
+              <MenuItem value="count">School Locations</MenuItem>
+              <MenuItem value="maori">Māori Enrolments</MenuItem>
+              <MenuItem value="pacific">Pacific Enrolments</MenuItem>
+              <MenuItem value="european">European Enrolments</MenuItem>
+              <MenuItem value="asian">Asian Enrolments</MenuItem>
+              <MenuItem value="melaa">MELAA Enrolments</MenuItem>
+              <MenuItem value="international">International Enrolments</MenuItem>
+              <MenuItem value="other">Other Enrolments</MenuItem>
+              <MenuItem value="total">Total Enrolments</MenuItem>
+            </Select>
+          </FormControl>
+          <Box ml={3}>
+            <Tooltip title={<Typography>Select a school or cluster for more information</Typography>}><HelpIcon sx={{ width: '32px', height: '32px' }} /></Tooltip>
+          </Box>
+        </Stack>
+      </Container>
 
-      <select name="map-group" id="map-group" defaultValue={mapGrouping} onChange={(e) => setMapGrouping(e.target.value as keyof ISchoolListItem)}>
-        <option value="count">School Locations</option>
-        <option value="maori">Māori Enrolments</option>
-        <option value="pacific">Pacific Enrolments</option>
-        <option value="european">European Enrolments</option>
-        <option value="asian">Asian Enrolments</option>
-        <option value="melaa">MELAA Enrolments</option>
-        <option value="international">International Enrolments</option>
-        <option value="other">Other Enrolments</option>
-        <option value="total">Total Enrolments</option>
-      </select>
+      {schoolsListPending && (
+        <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
+          <CircularProgress />
+        </Stack>)
+      }
 
-      {schoolsListPending && <LoadingSpinner />}
-      {/* {!schoolsListPending && !schoolsListError && <pre>{JSON.stringify(schoolsList, null, 4)}</pre>} */}
-      {!!schoolsListError && <p className="schoolsListError">{JSON.stringify(schoolsListError)}</p>}
+      {!!schoolsListError && (
+        <Container>
+          <Typography color="error" fontWeight="bold">{JSON.stringify(schoolsListError)}</Typography>
+        </Container>
+      )}
 
       {!schoolsListPending && !schoolsListError &&
-        <MapboxGLClusteredMap
-          height={'80vh'} width={'90vw'}
-          lat={-41} lng={173} zoom={5}
-          features={features}
-          onFeatureClick={onFeatureClick}
-          clusterByProperty={mapGrouping} />
+        <Box ref={(el: any) => setMapContainerEl(el)} px={2} py={0}>
+          <MapboxGLClusteredMap
+            width={mapWidth}
+            height={mapHeight}
+            lat={-41} lng={173} zoom={5}
+            features={features}
+            onFeatureClick={onFeatureClick}
+            clusterByProperty={mapGrouping} />
+        </Box>
       }
-    </section>
+    </Stack>
   );
 }

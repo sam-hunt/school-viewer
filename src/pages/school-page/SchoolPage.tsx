@@ -1,162 +1,50 @@
-import { LoadingSpinner } from 'components/loading-spinner/LoadingSpinner';
-import { FeatureCollection } from 'geojson';
 import { useSchool } from 'hooks/use-school';
-import { Link, useParams } from 'react-router-dom';
-import { MapboxGLPointMap } from './MapboxglPointMap';
-import { Pie } from '@nivo/pie';
-import { Bar } from '@nivo/bar';
+import { useParams } from 'react-router-dom';
+import { Box, CircularProgress, Container, Grid, Stack, Typography } from '@mui/material';
+import { DetailsCard } from './cards/DetailsCard';
+import { MiscellaneousCard } from './cards/MiscellaneousCard';
+import { ContactCard } from './cards/ContactCard';
+import { EnrolmentsCard } from './cards/EnrolmentsCard';
+import { MapCard } from './cards/MapCard';
 
 export const SchoolPage = () => {
 
   const { schoolId } = useParams() as { schoolId: string };
   const [school, schoolError, schoolPending] = useSchool(schoolId);
 
-  let features: FeatureCollection = {
-    type: 'FeatureCollection',
-    features: [],
-  };
-
-  if (!schoolPending && !schoolError && school) {
-    features.features = {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [+school?.longitude, +school?.latitude],
-      },
-      properties: school,
-    } as any;
-  }
-  const enrolments = [
-    { color: '#b2cefe', label: 'Māori', value: school?.maori || 0, id: 'Māori' },
-    { color: '#fea3aa', label: 'Pacific', value: school?.pacific || 0, id: 'Pacific' },
-    { color: '#cb9eff', label: 'European', value: school?.european || 0, id: 'European' },
-    { color: '#baed91', label: 'Asian', value: school?.asian || 0, id: 'Asian' },
-    { color: '#f8b88b', label: 'MELAA', value: school?.melaa || 0, id: 'MELAA' },
-    { color: '#faf884', label: 'International', value: school?.international || 0, id: 'International' },
-    { color: '#f2a2e8', label: 'Other', value: school?.other || 0, id: 'Other' },
-  ].filter(d => d.value > 0);
-
   return (
-    <section id="school-section">
-      <div className="breadcrumb"><Link to='/schools'>schools</Link> / {schoolId}</div>
-      <h1>{school?.orgName || 'Loading...'}</h1>
-      <div className="school">
-        {schoolPending && (
-          <div className="loader-wrapper">
-            <LoadingSpinner />
-          </div>
-        )}
-        {/* {!schoolPending && !schoolError && <pre>{JSON.stringify(school, null, 4)}</pre>} */}
-        {!schoolPending && !schoolError && <div>
-          <div id="school-details" className="panel bordered">
-            <h2>Details</h2>
-            <table>
-              <tbody>
-                <tr><td>Organisation Name</td><td>{school?.orgName}</td></tr>
-                <tr><td>Organisation Type</td><td>{school?.orgType}</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="school-location" className="panel bordered">
-            <h2>Location</h2>
-            <table className="details">
-              <tbody>
-                <tr className="address-row">
-                  <td>Address 1</td>
-                  <td>
-                    {school?.add1Line1}<br />
-                    {school?.add1Suburb}{school?.add1Suburb && <br />}
-                    {school?.add1City}<br />
-                  </td>
-                </tr>
-                <tr className="address-row">
-                  <td>Address 2</td>
-                  <td>
-                    {school?.add2Line1}<br />
-                    {school?.add2Suburb}{school?.add2Suburb && <br />}
-                    {school?.add2City}<br />
-                    {school?.add2PostalCode}<br />
-                  </td>
-                </tr>
-                <tr><td>Latitude</td><td>{school?.latitude}</td></tr>
-                <tr><td>Longitude</td><td>{school?.longitude}</td></tr>
-              </tbody>
-            </table>
-            <span className="map">
-              <MapboxGLPointMap height={'100%'} width={'100%'} lat={school!.latitude} lng={school!.longitude} zoom={6} />
-            </span>
-          </div>
-          <div id="school-enrolments" className="panel bordered">
-            <h2>Enrolments ({enrolments.reduce((acc, val) => acc + parseInt(val.value as any, 10), 0)})</h2>
-            <div>
-              {window.innerWidth > 640 ?
-                <Pie
-                  width={768}
-                  height={512}
-                  isInteractive={false}
-                  margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
-                  data={enrolments}
-                  colors={{ datum: 'data.color' }}
-                  startAngle={-90}
-                  innerRadius={0.6}
-                  padAngle={0.5}
-                  cornerRadius={5}
-                  arcLabel={(d) => `${d.id}: ${d.value}`}
-                  arcLinkLabelsColor={{
-                    from: 'color',
-                  }}
-                  arcLinkLabelsThickness={3}
-                  arcLinkLabelsTextColor={{
-                    from: 'color',
-                    modifiers: [['darker', 1.2]],
-                  }}
-                  enableArcLabels={false} // ?
-                /> :
-                <Bar
-                  layout='horizontal'
-                  enableGridX={false}
-                  enableGridY={false}
-                  labelTextColor='#fff'
-                  enableLabel={true}
-                  width={300}
-                  height={200}
-                  data={enrolments}
-                  colors={{ datum: 'data.color' }}
-                  margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
-                />
-              }
-            </div>
-          </div>
-          <div id="school-contact" className="panel bordered">
-            <h2>Contact</h2>
-            <table>
-              <tbody>
-                <tr><td>Name</td><td>{school?.contact1Name}</td></tr>
-                <tr><td>Phone</td><td><a href={'tel:' + school?.telephone.replace(/[.,\s\-_()]/g, "")}>{school?.telephone}</a></td></tr>
-                <tr><td>Email</td><td><a href={'mailto:' + school?.email}>{school?.email}</a></td></tr>
-                <tr><td>Web</td><td><a href={school?.url}>{school?.url}</a></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="school-misc" className="panel bordered">
-            <h2>Miscellaneous</h2>
-            <table>
-              <tbody>
-                <tr><td>Definition</td><td>{school?.definition}</td></tr>
-                <tr><td>Roll Date</td><td>{school?.rollDate}</td></tr>
-                <tr><td>Decile</td><td>{school?.decile}</td></tr>
-                <tr><td>Isolation Index</td><td>{school?.isolationIndex}</td></tr>
-                <tr><td>CoEducation Status</td><td>{school?.coEdStatus}</td></tr>
-                <tr><td>Education Region</td><td>{school?.educationRegion}</td></tr>
-                <tr><td>General Electorate</td><td>{school?.generalElectorate}</td></tr>
-                <tr><td>Māori Electorate</td><td>{school?.maoriElectorate}</td></tr>
-                <tr><td>School Donations</td><td>{school?.schoolDonations}</td></tr>
-                <tr><td>Authority</td><td>{school?.authority}</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>}
-      </div>
-    </section>
+    <Container component="section">
+      <Typography variant="h4" component="h1" mt={3} mb={3}>{school?.orgName || 'Loading School...'}</Typography>
+
+      {schoolPending && (
+        <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
+          <CircularProgress />
+        </Stack>
+      )}
+
+      {!!schoolError && (
+        <Container>
+          <Typography color="error" fontWeight="bold">{JSON.stringify(schoolError)}</Typography>
+        </Container>
+      )}
+
+      {!schoolPending && !schoolError && <Box>
+        <Grid container spacing={4}>
+          <Grid item md={5} sm={12}>
+            <Stack direction="column" spacing={4}>
+              <DetailsCard school={school!} />
+              <MiscellaneousCard school={school!} />
+              <ContactCard school={school!} />
+            </Stack>
+          </Grid >
+          <Grid item md={7} sm={12}>
+            <Stack direction="column" spacing={4}>
+              <EnrolmentsCard school={school!} />
+              <MapCard school={school!} />
+            </Stack>
+          </Grid>
+        </Grid >
+      </Box >}
+    </Container >
   );
 }
