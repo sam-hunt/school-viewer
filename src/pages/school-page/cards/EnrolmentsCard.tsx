@@ -47,8 +47,12 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
             innerRadius={0.6}
             padAngle={0.5}
             cornerRadius={5}
-            enableArcLabels={false} // These are labels on the arc
+            enableArcLabels={true} // These are labels on the arc
             enableArcLinkLabels={true} // These are labels off to the side
+            arcLabel={(d) => {
+              const percentage = Math.round(d.value / school?.total * 100);
+              return percentage > 2 ? `${percentage}%` : '';
+            }}
             arcLinkLabel={(d) => `${d.id}: ${d.value}`}
             arcLinkLabelsColor={{
               from: 'color',
