@@ -28,9 +28,9 @@ export const MiscellaneousCard = ({ school }: MiscellaneousCardProps) => (
           </TableRow>
           <TableRow>
             <TableCell size="small" component="th" scope="row">
-              Decile
+              Equity Index
             </TableCell>
-            <TableCell size="small">{school?.decile}</TableCell>
+            <TableCell size="small">{school?.eqiIndex}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell size="small" component="th" scope="row">

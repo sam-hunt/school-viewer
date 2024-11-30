@@ -45,7 +45,7 @@ export interface ISchool {
   schoolDonations: string;
   isolationIndex: string;
   coEdStatus: string;
-  decile: string;
+  eqiIndex: string;
   definition: string;
   rollDate: string;
 }

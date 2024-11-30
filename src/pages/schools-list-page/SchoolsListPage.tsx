@@ -18,7 +18,7 @@ export const SchoolsListPage = () => {
         id: school.schoolId,
         i: index,
         name: school.name.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, '').toLowerCase(),
-      })),
+      })) ?? [],
     [schoolsList],
   );
   const optimizedSearchValue = useMemo(() => searchTerm.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, '').toLowerCase(), [searchTerm]);
@@ -26,7 +26,7 @@ export const SchoolsListPage = () => {
   const filteredSchoolsList = useMemo(
     () =>
       optimizedSchoolsList
-        ?.filter(s => s.name.includes(optimizedSearchValue))
+        .filter(school => school.name.includes(optimizedSearchValue))
         .map(optimizedSchoolItem => schoolsMap?.get(optimizedSchoolItem.id)),
     [optimizedSchoolsList, optimizedSearchValue, schoolsMap],
   );
@@ -41,14 +41,12 @@ export const SchoolsListPage = () => {
           <Box flexGrow={1} />
           <TextField
             value={searchTerm}
-            onChange={v => {
-              setSearchTerm(v.target.value.toLowerCase());
-            }}
+            onChange={event => setSearchTerm(event.target.value.toLowerCase())}
             sx={{ minWidth: 300 }}
             placeholder="Search"
-            InputProps={{
-              startAdornment: <SearchIcon sx={{ mr: 1 }} />,
-            }}
+            // TODO: Migrate to slotProps API
+            InputProps={{ startAdornment: <SearchIcon sx={{ mr: 1 }} /> }}
+            size="small"
           />
         </Stack>
         {!!schoolsListError && (
@@ -56,7 +54,7 @@ export const SchoolsListPage = () => {
             {schoolsListError.toString()}
           </Typography>
         )}
-        {filteredSchoolsList && filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList!} />}
+        {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList!} />}
         {schoolsListPending && (
           <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
             <CircularProgress />

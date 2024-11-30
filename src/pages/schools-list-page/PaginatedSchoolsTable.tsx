@@ -3,7 +3,6 @@ import { Link } from 'react-router';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
@@ -42,62 +41,61 @@ export const PaginatedSchoolsTable = ({ schools }: IPaginatedSchoolsTableProps) 
   };
 
   return (
-    <TableContainer>
-      <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Name</TableCell>
-            <TableCell align="left">City</TableCell>
-            <TableCell align="right">Students</TableCell>
-            <TableCell align="right">Website</TableCell>
+    <Table sx={{ minWidth: 300, p: 0 }} aria-label="custom pagination table">
+      <TableHead>
+        <TableRow>
+          <TableCell align="left">Name</TableCell>
+          <TableCell align="left">City</TableCell>
+          <TableCell align="right">Students</TableCell>
+          <TableCell align="right">Website</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {(rowsPerPage > 0 ? schools.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : schools).map(school => (
+          <TableRow key={school.schoolId}>
+            <TableCell sx={{ width: 300 }} scope="row">
+              <Link to={'/schools/' + school.schoolId} key={school.schoolId} className="school-list-item">
+                <Typography sx={noWrapCss}>{school.name}</Typography>
+              </Link>
+            </TableCell>
+            <TableCell sx={{ width: 100 }} scope="row">
+              <Typography sx={noWrapCss}>{school.city}</Typography>
+            </TableCell>
+            <TableCell sx={{ width: 100 }} align="right">
+              {school.total}
+            </TableCell>
+            <TableCell sx={{ width: 100 }} align="right">
+              <Typography sx={noWrapCss}>
+                <a href={school.url}>{school.url}</a>
+              </Typography>
+            </TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0 ? schools.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : schools).map(school => (
-            <TableRow key={school.schoolId}>
-              <TableCell sx={{ width: 300 }} scope="row">
-                <Link to={'/schools/' + school.schoolId} key={school.schoolId} className="school-list-item">
-                  <Typography sx={noWrapCss}>{school.name}</Typography>
-                </Link>
-              </TableCell>
-              <TableCell sx={{ width: 100 }} scope="row">
-                <Typography sx={noWrapCss}>{school.city}</Typography>
-              </TableCell>
-              <TableCell sx={{ width: 100 }} align="right">
-                {school.total}
-              </TableCell>
-              <TableCell sx={{ width: 100 }} align="right">
-                <Typography sx={noWrapCss}>
-                  <a href={school.url}>{school.url}</a>
-                </Typography>
-              </TableCell>
-            </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[12, 24]}
-              colSpan={4}
-              count={schools.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' },
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
+        ))}
+        {emptyRows > 0 && (
+          <TableRow style={{ height: 53 * emptyRows }}>
+            <TableCell colSpan={6} />
           </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+        )}
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TablePagination
+            rowsPerPageOptions={[12, 24]}
+            colSpan={4}
+            count={schools.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            // TODO: Migrate to slotProps API
+            SelectProps={{
+              inputProps: { 'aria-label': 'rows per page' },
+              native: true,
+            }}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            ActionsComponent={TablePaginationActions}
+          />
+        </TableRow>
+      </TableFooter>
+    </Table>
   );
 };

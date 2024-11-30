@@ -40,7 +40,7 @@ export const ClustersPage: React.FC = () => {
   }, [schoolsList, schoolsListPending, schoolsListError]);
 
   const mapHeight = `calc(${mapContainerEl?.clientHeight || '85vh'} - 50px)`;
-  const mapWidth = mapContainerEl?.clientWidth || '95vw';
+  const mapWidth = mapContainerEl?.clientWidth ? mapContainerEl?.clientWidth - 16 : '95vw';
 
   return (
     <Stack id="home-section" component="section">
@@ -56,8 +56,9 @@ export const ClustersPage: React.FC = () => {
               id="demo-simple-select"
               value={mapGrouping}
               label="Cluster Metric"
-              onChange={e => setMapGrouping(e.target.value as keyof ISchoolListItem)}
+              onChange={event => setMapGrouping(event.target.value as keyof ISchoolListItem)}
               sx={{ width: 250 }}
+              size="small"
             >
               <MenuItem value="count">School Locations</MenuItem>
               <MenuItem value="maori">Māori Enrolments</MenuItem>

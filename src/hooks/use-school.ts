@@ -7,15 +7,19 @@ import { useCallback } from 'react';
  * The response structure of a request to the NZ Government Schools Directory API
  * @remarks IApiResult.success determines which of `result` or `error` fields also exist
  */
-interface IApiResult {
+interface IApiSuccessResult {
   help: string;
-  success: boolean;
-  result?: {
+  success: true;
+  result: {
     records: ISchool[];
     fields: { type: string; id: string }[];
     sql: string;
   };
-  error?: {
+}
+interface IApiErrorResult {
+  help: string;
+  success: false;
+  error: {
     info: {
       params: unknown[];
       statement: string[];
@@ -24,9 +28,10 @@ interface IApiResult {
     __type: string;
   };
 }
+type IApiResult = IApiSuccessResult | IApiErrorResult;
 
 const apiQueryUrl = `https://catalogue.data.govt.nz/api/3/action/datastore_search_sql`;
-const schoolsDirectoryResourceId = '20b7c271-fd5a-4c9e-869b-481a0e2453cd';
+const schoolsDirectoryResourceId = '4b292323-9fcc-41f8-814b-3c7b19cf14b3';
 
 const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
   if (!schoolId) return null;
@@ -71,7 +76,7 @@ const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
       "School_Donations" as "schoolDonations",
       "Isolation_Index" as "isolationIndex",
       "CoEd_Status" as "coEdStatus",
-      "Decile" as "decile",
+      "EQi_Index" as "eqiIndex",
       "Definition" as "definition",
       "Roll_Date" as "rollDate"
     FROM
@@ -105,14 +110,14 @@ const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
       "URL" as "url",
       "Latitude"::double precision as "lat",
       "Longitude"::double precision as "lng",
-      "Māori"::int as "maori",
-      "Pacific"::int as "pacific",
-      "European"::int as "european",
-      "Asian"::int as "asian",
-      "MELAA"::int as "melaa",
-      "International"::int as "international",
-      "Other"::int as "other",
-      "Total"::int as "total",
+      CASE WHEN "Māori" IS NULL THEN 0 ELSE "Māori"::int END as "maori",
+      CASE WHEN "Pacific" IS NULL THEN 0 ELSE "Pacific"::int END as "pacific",
+      CASE WHEN "European" IS NULL THEN 0 ELSE "European"::int END as "european",
+      CASE WHEN "Asian" IS NULL THEN 0 ELSE "Asian"::int END as "asian",
+      CASE WHEN "MELAA" IS NULL THEN 0 ELSE "MELAA"::int END as "melaa",
+      CASE WHEN "International" IS NULL THEN 0 ELSE "International"::int END as "international",
+      CASE WHEN "Other" IS NULL THEN 0 ELSE "Other"::int END as "other",
+      CASE WHEN "Total" IS NULL THEN 0 ELSE "Total"::int END as "total",
       1 as "count"
     FROM
       "${schoolsDirectoryResourceId}"
@@ -122,15 +127,15 @@ const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
   url.search = new URLSearchParams({ sql }).toString();
 
   const apiResult: IApiResult = await fetch(url.toString())
-    .then(r => r.json())
-    .catch(e => {
-      throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(e)}`);
+    .then(response => response.json())
+    .catch(error => {
+      throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(error)}`);
     });
 
   if (!apiResult.success) {
-    throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(apiResult!.error)}. For more help, visit: ${apiResult.help}`);
+    throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(apiResult.error)}. For more help, visit: ${apiResult.help}`);
   }
-  return apiResult!.result!.records;
+  return apiResult.result.records;
 };
 
 export const useSchool = (schoolId: string): UsePromise<ISchool> =>

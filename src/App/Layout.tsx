@@ -8,6 +8,6 @@ export const Layout = () => (
     <div style={{ padding: '0px', height: 'calc(100vh - 90px)', overflowY: 'scroll' }}>
       <Outlet />
     </div>
-    <footer style={{ height: '18px', textAlign: 'right', marginRight: '8px' }}>&copy;{new Date().getFullYear()} Sam Hunt</footer>
+    <footer style={{ height: '18px', textAlign: 'right', marginRight: '8px' }}>&copy;2021 Sam Hunt</footer>
   </>
 );

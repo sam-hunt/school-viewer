@@ -1,6 +1,7 @@
 {
   "name": "school-viewer",
   "version": "3.0.0",
+  "type": "module",
   "author": {
     "name": "Sam Hunt",
     "url": "https://samhunt.dev"

@@ -127,23 +127,23 @@ export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({
             });
           });
         });
-        // When a click event occurs on a feature in
-        // the unclustered-point layer, open a popup at
-        // the location of the feature, with
-        // description HTML from its properties.
-        map.on('mouseover', 'unclustered-point', function (e) {
-          const coordinates = (e as any).features[0].geometry.coordinates.slice();
-          const name = (e as any).features[0].properties.name;
+        // // When a click event occurs on a feature in
+        // // the unclustered-point layer, open a popup at
+        // // the location of the feature, with
+        // // description HTML from its properties.
+        // map.on('mouseover', 'unclustered-point', function (e) {
+        //   const coordinates = (e as any).features[0].geometry.coordinates.slice();
+        //   const name = (e as any).features[0].properties.name;
 
-          // Ensure that if the map is zoomed out such that
-          // multiple copies of the feature are visible, the
-          // popup appears over the copy being pointed to.
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
+        //   // Ensure that if the map is zoomed out such that
+        //   // multiple copies of the feature are visible, the
+        //   // popup appears over the copy being pointed to.
+        //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        //   }
 
-          new mapboxgl.Popup().setLngLat(coordinates).setHTML(`<strong><h3>${name}</h3></strong>`).addTo(map);
-        });
+        //   new mapboxgl.Popup().setLngLat(coordinates).setHTML(`<strong><h3>${name}</h3></strong>`).addTo(map);
+        // });
         if (onFeatureClick) {
           map.on('click', 'unclustered-point', e => {
             onFeatureClick((e as any).features[0]);
@@ -177,13 +177,5 @@ export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({
     }
   }, [map, lat, lng, zoom, features, onFeatureClick, clusterByProperty, mapContainerEl]);
 
-  return (
-    <div
-      className="mapboxgl-container"
-      ref={el => {
-        setMapContainerEl(el!);
-      }}
-      style={{ height, width }}
-    />
-  );
+  return <div className="mapboxgl-container" ref={el => setMapContainerEl(el!)} style={{ height, width }} />;
 };
