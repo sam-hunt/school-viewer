@@ -1,5 +1,5 @@
-import { ISchoolListItem } from 'models/school-list-item.interface';
-import { ISchool } from 'models/school.interface';
+import { ISchoolListItem } from '../models/school-list-item.interface';
+import { ISchool } from '../models/school.interface';
 import { usePromise, UsePromise } from './use-promise';
 import { useCallback } from 'react';
 
@@ -12,7 +12,7 @@ interface IApiResult {
   success: boolean;
   result?: {
     records: ISchool[];
-    fields: { type: string; id: string; }[];
+    fields: { type: string; id: string }[];
     sql: string;
   };
   error?: {
@@ -22,7 +22,7 @@ interface IApiResult {
       orig: string[];
     };
     __type: string;
-  }
+  };
 }
 
 const apiQueryUrl = `https://catalogue.data.govt.nz/api/3/action/datastore_search_sql`;
@@ -78,11 +78,16 @@ const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
       "${schoolsDirectoryResourceId}"
     WHERE
       "School_Id" = '${schoolId}'
-    `.trim().replace(/\s\s+/g, ' ');
+    `
+    .trim()
+    .replace(/\s\s+/g, ' ');
   url.search = new URLSearchParams({ sql }).toString();
 
-  const apiResult: IApiResult = await fetch(url.toString()).then(r => r.json())
-    .catch(e => { throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(e)}`); });
+  const apiResult: IApiResult = await fetch(url.toString())
+    .then(r => r.json())
+    .catch(e => {
+      throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(e)}`);
+    });
 
   if (!apiResult.success) {
     throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(apiResult!.error)}. For more help, visit: ${apiResult.help}`);
@@ -111,20 +116,31 @@ const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
       1 as "count"
     FROM
       "${schoolsDirectoryResourceId}"
-    `.trim().replace(/\s\s+/g, ' ');
+    `
+    .trim()
+    .replace(/\s\s+/g, ' ');
   url.search = new URLSearchParams({ sql }).toString();
 
-  const apiResult: IApiResult = await fetch(url.toString()).then(r => r.json())
-    .catch(e => { throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(e)}`); });
+  const apiResult: IApiResult = await fetch(url.toString())
+    .then(r => r.json())
+    .catch(e => {
+      throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(e)}`);
+    });
 
   if (!apiResult.success) {
     throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(apiResult!.error)}. For more help, visit: ${apiResult.help}`);
   }
   return apiResult!.result!.records;
-}
+};
 
 export const useSchool = (schoolId: string): UsePromise<ISchool> =>
-  usePromise<ISchool | null>(useCallback(() => fetchSchool(schoolId), [schoolId]), null);
+  usePromise<ISchool | null>(
+    useCallback(() => fetchSchool(schoolId), [schoolId]),
+    null,
+  );
 
 export const useSchoolList = (): UsePromise<ISchoolListItem[]> =>
-  usePromise<ISchoolListItem[] | null>(useCallback(() => fetchSchoolList(), []), null);
+  usePromise<ISchoolListItem[] | null>(
+    useCallback(() => fetchSchoolList(), []),
+    null,
+  );

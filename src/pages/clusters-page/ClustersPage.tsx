@@ -1,13 +1,13 @@
 import { Feature, FeatureCollection, Point } from 'geojson';
-import { useNavigate } from 'react-router-dom';
-import { useSchoolList } from 'hooks/use-school';
-import { ISchoolListItem } from 'models/school-list-item.interface';
+import { useNavigate } from 'react-router';
+import { useSchoolList } from '../../hooks/use-school';
+import { ISchoolListItem } from '../../models/school-list-item.interface';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { useMemo, useState } from 'react';
 import { FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
 
-type ISchoolFeature = Feature<Point, { schoolId: string, name: string, total: number }>;
+type ISchoolFeature = Feature<Point, { schoolId: string; name: string; total: number }>;
 
 export const ClustersPage: React.FC = () => {
   const [mapGrouping, setMapGrouping] = useState<keyof ISchoolListItem>('count');
@@ -25,14 +25,16 @@ export const ClustersPage: React.FC = () => {
     if (!schoolsListPending && !schoolsListError && schoolsList) {
       featureCollection.features = schoolsList!
         .filter(school => school.lat && school.lng)
-        .map((school: ISchoolListItem): ISchoolFeature => ({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [+school.lng, +school.lat],
-          },
-          properties: school,
-        }));
+        .map(
+          (school: ISchoolListItem): ISchoolFeature => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [+school.lng, +school.lat],
+            },
+            properties: school,
+          }),
+        );
     }
     return featureCollection;
   }, [schoolsList, schoolsListPending, schoolsListError]);
@@ -44,7 +46,9 @@ export const ClustersPage: React.FC = () => {
     <Stack id="home-section" component="section">
       <Container>
         <Stack direction="row" alignItems="center" my={3}>
-          <Typography variant="h4" component="h1" flex="1">NZ Schools Directory</Typography>
+          <Typography variant="h4" component="h1" flex="1">
+            NZ Schools Directory
+          </Typography>
           <FormControl>
             <InputLabel id="demo-simple-select-label">Cluster Metric</InputLabel>
             <Select
@@ -52,7 +56,7 @@ export const ClustersPage: React.FC = () => {
               id="demo-simple-select"
               value={mapGrouping}
               label="Cluster Metric"
-              onChange={(e) => setMapGrouping(e.target.value as keyof ISchoolListItem)}
+              onChange={e => setMapGrouping(e.target.value as keyof ISchoolListItem)}
               sx={{ width: 250 }}
             >
               <MenuItem value="count">School Locations</MenuItem>
@@ -67,7 +71,9 @@ export const ClustersPage: React.FC = () => {
             </Select>
           </FormControl>
           <Box ml={3}>
-            <Tooltip title={<Typography>Select a school or cluster for more information</Typography>}><HelpIcon sx={{ width: '32px', height: '32px' }} /></Tooltip>
+            <Tooltip title={<Typography>Select a school or cluster for more information</Typography>}>
+              <HelpIcon sx={{ width: '32px', height: '32px' }} />
+            </Tooltip>
           </Box>
         </Stack>
       </Container>
@@ -75,26 +81,31 @@ export const ClustersPage: React.FC = () => {
       {schoolsListPending && (
         <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
           <CircularProgress />
-        </Stack>)
-      }
+        </Stack>
+      )}
 
       {!!schoolsListError && (
         <Container>
-          <Typography color="error" fontWeight="bold">{JSON.stringify(schoolsListError)}</Typography>
+          <Typography color="error" fontWeight="bold">
+            {JSON.stringify(schoolsListError)}
+          </Typography>
         </Container>
       )}
 
-      {!schoolsListPending && !schoolsListError &&
+      {!schoolsListPending && !schoolsListError && (
         <Box ref={(el: any) => setMapContainerEl(el)} px={2} py={0}>
           <MapboxGLClusteredMap
             width={mapWidth}
             height={mapHeight}
-            lat={-41} lng={173} zoom={5}
+            lat={-41}
+            lng={173}
+            zoom={5}
             features={features}
             onFeatureClick={onFeatureClick}
-            clusterByProperty={mapGrouping} />
+            clusterByProperty={mapGrouping}
+          />
         </Box>
-      }
+      )}
     </Stack>
   );
-}
+};

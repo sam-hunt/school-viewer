@@ -1,8 +1,8 @@
 import { Box, Card, Typography } from '@mui/material';
 import { Bar } from '@nivo/bar';
 import { Pie } from '@nivo/pie';
-import { useWindowSize } from 'hooks/use-window-size';
-import { ISchool } from 'models/school.interface';
+import { useWindowSize } from '../../../hooks/use-window-size';
+import { ISchool } from '../../../models/school.interface';
 import { useMemo, useState } from 'react';
 
 interface EnrolmentsCardProps {
@@ -10,7 +10,6 @@ interface EnrolmentsCardProps {
 }
 
 export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
-
   const [chartContainerEl, setChartContainerEl] = useState<HTMLDivElement>();
   const size = useWindowSize();
 
@@ -33,9 +32,11 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
 
   return (
     <Card sx={{ p: 2 }}>
-      <Typography variant="h5" component="h2">Enrolments ({school?.total})</Typography>
+      <Typography variant="h5" component="h2">
+        Enrolments ({school?.total})
+      </Typography>
       <Box ref={(el: any) => setChartContainerEl(el)} px={2} py={0} sx={{ minHeight: '450px', maxHeight: '600px' }}>
-        {window.innerWidth > 640 ?
+        {window.innerWidth > 640 ? (
           <Pie
             width={width}
             height={height}
@@ -43,17 +44,17 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
             margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
             data={enrolments}
             colors={{ datum: 'data.color' }}
-            startAngle={-90}  // Prevent smaller arcs from clustering at the top and getting overlapping labels
+            startAngle={-90} // Prevent smaller arcs from clustering at the top and getting overlapping labels
             innerRadius={0.6}
             padAngle={0.5}
             cornerRadius={5}
             enableArcLabels={true} // These are labels on the arc
             enableArcLinkLabels={true} // These are labels off to the side
-            arcLabel={(d) => {
-              const percentage = Math.round(d.value / school?.total * 100);
+            arcLabel={d => {
+              const percentage = Math.round((d.value / school?.total) * 100);
               return percentage > 2 ? `${percentage}%` : '';
             }}
-            arcLinkLabel={(d) => `${d.id}: ${d.value}`}
+            arcLinkLabel={d => `${d.id}: ${d.value}`}
             arcLinkLabelsColor={{
               from: 'color',
             }}
@@ -62,12 +63,13 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
               from: 'color',
               modifiers: [['darker', 1.2]],
             }}
-          /> :
+          />
+        ) : (
           <Bar
-            layout='horizontal'
+            layout="horizontal"
             enableGridX={false}
             enableGridY={false}
-            labelTextColor='#fff'
+            labelTextColor="#fff"
             enableLabel={true}
             width={chartContainerEl?.clientWidth || 0}
             height={chartContainerEl?.clientHeight || 0}
@@ -75,8 +77,8 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
             colors={{ datum: 'data.color' }}
             margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
           />
-        }
+        )}
       </Box>
     </Card>
   );
-}
+};

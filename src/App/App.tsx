@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+
 import { ThemeProvider } from '../components/ThemeProvider';
 import { AboutPage } from '../pages/about-page/AboutPage';
 import { ClustersPage } from '../pages/clusters-page/ClustersPage';
@@ -11,7 +12,7 @@ import './App.css';
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter basename={process.env.REACT_APP_BASE_PATH}>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="" element={<Navigate replace to="/schools" />} />
@@ -25,7 +26,6 @@ function App() {
       </BrowserRouter>
     </ThemeProvider>
   );
-
 }
 
 export default App;

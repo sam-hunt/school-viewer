@@ -14,4 +14,4 @@ export interface ISchoolListItem {
   other: number;
   total: number;
   count: 1;
-};
+}

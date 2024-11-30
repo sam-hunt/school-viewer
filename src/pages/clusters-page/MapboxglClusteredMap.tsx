@@ -3,14 +3,6 @@ import { Feature, FeatureCollection, Point } from 'geojson';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 
-/**
- * Workaround for this issue in production builds
- * @see https://github.com/mapbox/mapbox-gl-js/issues/10173
- */
-// @ts-ignore
-// eslint-disable-next-line import/no-webpack-loader-syntax
-mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
-
 interface IMapboxGLMapProps<T = any> {
   lng: number;
   lat: number;
@@ -20,15 +12,24 @@ interface IMapboxGLMapProps<T = any> {
   features: FeatureCollection;
   onFeatureClick?: (feature: Feature<Point, T>) => void;
   clusterByProperty: keyof T & string;
-};
+}
 
-export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, width, height, features, onFeatureClick, clusterByProperty }) => {
+export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({
+  lat,
+  lng,
+  zoom,
+  width,
+  height,
+  features,
+  onFeatureClick,
+  clusterByProperty,
+}) => {
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
   const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
 
   useEffect(() => {
     if (!mapContainerEl) return;
-    mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY as string;
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY as string;
     const initializeMap = ({ setMap, mapContainerEl }: any) => {
       const map = new mapboxgl.Map({
         container: mapContainerEl,
@@ -114,20 +115,17 @@ export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zo
         // inspect a cluster on click
         map.on('click', 'clusters', function (e) {
           const features = map.queryRenderedFeatures(e.point, {
-            layers: ['clusters']
+            layers: ['clusters'],
           });
           const clusterId = (features[0] as any).properties.cluster_id;
-          (map.getSource('points') as any).getClusterExpansionZoom(
-            clusterId,
-            function (err: any, zoom: number) {
-              if (err) return;
+          (map.getSource('points') as any).getClusterExpansionZoom(clusterId, function (err: any, zoom: number) {
+            if (err) return;
 
-              map.easeTo({
-                center: (features[0].geometry as any).coordinates,
-                zoom: zoom
-              });
-            }
-          );
+            map.easeTo({
+              center: (features[0].geometry as any).coordinates,
+              zoom: zoom,
+            });
+          });
         });
         // When a click event occurs on a feature in
         // the unclustered-point layer, open a popup at
@@ -144,13 +142,12 @@ export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zo
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
           }
 
-          new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(`<strong><h3>${name}</h3></strong>`)
-            .addTo(map);
+          new mapboxgl.Popup().setLngLat(coordinates).setHTML(`<strong><h3>${name}</h3></strong>`).addTo(map);
         });
         if (onFeatureClick) {
-          map.on('click', 'unclustered-point', (e) => { onFeatureClick((e as any).features[0]); });
+          map.on('click', 'unclustered-point', e => {
+            onFeatureClick((e as any).features[0]);
+          });
         }
         map.on('mouseenter', 'clusters', () => {
           map.getCanvas().style.cursor = 'pointer';
@@ -181,6 +178,12 @@ export const MapboxGLClusteredMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zo
   }, [map, lat, lng, zoom, features, onFeatureClick, clusterByProperty, mapContainerEl]);
 
   return (
-    <div className="mapboxgl-container" ref={el => {setMapContainerEl(el!)}} style={{ height, width }} />
+    <div
+      className="mapboxgl-container"
+      ref={el => {
+        setMapContainerEl(el!);
+      }}
+      style={{ height, width }}
+    />
   );
 };

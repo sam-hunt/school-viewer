@@ -18,35 +18,39 @@ export const royal = {
   contrastText: '#FFFFFF',
 };
 
-export const themeFromMode = (mode: PaletteMode) => createTheme({
-  palette: {
-    mode,
-    primary: mode === 'dark' ? lavender : royal,
-    secondary: mode === 'dark' ? royal : lavender,
-    background: {
-      paper: mode === 'dark' ? grey[900] : grey[300],
+export const themeFromMode = (mode: PaletteMode) =>
+  createTheme({
+    palette: {
+      mode,
+      primary: mode === 'dark' ? lavender : royal,
+      secondary: mode === 'dark' ? royal : lavender,
+      background: {
+        paper: mode === 'dark' ? grey[900] : grey[300],
+      },
     },
-  },
-});
+  });
 
 export interface ThemeContextType {
-  currentTheme: string,
-  toggleTheme: () => void,
+  currentTheme: string;
+  toggleTheme: () => void;
 }
 
 export interface ThemeProviderProps {
   children: ReactNode;
 }
 
-export const ThemeContext = createContext<ThemeContextType>({ currentTheme: 'dark', toggleTheme: () => { } });
+export const ThemeContext = createContext<ThemeContextType>({ currentTheme: 'dark', toggleTheme: () => {} });
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [currentTheme, setCurrentTheme] = useLocalStorage<PaletteMode>('theme', 'dark');
 
-  const themeProviderValue = useMemo(() => ({
-    currentTheme,
-    toggleTheme: () => setCurrentTheme(currentTheme === 'dark' ? 'light' : 'dark'),
-  }), [currentTheme, setCurrentTheme]);
+  const themeProviderValue = useMemo(
+    () => ({
+      currentTheme,
+      toggleTheme: () => setCurrentTheme(currentTheme === 'dark' ? 'light' : 'dark'),
+    }),
+    [currentTheme, setCurrentTheme],
+  );
 
   return (
     <ThemeContext.Provider value={themeProviderValue}>

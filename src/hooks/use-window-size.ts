@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 interface Size {
   width: number | undefined;
@@ -29,4 +29,4 @@ export const useWindowSize = (): Size => {
     return () => window.removeEventListener('resize', handleResize);
   }, []); // Empty array ensures that effect is only run on mount
   return windowSize;
-}
+};
