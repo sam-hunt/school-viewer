@@ -46,9 +46,9 @@ Last Updated: 2025-10-19
 - [x] Migrate useSchoolList hook to use useQuery
 - [x] Configure cache times and stale times appropriately
 - [x] Remove custom usePromise hook
-- [ ] Add tests for all custom hooks
-- [ ] Add tests for app route resolution
-- [ ] Add tests for all display components (hooks mocked)
+- [x] Add tests for all custom hooks
+- [x] Add tests for app route resolution
+- [x] Add tests for all display components (hooks mocked)
 - [ ] Add mui skeletons for individual loading states rather than full page spinner
 
 ### 6. Add Path Aliases
@@ -132,7 +132,8 @@ Last Updated: 2025-10-19
 - [ ] Document development workflow in CLAUDE.md
 
 ### 15. Quick Fixes & Polish
-- [ ] Fix TODO in SchoolsListPage.tsx (migrate to slotProps API)
+- [x] Fix TODO in SchoolsListPage.tsx (migrate to slotProps API)
+- [x] Fix TODO in PaginatedSchoolsTable.tsx (migrate to slotProps API)
 - [ ] Fix console.log error handling in useLocalStorage
 - [ ] Add dropdown caret icon to cluster map dataset picker
 - [ ] Replace search icon with pseudo-element implementation

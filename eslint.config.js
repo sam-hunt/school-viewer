@@ -35,14 +35,13 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-    },
-  },
-  {
-    rules: {
       // Prevent prettier spreading compact expressions over multiple lines
-      '@typescript-eslint/no-confusing-void-expression': {
-        ignoreArrowShorthand: true,
-      },
+      '@typescript-eslint/no-confusing-void-expression': [
+        'error',
+        {
+          ignoreArrowShorthand: true,
+        },
+      ],
     },
   },
 );

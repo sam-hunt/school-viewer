@@ -85,14 +85,15 @@ export const PaginatedSchoolsTable = ({ schools }: PaginatedSchoolsTableProps) =
             count={schools.length}
             rowsPerPage={rowsPerPage}
             page={page}
-            // TODO: Migrate to slotProps API
-            SelectProps={{
-              inputProps: { 'aria-label': 'rows per page' },
-              native: true,
+            slotProps={{
+              select: {
+                inputProps: { 'aria-label': 'rows per page' },
+                native: true,
+              },
+              actions: TablePaginationActions,
             }}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            ActionsComponent={TablePaginationActions}
           />
         </TableRow>
       </TableFooter>

@@ -11,6 +11,20 @@ export default defineConfig(({ command }) => {
       environment: 'happy-dom',
       setupFiles: './src/test/setup.ts',
       css: true,
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json', 'html'],
+        exclude: [
+          'src/test/**',
+          'src/main.tsx',
+          '**/*.d.ts',
+          '**/*.test.{ts,tsx}',
+          '**/*.config.{js,ts}',
+          '**/node_modules/**',
+          '**/dist/**',
+          '**/coverage/**',
+        ],
+      },
     },
   }
   // If not serving locally, set the base path to the project name for gh-pages deployment

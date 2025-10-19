@@ -47,8 +47,7 @@ export const SchoolsListPage = () => {
           onChange={event => setSearchTerm(event.target.value.toLowerCase())}
           sx={{ minWidth: 300 }}
           placeholder="Search"
-          // TODO: Migrate to slotProps API
-          InputProps={{ startAdornment: <SearchIcon sx={{ mr: 1 }} /> }}
+          slotProps={{ input: { startAdornment: <SearchIcon sx={{ mr: 1 }} /> } }}
           size="small"
         />
       </Stack>
