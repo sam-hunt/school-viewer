@@ -9,10 +9,10 @@ import TableRow from '@mui/material/TableRow';
 import { TableHead, Typography } from '@mui/material';
 
 import { TablePaginationActions } from './TablePaginationActions';
-import { ISchoolListItem } from '../../models/school-list-item.interface';
+import { SchoolListItem } from '../../models/school-list-item.interface';
 
-interface IPaginatedSchoolsTableProps {
-  schools: ISchoolListItem[];
+interface PaginatedSchoolsTableProps {
+  schools: SchoolListItem[];
 }
 
 const noWrapCss = {
@@ -21,7 +21,7 @@ const noWrapCss = {
   overflow: 'hidden',
 };
 
-export const PaginatedSchoolsTable = ({ schools }: IPaginatedSchoolsTableProps) => {
+export const PaginatedSchoolsTable = ({ schools }: PaginatedSchoolsTableProps) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
 

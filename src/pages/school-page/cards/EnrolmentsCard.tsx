@@ -2,11 +2,11 @@ import { Box, Card, Stack, Typography } from '@mui/material';
 import { Bar } from '@nivo/bar';
 import { Pie } from '@nivo/pie';
 import { useWindowSize } from '../../../hooks/use-window-size';
-import { ISchool } from '../../../models/school.interface';
+import { School } from '../../../models/school.interface';
 import { useMemo, useState } from 'react';
 
 interface EnrolmentsCardProps {
-  school: ISchool;
+  school: School;
 }
 
 export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {

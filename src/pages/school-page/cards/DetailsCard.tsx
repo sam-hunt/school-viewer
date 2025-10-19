@@ -1,8 +1,8 @@
 import { Card, Divider, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
-import { ISchool } from '../../../models/school.interface';
+import { School } from '../../../models/school.interface';
 
 interface DetailsCardProps {
-  school: ISchool;
+  school: School;
 }
 
 export const DetailsCard = ({ school }: DetailsCardProps) => (

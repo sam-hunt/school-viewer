@@ -46,7 +46,7 @@ The application fetches data from the NZ Government's Schooling Directory API us
 
 **`usePromise` (`src/hooks/use-promise.ts`)**: Generic hook that wraps async operations, returning a tuple of `[value, error, isPending]`. This is the foundation for all API data fetching in the app.
 
-**`useSchool` and `useSchoolList` (`src/hooks/use-school.ts`)**: Built on top of `usePromise`, these hooks fetch individual school data or the complete list of schools. They construct SQL queries to fetch specific fields from the API and transform the response into the `ISchool` or `ISchoolListItem` interfaces.
+**`useSchool` and `useSchoolList` (`src/hooks/use-school.ts`)**: Built on top of `usePromise`, these hooks fetch individual school data or the complete list of schools. They construct SQL queries to fetch specific fields from the API and transform the response into the `School` or `SchoolListItem` interfaces.
 
 ### Routing Structure
 
@@ -110,13 +110,13 @@ Required environment variable (create `.env` file based on `.env.example`):
 - ESLint with TypeScript plugin and React Hooks rules
 - Prettier for formatting (integrated with ESLint via `eslint-config-prettier`)
 - Husky + lint-staged for pre-commit hooks (auto-formats and lints staged files)
-- Interfaces prefixed with `I` (e.g., `ISchool`, `ISchoolListItem`)
+- Interfaces follow modern TypeScript naming conventions without prefixes (e.g., `School`, `SchoolListItem`)
 
 ## Key Data Models
 
-**`ISchool`** (`src/models/school.interface.ts`): Complete school record with all fields including addresses, coordinates, enrollment demographics, contact info, and metadata.
+**`School`** (`src/models/school.interface.ts`): Complete school record with all fields including addresses, coordinates, enrollment demographics, contact info, and metadata.
 
-**`ISchoolListItem`** (`src/models/school-list-item.interface.ts`): Lightweight version used for map clustering and table views, containing only essential fields.
+**`SchoolListItem`** (`src/models/school-list-item.interface.ts`): Lightweight version used for map clustering and table views, containing only essential fields.
 
 ## Important Notes
 

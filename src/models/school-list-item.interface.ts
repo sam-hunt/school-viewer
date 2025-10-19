@@ -1,4 +1,4 @@
-export interface ISchoolListItem {
+export interface SchoolListItem {
   schoolId: string;
   name: string;
   city: string;

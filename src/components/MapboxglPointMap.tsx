@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 
-interface IMapboxGLMapProps {
+interface MapboxGLMapProps {
   lng: number;
   lat: number;
   zoom: number;
@@ -10,7 +10,7 @@ interface IMapboxGLMapProps {
   width: CSSProperties['width'];
 }
 
-export const MapboxGLPointMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, width, height }) => {
+export const MapboxGLPointMap: React.FC<MapboxGLMapProps> = ({ lat, lng, zoom, width, height }) => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
   const [marker, setMarker] = useState<mapboxgl.Marker | null>(null);

@@ -1,22 +1,22 @@
-import { ISchoolListItem } from '../models/school-list-item.interface';
-import { ISchool } from '../models/school.interface';
+import { SchoolListItem } from '../models/school-list-item.interface';
+import { School } from '../models/school.interface';
 import { usePromise, UsePromise } from './use-promise';
 import { useCallback } from 'react';
 
 /**
  * The response structure of a request to the NZ Government Schools Directory API
- * @remarks IApiResult.success determines which of `result` or `error` fields also exist
+ * @remarks ApiResult.success determines which of `result` or `error` fields also exist
  */
-interface IApiSuccessResult {
+interface ApiSuccessResult {
   help: string;
   success: true;
   result: {
-    records: ISchool[];
+    records: School[];
     fields: { type: string; id: string }[];
     sql: string;
   };
 }
-interface IApiErrorResult {
+interface ApiErrorResult {
   help: string;
   success: false;
   error: {
@@ -28,12 +28,12 @@ interface IApiErrorResult {
     __type: string;
   };
 }
-type IApiResult = IApiSuccessResult | IApiErrorResult;
+type ApiResult = ApiSuccessResult | ApiErrorResult;
 
 const apiQueryUrl = `https://catalogue.data.govt.nz/api/3/action/datastore_search_sql`;
 const schoolsDirectoryResourceId = '4b292323-9fcc-41f8-814b-3c7b19cf14b3';
 
-const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
+const fetchSchool = async (schoolId: string): Promise<School | null> => {
   if (!schoolId) return null;
   const url = new URL(apiQueryUrl);
   const sql = `
@@ -88,7 +88,7 @@ const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
     .replace(/\s\s+/g, ' ');
   url.search = new URLSearchParams({ sql }).toString();
 
-  const apiResult: IApiResult = await fetch(url.toString())
+  const apiResult: ApiResult = await fetch(url.toString())
     .then(r => r.json())
     .catch(e => {
       throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(e)}`);
@@ -100,7 +100,7 @@ const fetchSchool = async (schoolId: string): Promise<ISchool | null> => {
   return apiResult!.result!.records[0];
 };
 
-const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
+const fetchSchoolList = async (): Promise<Partial<School>[] | null> => {
   const url = new URL(apiQueryUrl);
   const sql = `
     SELECT
@@ -126,7 +126,7 @@ const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
     .replace(/\s\s+/g, ' ');
   url.search = new URLSearchParams({ sql }).toString();
 
-  const apiResult: IApiResult = await fetch(url.toString())
+  const apiResult: ApiResult = await fetch(url.toString())
     .then(response => response.json())
     .catch(error => {
       throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(error)}`);
@@ -138,14 +138,14 @@ const fetchSchoolList = async (): Promise<Partial<ISchool>[] | null> => {
   return apiResult.result.records;
 };
 
-export const useSchool = (schoolId: string): UsePromise<ISchool> =>
-  usePromise<ISchool | null>(
+export const useSchool = (schoolId: string): UsePromise<School> =>
+  usePromise<School | null>(
     useCallback(() => fetchSchool(schoolId), [schoolId]),
     null,
   );
 
-export const useSchoolList = (): UsePromise<ISchoolListItem[]> =>
-  usePromise<ISchoolListItem[] | null>(
+export const useSchoolList = (): UsePromise<SchoolListItem[]> =>
+  usePromise<SchoolListItem[] | null>(
     useCallback(() => fetchSchoolList(), []),
     null,
   );

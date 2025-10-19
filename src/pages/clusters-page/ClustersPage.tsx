@@ -1,21 +1,21 @@
 import { Feature, FeatureCollection, Point } from 'geojson';
 import { useNavigate } from 'react-router';
 import { useSchoolList } from '../../hooks/use-school';
-import { ISchoolListItem } from '../../models/school-list-item.interface';
+import { SchoolListItem } from '../../models/school-list-item.interface';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { useMemo, useState } from 'react';
 import { FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
 
-type ISchoolFeature = Feature<Point, { schoolId: string; name: string; total: number }>;
+type SchoolFeature = Feature<Point, { schoolId: string; name: string; total: number }>;
 
 export const ClustersPage: React.FC = () => {
-  const [mapGrouping, setMapGrouping] = useState<keyof ISchoolListItem>('count');
+  const [mapGrouping, setMapGrouping] = useState<keyof SchoolListItem>('count');
   const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
   const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
   const navigate = useNavigate();
 
-  const onFeatureClick = (feature: ISchoolFeature) => navigate(`/schools/${feature.properties.schoolId}`);
+  const onFeatureClick = (feature: SchoolFeature) => navigate(`/schools/${feature.properties.schoolId}`);
 
   const features: FeatureCollection = useMemo(() => {
     const featureCollection: FeatureCollection = {
@@ -26,7 +26,7 @@ export const ClustersPage: React.FC = () => {
       featureCollection.features = schoolsList!
         .filter(school => school.lat && school.lng)
         .map(
-          (school: ISchoolListItem): ISchoolFeature => ({
+          (school: SchoolListItem): SchoolFeature => ({
             type: 'Feature',
             geometry: {
               type: 'Point',
@@ -56,7 +56,7 @@ export const ClustersPage: React.FC = () => {
               id="demo-simple-select"
               value={mapGrouping}
               label="Cluster Metric"
-              onChange={event => setMapGrouping(event.target.value as keyof ISchoolListItem)}
+              onChange={event => setMapGrouping(event.target.value as keyof SchoolListItem)}
               sx={{ width: 250 }}
               size="small"
             >

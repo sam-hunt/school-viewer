@@ -1,4 +1,4 @@
-export interface ISchool {
+export interface School {
   // Identifiying details
   schoolId: string;
   orgName: string;
