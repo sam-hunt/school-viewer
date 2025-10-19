@@ -36,35 +36,33 @@ export const SchoolsListPage = () => {
   );
 
   return (
-    <section id="schools-list-section">
-      <Container>
-        <Stack direction="row" my={3} alignItems="center">
-          <Typography variant="h4" component="h1">
-            Find a school
-          </Typography>
-          <Box flexGrow={1} />
-          <TextField
-            value={searchTerm}
-            onChange={event => setSearchTerm(event.target.value.toLowerCase())}
-            sx={{ minWidth: 300 }}
-            placeholder="Search"
-            // TODO: Migrate to slotProps API
-            InputProps={{ startAdornment: <SearchIcon sx={{ mr: 1 }} /> }}
-            size="small"
-          />
+    <Container id="schools-list-section" component="section" maxWidth="xl">
+      <Stack direction="row" my={3} alignItems="center">
+        <Typography variant="h4" component="h1">
+          Find a school
+        </Typography>
+        <Box flexGrow={1} />
+        <TextField
+          value={searchTerm}
+          onChange={event => setSearchTerm(event.target.value.toLowerCase())}
+          sx={{ minWidth: 300 }}
+          placeholder="Search"
+          // TODO: Migrate to slotProps API
+          InputProps={{ startAdornment: <SearchIcon sx={{ mr: 1 }} /> }}
+          size="small"
+        />
+      </Stack>
+      {error && (
+        <Typography variant="h3" color="error">
+          {error.toString()}
+        </Typography>
+      )}
+      {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
+      {isPending && (
+        <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
+          <CircularProgress />
         </Stack>
-        {error && (
-          <Typography variant="h3" color="error">
-            {error.toString()}
-          </Typography>
-        )}
-        {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
-        {isPending && (
-          <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
-            <CircularProgress />
-          </Stack>
-        )}
-      </Container>
-    </section>
+      )}
+    </Container>
   );
 };

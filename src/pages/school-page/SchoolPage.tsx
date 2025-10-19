@@ -13,7 +13,7 @@ export const SchoolPage = () => {
   const title = isPending ? 'Loading School...' : error ? 'Error loading school' : school?.orgName;
 
   return (
-    <Container component="section">
+    <Container component="section" maxWidth="xl">
       <Typography variant="h4" component="h1" mt={3} mb={3}>
         {title}
       </Typography>

@@ -1,7 +1,7 @@
 import { Container, Typography } from '@mui/material';
 
 export const AboutPage = () => (
-  <Container component="section">
+  <Container component="section" maxWidth="sm">
     <Typography variant="h4" component="h1" my={3}>
       About
     </Typography>
