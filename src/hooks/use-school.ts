@@ -1,7 +1,20 @@
 import { SchoolListItem } from '../models/school-list-item.interface';
 import { School } from '../models/school.interface';
-import { usePromise, UsePromise } from './use-promise';
-import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+/**
+ * Domain-specific query result type as a discriminated union
+ * Abstracts away the underlying data fetching implementation (TanStack Query)
+ *
+ * This discriminated union allows TypeScript to narrow types based on isPending and error:
+ * - When isPending is false and error is null, data is guaranteed to be T
+ * - When isPending is false and error exists, data is guaranteed to be undefined
+ * - When isPending is true, both data and error are guaranteed to be undefined/null
+ */
+export type QueryResult<T> =
+  | { isPending: true; data: undefined; error: null }
+  | { isPending: false; data: T; error: null }
+  | { isPending: false; data: undefined; error: Error };
 
 /**
  * The response structure of a request to the NZ Government Schools Directory API
@@ -100,7 +113,7 @@ const fetchSchool = async (schoolId: string): Promise<School | null> => {
   return apiResult!.result!.records[0];
 };
 
-const fetchSchoolList = async (): Promise<Partial<School>[] | null> => {
+const fetchSchoolList = async (): Promise<SchoolListItem[]> => {
   const url = new URL(apiQueryUrl);
   const sql = `
     SELECT
@@ -135,17 +148,40 @@ const fetchSchoolList = async (): Promise<Partial<School>[] | null> => {
   if (!apiResult.success) {
     throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(apiResult.error)}. For more help, visit: ${apiResult.help}`);
   }
-  return apiResult.result.records;
+  // Cast to SchoolListItem[] since the query returns different fields than School
+  return apiResult.result.records as unknown as SchoolListItem[];
 };
 
-export const useSchool = (schoolId: string): UsePromise<School> =>
-  usePromise<School | null>(
-    useCallback(() => fetchSchool(schoolId), [schoolId]),
-    null,
-  );
+/**
+ * Hook to fetch a single school by ID
+ * @param schoolId - The school ID to fetch
+ * @returns Query result with school data, loading state, and error
+ */
+export const useSchool = (schoolId: string): QueryResult<School | null> => {
+  const { data, error, isPending } = useQuery({
+    queryKey: ['school', schoolId],
+    queryFn: () => fetchSchool(schoolId),
+    enabled: !!schoolId, // Only run query if schoolId exists
+  });
 
-export const useSchoolList = (): UsePromise<SchoolListItem[]> =>
-  usePromise<SchoolListItem[] | null>(
-    useCallback(() => fetchSchoolList(), []),
-    null,
-  );
+  if (isPending) return { isPending: true, data: undefined, error: null };
+  if (error) return { isPending: false, data: undefined, error };
+
+  return { isPending: false, data, error: null };
+};
+
+/**
+ * Hook to fetch the complete list of schools
+ * @returns Query result with schools list, loading state, and error
+ */
+export const useSchoolList = (): QueryResult<SchoolListItem[]> => {
+  const { data, error, isPending } = useQuery({
+    queryKey: ['schools'],
+    queryFn: fetchSchoolList,
+  });
+
+  if (isPending) return { isPending: true, data: undefined, error: null };
+  if (error) return { isPending: false, data: undefined, error };
+
+  return { isPending: false, data, error: null };
+};

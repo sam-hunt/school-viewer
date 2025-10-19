@@ -3,31 +3,35 @@ import { Box, Stack, CircularProgress, Container, TextField, Typography } from '
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useSchoolList } from '../../hooks/use-school';
+import { SchoolListItem } from '../../models/school-list-item.interface';
 import { PaginatedSchoolsTable } from './PaginatedSchoolsTable';
 
 export const SchoolsListPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
+  const { data: schools, error, isPending } = useSchoolList();
 
-  const schoolsMap = useMemo(() => schoolsList?.reduce((acc, school) => acc.set(school.schoolId, school), new Map()), [schoolsList]);
+  const schoolsMap = useMemo(() => schools?.reduce((acc, school) => acc.set(school.schoolId, school), new Map()), [schools]);
 
   // Memoize optimized search strings so we don't have to do it on each key press
   const optimizedSchoolsList = useMemo(
     () =>
-      schoolsList?.map((school, index) => ({
+      schools?.map((school, index) => ({
         id: school.schoolId,
         i: index,
         name: school.name.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, '').toLowerCase(),
       })) ?? [],
-    [schoolsList],
+    [schools],
   );
+
   const optimizedSearchValue = useMemo(() => searchTerm.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, '').toLowerCase(), [searchTerm]);
 
+  // Memoize filtered schools list so we don't have to do it on each key press
   const filteredSchoolsList = useMemo(
     () =>
       optimizedSchoolsList
         .filter(school => school.name.includes(optimizedSearchValue))
-        .map(optimizedSchoolItem => schoolsMap?.get(optimizedSchoolItem.id)),
+        .map(optimizedSchoolItem => schoolsMap?.get(optimizedSchoolItem.id))
+        .filter((school): school is SchoolListItem => school !== undefined),
     [optimizedSchoolsList, optimizedSearchValue, schoolsMap],
   );
 
@@ -49,13 +53,13 @@ export const SchoolsListPage = () => {
             size="small"
           />
         </Stack>
-        {!!schoolsListError && (
+        {error && (
           <Typography variant="h3" color="error">
-            {schoolsListError.toString()}
+            {error.toString()}
           </Typography>
         )}
-        {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList!} />}
-        {schoolsListPending && (
+        {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
+        {isPending && (
           <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
             <CircularProgress />
           </Stack>

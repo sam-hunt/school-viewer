@@ -39,13 +39,13 @@ Last Updated: 2025-10-19
 - [x] Update CLAUDE.md to reflect new naming convention
 
 ### 5. Replace usePromise with TanStack Query
-- [ ] Install @tanstack/react-query and @tanstack/react-query-devtools
-- [ ] Set up QueryClient and QueryClientProvider in App.tsx
-- [ ] Add query devtools for development
-- [ ] Migrate useSchool hook to use useQuery
-- [ ] Migrate useSchoolList hook to use useQuery
-- [ ] Configure cache times and stale times appropriately
-- [ ] Remove custom usePromise hook
+- [x] Install @tanstack/react-query and @tanstack/react-query-devtools
+- [x] Set up QueryClient and QueryClientProvider in App.tsx
+- [x] Add query devtools for development
+- [x] Migrate useSchool hook to use useQuery
+- [x] Migrate useSchoolList hook to use useQuery
+- [x] Configure cache times and stale times appropriately
+- [x] Remove custom usePromise hook
 - [ ] Add tests for all custom hooks
 - [ ] Add tests for app route resolution
 - [ ] Add tests for all display components (hooks mocked)

@@ -10,6 +10,7 @@ School Viewer is a React/TypeScript application that visualizes data from the Ne
 - React 19 with TypeScript
 - Vite 7 (build tool, migrated from Create React App)
 - Material-UI (MUI) v7 for UI components
+- TanStack Query v5 for data fetching, caching, and state management
 - Mapbox GL JS v2 for interactive mapping
 - Nivo v0.99 for data visualizations (bar charts, pie charts)
 - React Router v7 for routing
@@ -42,11 +43,30 @@ The application fetches data from the NZ Government's Schooling Directory API us
 - Resource ID: `4b292323-9fcc-41f8-814b-3c7b19cf14b3`
 - Data fetching logic is centralized in `src/hooks/use-school.ts`
 
-### Core Hooks
+### Data Fetching
 
-**`usePromise` (`src/hooks/use-promise.ts`)**: Generic hook that wraps async operations, returning a tuple of `[value, error, isPending]`. This is the foundation for all API data fetching in the app.
+The app uses **TanStack Query (React Query)** internally for data fetching, caching, and state management:
+- Query client configured in `App.tsx` with 5-minute stale time and 10-minute cache
+- React Query Devtools available in development mode
+- Automatic retry logic and error handling
 
-**`useSchool` and `useSchoolList` (`src/hooks/use-school.ts`)**: Built on top of `usePromise`, these hooks fetch individual school data or the complete list of schools. They construct SQL queries to fetch specific fields from the API and transform the response into the `School` or `SchoolListItem` interfaces.
+**`useSchool` and `useSchoolList` (`src/hooks/use-school.ts`)**: Domain-specific hooks that fetch individual school data or the complete list of schools. They construct SQL queries to fetch specific fields from the API and transform the response into the `School` or `SchoolListItem` interfaces.
+
+**Abstraction Layer**: These hooks use TanStack Query internally but expose a clean `QueryResult<T>` **discriminated union** that provides excellent type safety:
+
+```typescript
+type QueryResult<T> =
+  | { isPending: true; data: undefined; error: null }      // Loading state
+  | { isPending: false; data: T; error: null }             // Success state
+  | { isPending: false; data: undefined; error: Error };   // Error state
+```
+
+This discriminated union enables TypeScript to automatically narrow types based on runtime checks:
+- When `!isPending && !error` → TypeScript knows `data` is `T` (not undefined)
+- When `!isPending && error` → TypeScript knows `data` is undefined
+- When `isPending` → TypeScript knows both data and error are undefined/null
+
+This abstraction keeps TanStack Query as an implementation detail while providing superior type safety compared to traditional optional properties. Components can safely access data without non-null assertions after checking the state.
 
 ### Routing Structure
 
@@ -79,9 +99,9 @@ Routes are defined in `src/App/App.tsx`:
 
 ### State Management
 
-No global state management library is used. State is managed through:
-- React hooks (`useState`, `useEffect`, `useCallback`, `useMemo`)
-- Custom `usePromise` hook for async data
+State is managed through:
+- **TanStack Query** for server state (API data, caching, loading states)
+- React hooks (`useState`, `useEffect`, `useCallback`, `useMemo`) for local UI state
 - `useLocalStorage` hook for persisting theme preference
 - URL parameters for navigation state (school ID)
 

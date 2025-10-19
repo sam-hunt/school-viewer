@@ -1,4 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { ThemeProvider } from '../components/ThemeProvider';
 import { AboutPage } from '../pages/about-page/AboutPage';
@@ -9,22 +11,37 @@ import { Layout } from './Layout';
 import { NotFound } from './NotFound';
 import './App.css';
 
+// Configure TanStack Query client with sensible defaults
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // Data is fresh for 5 minutes
+      gcTime: 10 * 60 * 1000, // Cache persists for 10 minutes (formerly cacheTime)
+      retry: 1, // Retry failed requests once
+      refetchOnWindowFocus: false, // Don't refetch on window focus
+    },
+  },
+});
+
 function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="" element={<Navigate replace to="/schools" />} />
-            <Route path="/schools" element={<SchoolsListPage />} />
-            <Route path="/schools/:schoolId" element={<SchoolPage />} />
-            <Route path="/clusters" element={<ClustersPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="" element={<Navigate replace to="/schools" />} />
+              <Route path="/schools" element={<SchoolsListPage />} />
+              <Route path="/schools/:schoolId" element={<SchoolPage />} />
+              <Route path="/clusters" element={<ClustersPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

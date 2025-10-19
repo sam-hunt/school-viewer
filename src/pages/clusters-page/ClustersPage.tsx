@@ -11,7 +11,7 @@ type SchoolFeature = Feature<Point, { schoolId: string; name: string; total: num
 
 export const ClustersPage: React.FC = () => {
   const [mapGrouping, setMapGrouping] = useState<keyof SchoolListItem>('count');
-  const [schoolsList, schoolsListError, schoolsListPending] = useSchoolList();
+  const { data: schoolsList, error: schoolsListError, isPending: schoolsListPending } = useSchoolList();
   const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ export const ClustersPage: React.FC = () => {
       features: [],
     };
     if (!schoolsListPending && !schoolsListError && schoolsList) {
-      featureCollection.features = schoolsList!
+      featureCollection.features = schoolsList
         .filter(school => school.lat && school.lng)
         .map(
           (school: SchoolListItem): SchoolFeature => ({
