@@ -19,7 +19,7 @@ const mockMap = {
   addControl: vi.fn(),
   queryRenderedFeatures: vi.fn(),
   getSource: vi.fn(() => ({
-    getClusterExpansionZoom: vi.fn((id, callback) => callback(null, 12)),
+    getClusterExpansionZoom: vi.fn((_id, callback) => callback(null, 12)),
   })),
   easeTo: vi.fn(),
   getCanvas: vi.fn(() => ({
