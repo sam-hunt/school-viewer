@@ -6,6 +6,12 @@ export default defineConfig(({ command }) => {
   const config = {
     plugins: [react()],
     base: '/',
+    test: {
+      globals: true,
+      environment: 'happy-dom',
+      setupFiles: './src/test/setup.ts',
+      css: true,
+    },
   }
   // If not serving locally, set the base path to the project name for gh-pages deployment
   if (command !== 'serve') {

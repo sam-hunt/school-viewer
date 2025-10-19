@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { Box, Stack, CircularProgress, Container, TextField, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useSchoolList } from '../../hooks/use-school';
-import { SchoolListItem } from '../../models/school-list-item.interface';
+import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
+import { SchoolListItem } from '../../models/SchoolListItem';
 import { PaginatedSchoolsTable } from './PaginatedSchoolsTable';
 
 export const SchoolsListPage = () => {

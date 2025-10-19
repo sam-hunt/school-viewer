@@ -12,6 +12,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "prepare": "husky",
     "predeploy": "npm run build && cp ./dist/index.html ./dist/404.html",
     "deploy": "gh-pages -d dist"
@@ -33,22 +36,30 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/geojson": "^7946.0.16",
     "@types/mapbox-gl": "^2.7.10",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.0.4",
+    "@vitest/ui": "^3.2.4",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.0.0",
     "eslint-plugin-react-refresh": "^0.4.24",
     "gh-pages": "^6.3.0",
     "globals": "^16.4.0",
+    "happy-dom": "^20.0.5",
     "husky": "^9.1.7",
+    "jsdom": "^27.0.1",
     "lint-staged": "^16.2.4",
+    "msw": "^2.11.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.1",
-    "vite": "^7.1.10"
+    "vite": "^7.1.10",
+    "vitest": "^3.2.4"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": [

@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import { TableHead, Typography } from '@mui/material';
 
 import { TablePaginationActions } from './TablePaginationActions';
-import { SchoolListItem } from '../../models/school-list-item.interface';
+import { SchoolListItem } from '../../models/SchoolListItem';
 
 interface PaginatedSchoolsTableProps {
   schools: SchoolListItem[];

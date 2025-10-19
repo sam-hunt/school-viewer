@@ -1,5 +1,5 @@
 import { Card, Divider, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
-import { School } from '../../../models/school.interface';
+import { School } from '../../../models/School';
 
 interface ContactCardProps {
   school: School;

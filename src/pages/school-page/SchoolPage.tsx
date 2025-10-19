@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { useSchool } from '../../hooks/use-school';
+import { useSchool } from '../../hooks/useSchool/useSchool';
 import { CircularProgress, Container, Grid, Stack, Typography } from '@mui/material';
 import { DetailsCard } from './cards/DetailsCard';
 import { MiscellaneousCard } from './cards/MiscellaneousCard';

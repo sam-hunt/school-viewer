@@ -1,6 +1,6 @@
 import { ThemeProvider as MuiThemeProvider, CssBaseline, createTheme } from '@mui/material';
 import { createContext, useMemo } from 'react';
-import { useLocalStorage } from '../hooks/use-local-storage';
+import { useLocalStorage } from '../hooks/useLocalStorage/useLocalStorage';
 import type { PaletteMode } from '@mui/material';
 import type { ReactNode } from 'react';
 import { grey } from '@mui/material/colors';

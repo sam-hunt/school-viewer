@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { MapboxGLPointMap } from '../../../components/MapboxglPointMap';
-import { useWindowSize } from '../../../hooks/use-window-size';
-import { School } from '../../../models/school.interface';
+import { useWindowSize } from '../../../hooks/useWindowSize/useWindowSize';
+import { School } from '../../../models/School';
 import { useMemo, useState } from 'react';
 
 interface MapCardProps {

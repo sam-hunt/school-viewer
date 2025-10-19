@@ -1,7 +1,7 @@
 import { Feature, FeatureCollection, Point } from 'geojson';
 import { useNavigate } from 'react-router';
-import { useSchoolList } from '../../hooks/use-school';
-import { SchoolListItem } from '../../models/school-list-item.interface';
+import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
+import { SchoolListItem } from '../../models/SchoolListItem';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { useMemo, useState } from 'react';
 import { FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
