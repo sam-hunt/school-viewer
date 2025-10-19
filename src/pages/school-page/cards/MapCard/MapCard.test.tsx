@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MapCard } from './MapCard';
-import { mockSchool } from '../../../test/mockData';
+import { mockSchool } from '../../../../test/mockData';
 
 // Mock the MapboxGLPointMap component
-vi.mock('../../../components/MapboxglPointMap', () => ({
+vi.mock('./MapboxglPointMap', () => ({
   MapboxGLPointMap: ({ lat, lng, zoom, width, height }: any) => (
     <div data-testid="mapbox-point-map" data-lat={lat} data-lng={lng} data-zoom={zoom} data-width={width} data-height={height}>
       Map

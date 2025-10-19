@@ -3,7 +3,7 @@ import { Feature, FeatureCollection, Point } from 'geojson';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 
-interface MapboxGLMapProps<T = any> {
+interface MapboxGLClusteredMapProps<T = any> {
   lng: number;
   lat: number;
   zoom: number;
@@ -14,7 +14,7 @@ interface MapboxGLMapProps<T = any> {
   clusterByProperty: keyof T & string;
 }
 
-export const MapboxGLClusteredMap: React.FC<MapboxGLMapProps> = ({
+export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
   lat,
   lng,
   zoom,

@@ -1,11 +1,11 @@
 import { Card, Divider, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
-import { School } from '../../../models/School';
+import { School } from '../../../../models/School';
 
-interface MiscellaneousCardProps {
+interface MiscCardProps {
   school: School;
 }
 
-export const MiscellaneousCard = ({ school }: MiscellaneousCardProps) => (
+export const MiscCard = ({ school }: MiscCardProps) => (
   <Card sx={{ p: 2 }}>
     <Typography variant="h5" component="h2" mb={2}>
       Miscellaneous

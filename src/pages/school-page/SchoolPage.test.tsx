@@ -3,34 +3,35 @@ import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { SchoolPage } from './SchoolPage';
 import { mockSchool } from '../../test/mockData';
+import { PropsWithChildren } from 'react';
 
 // Mock the useSchool hook
 vi.mock('../../hooks/useSchool/useSchool');
 
 // Mock all the card components
-vi.mock('./cards/DetailsCard', () => ({
+vi.mock('./cards/DetailsCard/DetailsCard', () => ({
   DetailsCard: () => <div data-testid="details-card">DetailsCard</div>,
 }));
 
-vi.mock('./cards/MiscellaneousCard', () => ({
-  MiscellaneousCard: () => <div data-testid="miscellaneous-card">MiscellaneousCard</div>,
+vi.mock('./cards/MiscCard/MiscCard', () => ({
+  MiscCard: () => <div data-testid="miscellaneous-card">MiscellaneousCard</div>,
 }));
 
-vi.mock('./cards/ContactCard', () => ({
+vi.mock('./cards/ContactCard/ContactCard', () => ({
   ContactCard: () => <div data-testid="contact-card">ContactCard</div>,
 }));
 
-vi.mock('./cards/EnrolmentsCard', () => ({
+vi.mock('./cards/EnrolmentsCard/EnrolmentsCard', () => ({
   EnrolmentsCard: () => <div data-testid="enrolments-card">EnrolmentsCard</div>,
 }));
 
-vi.mock('./cards/MapCard', () => ({
+vi.mock('./cards/MapCard/MapCard', () => ({
   MapCard: () => <div data-testid="map-card">MapCard</div>,
 }));
 
 // Helper to create render options with router wrapper
 const createRenderOptions = (schoolId: string = '123') => ({
-  wrapper: ({ children }: { children: React.ReactNode }) => (
+  wrapper: ({ children }: PropsWithChildren) => (
     <MemoryRouter initialEntries={[`/schools/${schoolId}`]}>
       <Routes>
         <Route path="/schools/:schoolId" element={children} />

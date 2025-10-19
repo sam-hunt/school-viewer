@@ -4,9 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { PaginatedSchoolsTable } from './PaginatedSchoolsTable';
 import { mockSchoolListItems } from '../../test/mockData';
+import { PropsWithChildren } from 'react';
 
 const renderOptions = {
-  wrapper: ({ children }: { children: React.ReactNode }) => <MemoryRouter>{children}</MemoryRouter>,
+  wrapper: ({ children }: PropsWithChildren) => <MemoryRouter>{children}</MemoryRouter>,
 };
 
 describe('PaginatedSchoolsTable', () => {

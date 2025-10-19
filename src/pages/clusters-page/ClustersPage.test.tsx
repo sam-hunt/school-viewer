@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router';
 import { ClustersPage } from './ClustersPage';
 import { mockSchoolListItems } from '../../test/mockData';
 import { SchoolListItem } from '../../models/SchoolListItem';
+import { PropsWithChildren } from 'react';
 
 // Mock the useSchoolList hook
 vi.mock('../../hooks/useSchoolList/useSchoolList');
@@ -20,7 +21,7 @@ vi.mock('./MapboxglClusteredMap', () => ({
 
 // Render options with router wrapper
 const renderOptions = {
-  wrapper: ({ children }: { children: React.ReactNode }) => (
+  wrapper: ({ children }: PropsWithChildren) => (
     <MemoryRouter initialEntries={['/clusters']}>{children}</MemoryRouter>
   ),
 };

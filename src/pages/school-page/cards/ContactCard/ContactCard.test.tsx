@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { ContactCard } from './ContactCard';
-import { mockSchool } from '../../../test/mockData';
+import { mockSchool } from '../../../../test/mockData';
 
 describe('ContactCard', () => {
   it('should render the Contact heading', () => {

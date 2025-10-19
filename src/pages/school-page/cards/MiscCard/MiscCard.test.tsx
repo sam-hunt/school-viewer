@@ -1,16 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { MiscellaneousCard } from './MiscellaneousCard';
-import { mockSchool } from '../../../test/mockData';
+import { mockSchool } from '../../../../test/mockData';
+import { MiscCard } from './MiscCard';
 
-describe('MiscellaneousCard', () => {
+describe('MiscCard', () => {
   it('should render the Miscellaneous heading', () => {
-    render(<MiscellaneousCard school={mockSchool} />);
+    render(<MiscCard school={mockSchool} />);
     expect(screen.getByRole('heading', { name: 'Miscellaneous' })).toBeInTheDocument();
   });
 
   it('should render all school miscellaneous data', () => {
-    render(<MiscellaneousCard school={mockSchool} />);
+    render(<MiscCard school={mockSchool} />);
 
     expect(screen.getByText('Full Primary')).toBeInTheDocument(); // definition
     expect(screen.getByText('2024-01-01')).toBeInTheDocument(); // rollDate
@@ -25,7 +25,7 @@ describe('MiscellaneousCard', () => {
   });
 
   it('should render all table headers', () => {
-    render(<MiscellaneousCard school={mockSchool} />);
+    render(<MiscCard school={mockSchool} />);
 
     expect(screen.getByRole('rowheader', { name: 'Definition' })).toBeInTheDocument();
     expect(screen.getByRole('rowheader', { name: 'Roll Date' })).toBeInTheDocument();

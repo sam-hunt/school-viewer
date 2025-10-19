@@ -1,8 +1,8 @@
 import { Box, Card, Stack, Typography } from '@mui/material';
 import { Bar } from '@nivo/bar';
 import { Pie } from '@nivo/pie';
-import { useWindowSize } from '../../../hooks/useWindowSize/useWindowSize';
-import { School } from '../../../models/School';
+import { useWindowSize } from '../../../../hooks/useWindowSize/useWindowSize';
+import { School } from '../../../../models/School';
 import { useMemo, useState } from 'react';
 
 interface EnrolmentsCardProps {

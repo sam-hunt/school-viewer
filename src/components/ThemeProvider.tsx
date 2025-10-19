@@ -2,7 +2,7 @@ import { ThemeProvider as MuiThemeProvider, CssBaseline, createTheme } from '@mu
 import { createContext, useMemo } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage/useLocalStorage';
 import type { PaletteMode } from '@mui/material';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import { grey } from '@mui/material/colors';
 
 export const lavender = {
@@ -35,13 +35,9 @@ export interface ThemeContextType {
   toggleTheme: () => void;
 }
 
-export interface ThemeProviderProps {
-  children: ReactNode;
-}
+export const ThemeContext = createContext<ThemeContextType>({ currentTheme: 'dark', toggleTheme: () => { } });
 
-export const ThemeContext = createContext<ThemeContextType>({ currentTheme: 'dark', toggleTheme: () => {} });
-
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [currentTheme, setCurrentTheme] = useLocalStorage<PaletteMode>('theme', 'dark');
 
   const themeProviderValue = useMemo(

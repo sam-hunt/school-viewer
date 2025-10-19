@@ -1,11 +1,11 @@
 import { useParams, useNavigate } from 'react-router';
 import { useSchool } from '../../hooks/useSchool/useSchool';
 import { Button, CircularProgress, Container, Grid, Stack, Typography } from '@mui/material';
-import { DetailsCard } from './cards/DetailsCard';
-import { MiscellaneousCard } from './cards/MiscellaneousCard';
-import { ContactCard } from './cards/ContactCard';
-import { EnrolmentsCard } from './cards/EnrolmentsCard';
-import { MapCard } from './cards/MapCard';
+import { DetailsCard } from './cards/DetailsCard/DetailsCard';
+import { MiscCard } from './cards/MiscCard/MiscCard';
+import { ContactCard } from './cards/ContactCard/ContactCard';
+import { EnrolmentsCard } from './cards/EnrolmentsCard/EnrolmentsCard';
+import { MapCard } from './cards/MapCard/MapCard';
 
 export const SchoolPage = () => {
   const { schoolId } = useParams() as { schoolId: string };
@@ -46,7 +46,7 @@ export const SchoolPage = () => {
           <Grid size={{ md: 5, sm: 12 }}>
             <Stack direction="column" spacing={4}>
               <DetailsCard school={school} />
-              <MiscellaneousCard school={school} />
+              <MiscCard school={school} />
               <ContactCard school={school} />
             </Stack>
           </Grid>

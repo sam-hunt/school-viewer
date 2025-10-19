@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { DetailsCard } from './DetailsCard';
-import { mockSchool } from '../../../test/mockData';
+import { mockSchool } from '../../../../test/mockData';
 
 describe('DetailsCard', () => {
   it('should render the Details heading', () => {
