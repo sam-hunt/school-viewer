@@ -12,12 +12,14 @@ A visualizer for the New Zealand Government's Schooling Directory API, featuring
 
 ## Tech Stack
 
-- **React 18** with TypeScript
-- **Vite** - Build tool and dev server
-- **Material-UI (MUI) v6** - Component library
-- **Mapbox GL JS** - Interactive mapping
-- **Nivo** - Data visualizations
+- **React 19** with TypeScript
+- **Vite 7** - Build tool and dev server
+- **Material-UI (MUI) v7** - Component library
+- **TanStack Query v5** - Data fetching and caching
+- **Mapbox GL JS v2** - Interactive mapping
+- **Nivo v0.99** - Data visualizations
 - **React Router v7** - Client-side routing
+- **Vitest** - Unit testing framework
 
 ## Getting Started
 
@@ -71,6 +73,14 @@ Open [http://localhost:4173/school-viewer/](http://localhost:4173/school-viewer/
 
 Runs ESLint to check for code quality issues.
 
+### `npm test`
+
+Runs the test suite using Vitest.
+
+### `npm test -- --coverage`
+
+Runs tests with coverage reporting (97%+ coverage).
+
 ### `npm run deploy`
 
 Manually trigger a deployment to github pages, pushing the build to the `gh-pages` branch
@@ -83,11 +93,29 @@ src/
 ├── components/       # Reusable components (Header, Maps, etc.)
 ├── hooks/            # Custom React hooks
 ├── models/           # TypeScript interfaces
-└── pages/            # Page components
-    ├── about-page/
-    ├── clusters-page/
-    ├── school-page/
-    └── schools-list-page/
+├── pages/            # Page components
+│   ├── about-page/
+│   ├── clusters-page/
+│   ├── school-page/
+│   └── schools-list-page/
+└── test/             # Test utilities and setup
+```
+
+## Testing
+
+The project has comprehensive test coverage (97%+) using Vitest and React Testing Library:
+
+- **158 tests** across 21 test files
+- All custom hooks tested (useSchool, useSchoolList, useLocalStorage, useWindowSize)
+- All page components tested (with proper routing context)
+- All display components tested (cards, tables, maps)
+- Integration tests for key user flows
+
+Run tests with:
+```bash
+npm test                    # Run all tests
+npm test -- --coverage      # Run with coverage report
+npm test -- --watch         # Run in watch mode
 ```
 
 ## Features

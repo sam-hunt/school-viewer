@@ -46,9 +46,15 @@ Last Updated: 2025-10-19
 - [x] Migrate useSchoolList hook to use useQuery
 - [x] Configure cache times and stale times appropriately
 - [x] Remove custom usePromise hook
-- [x] Add tests for all custom hooks
-- [x] Add tests for app route resolution
-- [x] Add tests for all display components (hooks mocked)
+- [x] Add comprehensive test suite with Vitest and React Testing Library:
+  - [x] Add tests for all custom hooks (useSchool, useSchoolList, useLocalStorage, useWindowSize)
+  - [x] Add tests for app route resolution (8 tests)
+  - [x] Add tests for all page components (SchoolsListPage, SchoolPage, ClustersPage, AboutPage)
+  - [x] Add tests for all display components (Header, all cards, tables, pagination)
+  - [x] Add tests for map components (MapboxGLPointMap, MapboxGLClusteredMap, MapCard)
+  - [x] Achieve 97%+ code coverage (158 tests across 21 test files)
+  - [x] Fix all act() warnings in async tests using waitFor
+  - [x] Configure coverage exclusions (main.tsx, .d.ts files, test utilities)
 - [ ] Add mui skeletons for individual loading states rather than full page spinner
 
 ### 6. Add Path Aliases
@@ -140,20 +146,21 @@ Last Updated: 2025-10-19
 - [ ] Improve text overflow CSS on school detail page
 - [ ] Update all error messages to be user-friendly
 
-## 🧪 Phase 5: Testing (Future)
+## 🧪 Phase 5: Testing ✅ Complete
 
 ### 16. Testing Infrastructure
-- [ ] Install Vitest and @testing-library/react
-- [ ] Configure Vitest with jsdom environment
-- [ ] Install @testing-library/jest-dom
-- [ ] Install MSW for API mocking
-- [ ] Write tests for utility hooks (useLocalStorage, useWindowSize)
-- [ ] Write tests for data transformation logic
-- [ ] Write tests for SchoolsListPage search functionality
-- [ ] Write integration tests for key user flows
-- [ ] Set up test coverage reporting
-- [ ] Add test command to package.json
-- [ ] Consider E2E testing with Playwright (optional)
+- [x] Install Vitest and @testing-library/react
+- [x] Configure Vitest with happy-dom environment
+- [x] Install @testing-library/jest-dom and @testing-library/user-event
+- [x] Write tests for utility hooks (useLocalStorage, useWindowSize)
+- [x] Write tests for data hooks (useSchool, useSchoolList with fetch functions)
+- [x] Write tests for SchoolsListPage search functionality
+- [x] Write integration tests for key user flows (routing, page composition)
+- [x] Set up test coverage reporting (97%+ coverage achieved)
+- [x] Add test command to package.json
+- [x] Configure coverage exclusions for bootstrap and declaration files
+- [ ] Install MSW for API mocking (deferred - using direct mock functions instead)
+- [ ] Consider E2E testing with Playwright (optional, future enhancement)
 
 ---
 
