@@ -12,7 +12,7 @@ import './App.css';
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="" element={<Navigate replace to="/schools" />} />
