@@ -55,5 +55,13 @@ export const MapboxGLPointMap: React.FC<IMapboxGLMapProps> = ({ lat, lng, zoom, 
     }
   }, [map, lat, lng, zoom, marker, markerPos]);
 
-  return <div className="mapboxgl-container" ref={el => ((mapContainer as any).current = el)} style={{ height, width }} />;
+  return (
+    <div
+      className="mapboxgl-container"
+      ref={el => {
+        (mapContainer as any).current = el;
+      }}
+      style={{ height, width }}
+    />
+  );
 };

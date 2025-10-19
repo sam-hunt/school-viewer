@@ -34,14 +34,14 @@ export const SchoolPage = () => {
       {!schoolPending && !schoolError && (
         <Box>
           <Grid container spacing={4}>
-            <Grid item md={5} sm={12}>
+            <Grid size={{ md: 5, sm: 12 }}>
               <Stack direction="column" spacing={4}>
                 <DetailsCard school={school!} />
                 <MiscellaneousCard school={school!} />
                 <ContactCard school={school!} />
               </Stack>
             </Grid>
-            <Grid item md={7} sm={12}>
+            <Grid size={{ md: 7, sm: 12 }}>
               <Stack direction="column" spacing={4}>
                 <EnrolmentsCard school={school!} />
                 <MapCard school={school!} />

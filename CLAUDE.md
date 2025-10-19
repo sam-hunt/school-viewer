@@ -7,11 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 School Viewer is a React/TypeScript application that visualizes data from the New Zealand Government's Schooling Directory API. The app displays NZ schools on an interactive map with clustering capabilities and provides detailed information about individual schools including enrollment demographics, contact details, and location data.
 
 **Key Technologies:**
-- React 18 with TypeScript
-- Vite (build tool, migrated from Create React App)
-- Material-UI (MUI) v6 for UI components
-- Mapbox GL JS for interactive mapping
-- Nivo for data visualizations (bar charts, pie charts)
+- React 19 with TypeScript
+- Vite 7 (build tool, migrated from Create React App)
+- Material-UI (MUI) v7 for UI components
+- Mapbox GL JS v2 for interactive mapping
+- Nivo v0.99 for data visualizations (bar charts, pie charts)
 - React Router v7 for routing
 
 ## Development Commands
@@ -92,6 +92,13 @@ The app uses MUI's theming system with a custom dark/light theme toggle:
 - Theme preference persisted to localStorage
 - Uses MUI's `createTheme` with custom color schemes
 
+### MUI v7 Migration Notes
+
+The project uses MUI v7, which introduced breaking changes to the Grid component:
+- The `item` prop has been removed
+- Sizing props (`xs`, `sm`, `md`, etc.) are now passed via the `size` prop as an object
+- Example: `<Grid size={{ md: 6, sm: 12 }}>` instead of `<Grid item md={6} sm={12}>`
+
 ## Environment Variables
 
 Required environment variable (create `.env` file based on `.env.example`):
@@ -113,7 +120,7 @@ Required environment variable (create `.env` file based on `.env.example`):
 
 ## Important Notes
 
-- The README.md still references old CRA commands (`npm start`, `npm run eject`) but the project now uses Vite
 - The API sometimes returns null for ethnicity counts; queries use CASE statements to convert nulls to 0
 - Mapbox clustering uses custom properties to aggregate enrollment numbers across clusters
 - All API responses follow the structure: `{ success: boolean, result: { records: Array }, help: string, error?: Object }`
+- React 19 changes: Ref callbacks must return void or a cleanup function (not the element itself)

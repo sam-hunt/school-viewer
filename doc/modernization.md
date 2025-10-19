@@ -10,14 +10,14 @@ Last Updated: 2025-10-19
 - [x] Add deployment status badge to README
 
 ### 2. Update Dependencies
-- [ ] Update React 18.3.1 → 19.2.0
-- [ ] Update React DOM 18.3.1 → 19.2.0
-- [ ] Update MUI v6.1.9 → v7.3.4 (breaking changes expected)
-- [ ] Update Vite 6.0.1 → 7.1.10
-- [ ] Update @nivo packages 0.88.0 → 0.99.0
-- [ ] Update all other dependencies (excluding mapbox-gl) to latest compatible versions
-- [ ] Test application thoroughly after each major update
-- [ ] Update CLAUDE.md with any architecture changes
+- [x] Update React 18.3.1 → 19.2.0
+- [x] Update React DOM 18.3.1 → 19.2.0
+- [x] Update MUI v6.1.9 → v7.3.4 (breaking changes expected)
+- [x] Update Vite 6.0.1 → 7.1.10
+- [x] Update @nivo packages 0.88.0 → 0.99.0
+- [x] Update all other dependencies (excluding mapbox-gl) to latest compatible versions
+- [x] Test application thoroughly after each major update
+- [x] Update CLAUDE.md with any architecture changes
 
 ### 3. Remove CRA References
 - [x] Update README.md to replace `npm start` with `npm run dev`
