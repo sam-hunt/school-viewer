@@ -65,12 +65,12 @@ Last Updated: 2025-10-20
 - [ ] Update ESLint to recognize path aliases
 
 ### 7. Code Splitting & Bundle Optimization
-- [ ] Implement lazy loading for top-level page routes (ClustersPage, SchoolPage, SchoolsListPage, AboutPage)
-- [ ] Add Suspense boundaries with loading fallbacks for lazy-loaded routes
-- [ ] Configure Vite code-splitting via build.rollupOptions.output.manualChunks
-- [ ] Split large dependencies into separate chunks (Mapbox, MUI, Nivo)
-- [ ] Test that lazy loading works correctly in production build
-- [ ] Verify bundle sizes are under 500KB per chunk
+- [x] Implement lazy loading for top-level page routes (ClustersPage, SchoolPage, SchoolsListPage, AboutPage)
+- [x] Add Suspense boundaries with loading fallbacks for lazy-loaded routes
+- [x] Configure Vite code-splitting via build.rollupOptions.output.manualChunks
+- [x] Split large dependencies into separate chunks (Mapbox, MUI, Nivo)
+- [x] Test that lazy loading works correctly in production build
+- [x] Verify bundle sizes are under 500KB per chunk
 
 ### 8. Evaluate Mapbox GL vs React-Map-GL Migration
 - [ ] Update Mapbox GL v2.15.0 → v3.15.0 (major rewrite) or migrate to map-tiler
@@ -100,7 +100,7 @@ Last Updated: 2025-10-20
 - [ ] Install TanStack Virtual if needed
 - [ ] Implement virtual scrolling if beneficial
 - [ ] Add React.memo to expensive map components
-- [ ] Use useDeferredValue for search input
+- [x] Use useDeferredValue for search input
 - [ ] Profile application with React DevTools Profiler
 
 ### 11. Error Boundaries
@@ -131,8 +131,8 @@ Last Updated: 2025-10-20
 - [ ] Add JSDoc documentation for API functions
 
 ### 14. Developer Experience
-- [ ] Add vite-plugin-bundle-analyzer
-- [ ] Analyze bundle size and identify optimizations
+- [x] Add bundle analyzer (rollup-plugin-visualizer with `npm run build:analyze`)
+- [x] Analyze bundle size and identify optimizations
 - [ ] Consider Biome as ESLint+Prettier replacement (research first)
 - [ ] Add pre-push hooks for additional checks
 - [ ] Document development workflow in CLAUDE.md

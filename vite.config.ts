@@ -1,11 +1,31 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => {
   const config = {
-    plugins: [react()],
+    plugins: [
+      react(),
+      // Enable bundle analyzer with ANALYZE=true environment variable
+      // Usage: ANALYZE=true npm run build
+      ...(process.env.ANALYZE === 'true' ? [visualizer({ open: true, gzipSize: true, brotliSize: true })] : []),
+    ],
     base: '/',
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Split vendor code into separate chunks for better caching
+            'vendor-react': ['react', 'react-dom', 'react-router'],
+            'vendor-mui': ['@mui/material', '@mui/icons-material', '@mui/system'],
+            'vendor-nivo': ['@nivo/bar', '@nivo/pie', '@nivo/core'],
+            'vendor-mapbox': ['mapbox-gl'],
+            'vendor-tanstack': ['@tanstack/react-query'],
+          },
+        },
+      },
+    },
     test: {
       globals: true,
       environment: 'happy-dom',

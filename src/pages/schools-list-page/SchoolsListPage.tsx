@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useDeferredValue, useMemo, useState } from 'react';
 import { Box, Button, Stack, CircularProgress, Container, TextField, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -8,6 +8,8 @@ import { PaginatedSchoolsTable } from './PaginatedSchoolsTable';
 
 export const SchoolsListPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
+  // Defer the search term to avoid blocking the input while filtering
+  const deferredSearchTerm = useDeferredValue(searchTerm);
   const { data: schools, error, isPending } = useSchoolList();
 
   const schoolsMap = useMemo(() => schools?.reduce((acc, school) => acc.set(school.schoolId, school), new Map()), [schools]);
@@ -23,7 +25,11 @@ export const SchoolsListPage = () => {
     [schools],
   );
 
-  const optimizedSearchValue = useMemo(() => searchTerm.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, '').toLowerCase(), [searchTerm]);
+  // Use deferred search term for the expensive filtering operation
+  const optimizedSearchValue = useMemo(
+    () => deferredSearchTerm.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, '').toLowerCase(),
+    [deferredSearchTerm],
+  );
 
   // Memoize filtered schools list so we don't have to do it on each key press
   const filteredSchoolsList = useMemo(

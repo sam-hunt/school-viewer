@@ -18,29 +18,29 @@ const renderAtRoute = (route: string) => {
 };
 
 describe('App route resolution', () => {
-  it('should redirect from "/" to "/schools"', () => {
+  it('should redirect from "/" to "/schools"', async () => {
     renderAtRoute('/');
-    expect(screen.getByText('SchoolsListPage')).toBeInTheDocument();
+    expect(await screen.findByText('SchoolsListPage')).toBeInTheDocument();
   });
 
-  it('should render SchoolsListPage at "/schools"', () => {
+  it('should render SchoolsListPage at "/schools"', async () => {
     renderAtRoute('/schools');
-    expect(screen.getByText('SchoolsListPage')).toBeInTheDocument();
+    expect(await screen.findByText('SchoolsListPage')).toBeInTheDocument();
   });
 
-  it('should render SchoolPage at "/schools/:schoolId"', () => {
+  it('should render SchoolPage at "/schools/:schoolId"', async () => {
     renderAtRoute('/schools/123');
-    expect(screen.getByText('SchoolPage')).toBeInTheDocument();
+    expect(await screen.findByText('SchoolPage')).toBeInTheDocument();
   });
 
-  it('should render ClustersPage at "/clusters"', () => {
+  it('should render ClustersPage at "/clusters"', async () => {
     renderAtRoute('/clusters');
-    expect(screen.getByText('ClustersPage')).toBeInTheDocument();
+    expect(await screen.findByText('ClustersPage')).toBeInTheDocument();
   });
 
-  it('should render AboutPage at "/about"', () => {
+  it('should render AboutPage at "/about"', async () => {
     renderAtRoute('/about');
-    expect(screen.getByText('AboutPage')).toBeInTheDocument();
+    expect(await screen.findByText('AboutPage')).toBeInTheDocument();
   });
 
   it('should render NotFound for unknown routes', () => {
@@ -49,13 +49,17 @@ describe('App route resolution', () => {
     expect(screen.getByRole('link', { name: 'Get me home' })).toBeInTheDocument();
   });
 
-  it('should render Layout with Header for all routes', () => {
+  it('should render Layout with Header for all routes', async () => {
     renderAtRoute('/schools');
     expect(screen.getByText('Header')).toBeInTheDocument();
+    // Wait for the lazy-loaded page to render
+    await screen.findByText('SchoolsListPage');
   });
 
-  it('should render footer with copyright', () => {
+  it('should render footer with copyright', async () => {
     renderAtRoute('/schools');
     expect(screen.getByText(`Sam Hunt ${new Date().getFullYear()}`)).toBeInTheDocument();
+    // Wait for the lazy-loaded page to render
+    await screen.findByText('SchoolsListPage');
   });
 });
