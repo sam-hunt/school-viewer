@@ -1,5 +1,5 @@
 ---
-description: Draft a commit message based on staged changes and commit history style
+description: Draft a commit message based on staged changes and past messages and copy it to clipboard
 ---
 
 Based on the style of my regular commit messages, draft a commit message for my currently staged changes.
