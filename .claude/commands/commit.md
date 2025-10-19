@@ -20,3 +20,9 @@ IMPORTANT:
 - Present the message in a code block so I can easily copy it
 - Explain any notable patterns you noticed in my commit style
 - Ensure it can be pasted on the command line with no special characters or double quotes
+- Automatically copy the message to clipboard:
+  - Try to copy using: echo "MESSAGE" | clip.exe (for WSL)
+  - If that fails, try: echo "MESSAGE" | xclip -selection clipboard (for Linux)
+  - If both fail, inform user that clipboard is not available
+  - Use the exact message text from the code block (without the code fence markers)
+- Confirm success or report any issues
