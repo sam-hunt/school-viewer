@@ -67,9 +67,10 @@ describe('SchoolPage', () => {
 
     render(<SchoolPage />, createRenderOptions());
 
-    expect(screen.getByRole('heading', { name: 'Error loading school' })).toBeInTheDocument();
-    // Error is displayed as JSON.stringify(error) which is "{}" for Error objects
-    // Just verify that we're not showing loading or the cards
+    expect(screen.getByRole('heading', { name: 'Unable to Load School' })).toBeInTheDocument();
+    expect(screen.getByText(/We're having trouble loading this school's information/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Browse All Schools' })).toBeInTheDocument();
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     expect(screen.queryByTestId('details-card')).not.toBeInTheDocument();
   });

@@ -130,12 +130,6 @@ npm test -- --watch         # Run in watch mode
 
 Data is fetched from the [New Zealand Government's Schooling Directory API](https://catalogue.data.govt.nz/dataset/directory-of-educational-institutions).
 
-## TODO
-
-- Add a down caret icon in the dataset picker on the cluster map page so that it's clear it's a dropdown
-- Replace the search icon on the find a school page text input with a similar pseudo-element implementation
-- Improve text overflow CSS on school detail page
-
 ## Contributing
 
 This is a personal project, but suggestions and bug reports are welcome! Please open an issue to discuss any changes.

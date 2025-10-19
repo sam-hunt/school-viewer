@@ -45,7 +45,9 @@ describe('SchoolsListPage', () => {
 
     render(<SchoolsListPage />);
 
-    expect(screen.getByText('Error: Failed to fetch schools')).toBeInTheDocument();
+    expect(screen.getByText('Unable to Load Schools')).toBeInTheDocument();
+    expect(screen.getByText(/We're having trouble connecting to the schools database/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 

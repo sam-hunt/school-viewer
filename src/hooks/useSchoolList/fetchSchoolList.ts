@@ -32,12 +32,12 @@ export const fetchSchoolList = async (): Promise<SchoolListItem[]> => {
 
   const apiResult: ApiResult = await fetch(url.toString())
     .then(response => response.json())
-    .catch(error => {
-      throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(error)}`);
+    .catch(() => {
+      throw new Error('Unable to connect to the schools database. Please check your internet connection and try again.');
     });
 
   if (!apiResult.success) {
-    throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(apiResult.error)}. For more help, visit: ${apiResult.help}`);
+    throw new Error('The schools database is currently unavailable. Please try again later.');
   }
   // Cast to SchoolListItem[] since the query returns different fields than School
   return apiResult.result.records as unknown as SchoolListItem[];

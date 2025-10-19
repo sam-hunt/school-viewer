@@ -4,8 +4,9 @@ import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
 import { SchoolListItem } from '../../models/SchoolListItem';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { useMemo, useState } from 'react';
-import { FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
+import { Button, FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 type SchoolFeature = Feature<Point, { schoolId: string; name: string; total: number }>;
 
@@ -51,6 +52,7 @@ export const ClustersPage: React.FC = () => {
             value={mapGrouping}
             label="Cluster Metric"
             onChange={event => setMapGrouping(event.target.value as keyof SchoolListItem)}
+            IconComponent={ExpandMoreIcon}
             sx={{ width: 250 }}
             size="small"
           >
@@ -92,9 +94,17 @@ export const ClustersPage: React.FC = () => {
       )}
 
       {error && (
-        <Typography color="error" fontWeight="bold">
-          {JSON.stringify(error)}
-        </Typography>
+        <Stack spacing={2} alignItems="flex-start">
+          <Typography variant="h6" color="error">
+            Unable to Load Map
+          </Typography>
+          <Typography color="text.secondary">
+            We're having trouble loading the schools data for the map. Please check your internet connection and try again.
+          </Typography>
+          <Button variant="contained" onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </Stack>
       )}
     </Container >
   );

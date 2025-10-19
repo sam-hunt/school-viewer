@@ -51,8 +51,9 @@ describe('ClustersPage', () => {
 
     render(<ClustersPage />, renderOptions);
 
-    // Error is displayed as JSON.stringify(error) which is "{}" for Error objects
-    // Just verify that we're not showing loading or the map
+    expect(screen.getByText('Unable to Load Map')).toBeInTheDocument();
+    expect(screen.getByText(/We're having trouble loading the schools data for the map/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     expect(screen.queryByTestId('mapbox-map')).not.toBeInTheDocument();
 

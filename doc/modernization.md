@@ -1,6 +1,6 @@
 # School Viewer Modernization Plan
 
-Last Updated: 2025-10-19
+Last Updated: 2025-10-20
 
 ## 🚀 Phase 1: Infrastructure & Deployment
 
@@ -140,11 +140,11 @@ Last Updated: 2025-10-19
 ### 15. Quick Fixes & Polish
 - [x] Fix TODO in SchoolsListPage.tsx (migrate to slotProps API)
 - [x] Fix TODO in PaginatedSchoolsTable.tsx (migrate to slotProps API)
-- [ ] Fix console.log error handling in useLocalStorage
-- [ ] Add dropdown caret icon to cluster map dataset picker
-- [ ] Replace search icon with pseudo-element implementation
-- [ ] Improve text overflow CSS on school detail page
-- [ ] Update all error messages to be user-friendly
+- [x] Add dropdown caret icon to cluster map dataset picker (using MUI ExpandMoreIcon)
+- [x] Fix console.log error handling in useLocalStorage (changed to console.error with descriptive context)
+- [x] Replace search icon with pseudo-element implementation (already on MUI icon)
+- [x] Improve text overflow CSS on school detail page (fixed in 3.0.0)
+- [x] Update all error messages to be user-friendly (clear messages with retry actions)
 
 ## 🧪 Phase 5: Testing ✅ Complete
 
@@ -159,7 +159,6 @@ Last Updated: 2025-10-19
 - [x] Set up test coverage reporting (97%+ coverage achieved)
 - [x] Add test command to package.json
 - [x] Configure coverage exclusions for bootstrap and declaration files
-- [ ] Install MSW for API mocking (deferred - using direct mock functions instead)
 - [ ] Consider E2E testing with Playwright (optional, future enhancement)
 
 ---

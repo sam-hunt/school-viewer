@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Stack, CircularProgress, Container, TextField, Typography } from '@mui/material';
+import { Box, Button, Stack, CircularProgress, Container, TextField, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
@@ -52,9 +52,17 @@ export const SchoolsListPage = () => {
         />
       </Stack>
       {error && (
-        <Typography variant="h3" color="error">
-          {error.toString()}
-        </Typography>
+        <Stack spacing={2} alignItems="flex-start" mb={3}>
+          <Typography variant="h6" color="error">
+            Unable to Load Schools
+          </Typography>
+          <Typography color="text.secondary">
+            We're having trouble connecting to the schools database. Please check your internet connection and try again.
+          </Typography>
+          <Button variant="contained" onClick={() => window.location.reload()}>
+            Try Again
+          </Button>
+        </Stack>
       )}
       {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
       {isPending && (

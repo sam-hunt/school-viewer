@@ -61,12 +61,12 @@ export const fetchSchool = async (schoolId: string): Promise<School | null> => {
 
   const apiResult: ApiResult = await fetch(url.toString())
     .then(r => r.json())
-    .catch(e => {
-      throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(e)}`);
+    .catch(() => {
+      throw new Error('Unable to connect to the schools database. Please check your internet connection and try again.');
     });
 
   if (!apiResult.success) {
-    throw new Error(`Failed to fetch school from api. Error: ${JSON.stringify(apiResult!.error)}. For more help, visit: ${apiResult.help}`);
+    throw new Error('The schools database is currently unavailable. Please try again later.');
   }
   return apiResult!.result!.records[0];
 };

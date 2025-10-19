@@ -1,6 +1,6 @@
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { useSchool } from '../../hooks/useSchool/useSchool';
-import { CircularProgress, Container, Grid, Stack, Typography } from '@mui/material';
+import { Button, CircularProgress, Container, Grid, Stack, Typography } from '@mui/material';
 import { DetailsCard } from './cards/DetailsCard';
 import { MiscellaneousCard } from './cards/MiscellaneousCard';
 import { ContactCard } from './cards/ContactCard';
@@ -9,8 +9,9 @@ import { MapCard } from './cards/MapCard';
 
 export const SchoolPage = () => {
   const { schoolId } = useParams() as { schoolId: string };
+  const navigate = useNavigate();
   const { data: school, error, isPending } = useSchool(schoolId);
-  const title = isPending ? 'Loading School...' : error ? 'Error loading school' : school?.orgName;
+  const title = isPending ? 'Loading School...' : error ? 'Unable to Load School' : school?.orgName;
 
   return (
     <Container component="section" maxWidth="xl">
@@ -25,9 +26,19 @@ export const SchoolPage = () => {
       )}
 
       {error && (
-        <Typography color="error" fontWeight="bold">
-          {JSON.stringify(error)}
-        </Typography>
+        <Stack spacing={2} alignItems="flex-start">
+          <Typography color="text.secondary">
+            We're having trouble loading this school's information. This could be due to a network issue or the school may not exist in our database.
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+            <Button variant="outlined" onClick={() => navigate('/schools')}>
+              Browse All Schools
+            </Button>
+          </Stack>
+        </Stack>
       )}
 
       {school && (

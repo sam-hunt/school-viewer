@@ -14,7 +14,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log(error);
+      console.error(`Failed to read localStorage key "${key}":`, error);
       return initialValue;
     }
   });
@@ -31,9 +31,8 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
-      // A more advanced implementation would handle the error case
       // eslint-disable-next-line no-console
-      console.log(error);
+      console.error(`Failed to write localStorage key "${key}":`, error);
     }
   };
   return [storedValue, setValue] as const;

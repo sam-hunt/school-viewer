@@ -7,20 +7,20 @@ import { MockStorage } from '../../test/mockStorage';
 describe('useLocalStorage', () => {
   let mockStorage: Storage;
   let originalLocalStorage: Storage;
-  let originalConsoleLog: typeof console.log;
+  let originalConsoleError: typeof console.error;
   const testKey = 'test-key';
 
   beforeEach(() => {
     originalLocalStorage = window.localStorage;
     mockStorage = new MockStorage();
     Object.defineProperty(window, 'localStorage', { value: mockStorage, writable: true });
-    originalConsoleLog = console.log;
-    console.log = () => { };
+    originalConsoleError = console.error;
+    console.error = () => { };
   });
 
   afterEach(() => {
     Object.defineProperty(window, 'localStorage', { value: originalLocalStorage, writable: true });
-    console.log = originalConsoleLog;
+    console.error = originalConsoleError;
   });
 
   it('should return initial value when localStorage is empty', () => {
@@ -84,7 +84,7 @@ describe('useLocalStorage', () => {
     expect(mockStorage.getItem(testKey)).toBe(JSON.stringify([4, 5, 6]));
   });
 
-  it('should return initial value and log error if getItem throws', () => {
+  it('should return initial value and console.error if getItem throws', () => {
     mockStorage.getItem = () => { throw new Error('localStorage error'); };
     const { result } = renderHook(() => useLocalStorage('test-key', 'fallback-value'));
     const getValue = () => result.current[0];
@@ -92,7 +92,7 @@ describe('useLocalStorage', () => {
     expect(getValue()).toBe('fallback-value');
   });
 
-  it('should update state and log error if setItem throws', () => {
+  it('should update state and console.error if setItem throws', () => {
     mockStorage.setItem = () => { throw new Error('localStorage is full'); };
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
     const getValue = () => result.current[0];
@@ -103,7 +103,7 @@ describe('useLocalStorage', () => {
     expect(getValue()).toBe('new-value');
   });
 
-  it('should return initial value and log error if stored value is invalid JSON', () => {
+  it('should return initial value and console.error if stored value is invalid JSON', () => {
     mockStorage.setItem('test-key', 'invalid-json{');
     const { result } = renderHook(() => useLocalStorage('test-key', 'fallback'));
     const getValue = () => result.current[0];
