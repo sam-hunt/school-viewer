@@ -5,7 +5,7 @@ import { useLocalStorage } from './useLocalStorage';
 import { MockStorage } from '../../test/mockStorage';
 
 describe('useLocalStorage', () => {
-  let mockStorage: Storage;
+  let mockStorage: MockStorage;
   let originalLocalStorage: Storage;
   let originalConsoleError: typeof console.error;
   const testKey = 'test-key';
@@ -15,7 +15,7 @@ describe('useLocalStorage', () => {
     mockStorage = new MockStorage();
     Object.defineProperty(window, 'localStorage', { value: mockStorage, writable: true });
     originalConsoleError = console.error;
-    console.error = () => { };
+    console.error = () => void 0;
   });
 
   afterEach(() => {
@@ -24,7 +24,7 @@ describe('useLocalStorage', () => {
   });
 
   it('should return initial value when localStorage is empty', () => {
-    const { result } = renderHook(() => useLocalStorage(testKey, 'initial-value'));
+    const { result } = renderHook(() => useLocalStorage<string>(testKey, 'initial-value'));
     const getValue = () => result.current[0];
     expect(getValue()).toBe('initial-value');
     expect(mockStorage.data.has(testKey)).toBe(false);
@@ -32,17 +32,17 @@ describe('useLocalStorage', () => {
 
   it('should return stored value when localStorage has data', () => {
     mockStorage.setItem(testKey, JSON.stringify('stored-value'));
-    const { result } = renderHook(() => useLocalStorage('test-key', 'initial-value'));
+    const { result } = renderHook(() => useLocalStorage<string>('test-key', 'initial-value'));
     const getValue = () => result.current[0];
     expect(getValue()).toBe('stored-value');
   });
 
   it('should persist value to localStorage when setValue is called', () => {
-    const { result } = renderHook(() => useLocalStorage(testKey, 'initial-value'));
+    const { result } = renderHook(() => useLocalStorage<string>(testKey, 'initial-value'));
     const getValue = () => result.current[0];
     const setValue = (value: string) => result.current[1](value);
 
-    act(() => void setValue('new-value'));
+    act(() => setValue('new-value'));
 
     expect(getValue()).toBe('new-value');
     expect(mockStorage.getItem(testKey)).toBe(JSON.stringify('new-value'));
@@ -50,7 +50,7 @@ describe('useLocalStorage', () => {
 
   it('should persist correct value for functional updates', () => {
     mockStorage.setItem(testKey, JSON.stringify(10));
-    const { result } = renderHook(() => useLocalStorage('test-key', 10));
+    const { result } = renderHook(() => useLocalStorage<number>('test-key', 10));
     const getValue = () => result.current[0];
     const setValue = (value: number | ((prev: number) => number)) => result.current[1](value);
 
@@ -61,7 +61,7 @@ describe('useLocalStorage', () => {
   });
 
   it('should serialize complex objects correctly', () => {
-    type ComplexObject = { name: string; nested: { value: number } };
+    interface ComplexObject { name: string; nested: { value: number } }
     const complexObject: ComplexObject = { name: 'Test', nested: { value: 42 } };
     const { result } = renderHook(() => useLocalStorage(testKey, complexObject));
     const getValue = () => result.current[0];
@@ -86,7 +86,7 @@ describe('useLocalStorage', () => {
 
   it('should return initial value and console.error if getItem throws', () => {
     mockStorage.getItem = () => { throw new Error('localStorage error'); };
-    const { result } = renderHook(() => useLocalStorage('test-key', 'fallback-value'));
+    const { result } = renderHook(() => useLocalStorage<string>('test-key', 'fallback-value'));
     const getValue = () => result.current[0];
 
     expect(getValue()).toBe('fallback-value');
@@ -94,7 +94,7 @@ describe('useLocalStorage', () => {
 
   it('should update state and console.error if setItem throws', () => {
     mockStorage.setItem = () => { throw new Error('localStorage is full'); };
-    const { result } = renderHook(() => useLocalStorage('test-key', 'initial'));
+    const { result } = renderHook(() => useLocalStorage<string>('test-key', 'initial'));
     const getValue = () => result.current[0];
     const setValue = (value: string) => result.current[1](value);
 
@@ -105,7 +105,7 @@ describe('useLocalStorage', () => {
 
   it('should return initial value and console.error if stored value is invalid JSON', () => {
     mockStorage.setItem('test-key', 'invalid-json{');
-    const { result } = renderHook(() => useLocalStorage('test-key', 'fallback'));
+    const { result } = renderHook(() => useLocalStorage<string>('test-key', 'fallback'));
     const getValue = () => result.current[0];
 
     expect(getValue()).toBe('fallback');
@@ -113,7 +113,7 @@ describe('useLocalStorage', () => {
 
   it('should work with boolean values', () => {
     mockStorage.setItem('bool-key', JSON.stringify(false));
-    const { result } = renderHook(() => useLocalStorage('bool-key', false));
+    const { result } = renderHook(() => useLocalStorage<boolean>('bool-key', false));
     const getValue = () => result.current[0];
     const setValue = (value: boolean) => result.current[1](value);
 
@@ -125,7 +125,7 @@ describe('useLocalStorage', () => {
 
   it('should work with number values', () => {
     mockStorage.setItem('num-key', JSON.stringify(42));
-    const { result } = renderHook(() => useLocalStorage('num-key', 42));
+    const { result } = renderHook(() => useLocalStorage<number>('num-key', 42));
     const getValue = () => result.current[0];
     const setValue = (value: number) => result.current[1](value);
 
@@ -137,7 +137,7 @@ describe('useLocalStorage', () => {
 
   it('should work with string values', () => {
     mockStorage.setItem('str-key', JSON.stringify('hello'));
-    const { result } = renderHook(() => useLocalStorage('str-key', 'hello'));
+    const { result } = renderHook(() => useLocalStorage<string>('str-key', 'hello'));
     const getValue = () => result.current[0];
     const setValue = (value: string) => result.current[1](value);
 
@@ -148,7 +148,7 @@ describe('useLocalStorage', () => {
   });
 
   it('should not write to localStorage on mount', () => {
-    renderHook(() => useLocalStorage('new-key', 'initial-value'));
+    renderHook(() => useLocalStorage<string>('new-key', 'initial-value'));
 
     expect(mockStorage.data.has('new-key')).toBe(false);
   });
@@ -157,8 +157,8 @@ describe('useLocalStorage', () => {
     mockStorage.setItem('key-1', JSON.stringify('value-1'));
     mockStorage.setItem('key-2', JSON.stringify('value-2'));
 
-    const { result: result1 } = renderHook(() => useLocalStorage('key-1', 'default'));
-    const { result: result2 } = renderHook(() => useLocalStorage('key-2', 'default'));
+    const { result: result1 } = renderHook(() => useLocalStorage<string>('key-1', 'default'));
+    const { result: result2 } = renderHook(() => useLocalStorage<string>('key-2', 'default'));
     const getValue1 = () => result1.current[0];
     const getValue2 = () => result2.current[0];
 
@@ -167,8 +167,8 @@ describe('useLocalStorage', () => {
   });
 
   it('should write to the correct storage key when setValue is called', () => {
-    const { result: result1 } = renderHook(() => useLocalStorage('key-1', 'initial'));
-    const { result: result2 } = renderHook(() => useLocalStorage('key-2', 'initial'));
+    const { result: result1 } = renderHook(() => useLocalStorage<string>('key-1', 'initial'));
+    const { result: result2 } = renderHook(() => useLocalStorage<string>('key-2', 'initial'));
     const setValue1 = (value: string) => result1.current[1](value);
     const setValue2 = (value: string) => result2.current[1](value);
 

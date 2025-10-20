@@ -5,7 +5,9 @@ import { mockSchool } from '../../../../test/mockData';
 
 // Mock the MapboxGLPointMap component
 vi.mock('./MapboxglPointMap', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   MapboxGLPointMap: ({ lat, lng, zoom, width, height }: any) => (
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     <div data-testid="mapbox-point-map" data-lat={lat} data-lng={lng} data-zoom={zoom} data-width={width} data-height={height}>
       Map
     </div>

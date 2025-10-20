@@ -1,8 +1,10 @@
 import type { SchoolListItem } from '../../models/SchoolListItem';
 import type { ApiResult } from '../../models/SchoolsApiResponse';
 
-const apiQueryUrl = import.meta.env.VITE_API_QUERY_URL;
-const schoolsDirectoryResourceId = import.meta.env.VITE_SCHOOLS_DIRECTORY_RESOURCE_ID;
+const apiQueryUrl = import.meta.env.VITE_API_QUERY_URL as string;
+const schoolsDirectoryResourceId = import.meta.env.VITE_SCHOOLS_DIRECTORY_RESOURCE_ID as string;
+const fetchErrorMessage = 'Unable to connect to the schools database. Please check your internet connection and try again.';
+const apiUnavailableErrorMessage = 'The schools database is currently unavailable. Please try again later.';
 
 export const fetchSchoolList = async (): Promise<SchoolListItem[]> => {
   const url = new URL(apiQueryUrl);
@@ -31,13 +33,11 @@ export const fetchSchoolList = async (): Promise<SchoolListItem[]> => {
   url.search = new URLSearchParams({ sql }).toString();
 
   const apiResult: ApiResult = await fetch(url.toString())
-    .then(response => response.json())
-    .catch(() => {
-      throw new Error('Unable to connect to the schools database. Please check your internet connection and try again.');
-    });
+    .then(response => response.json() as Promise<ApiResult>)
+    .catch(() => Promise.reject(new Error(fetchErrorMessage)));
 
   if (!apiResult.success) {
-    throw new Error('The schools database is currently unavailable. Please try again later.');
+    throw new Error(apiUnavailableErrorMessage);
   }
   // Cast to SchoolListItem[] since the query returns different fields than School
   return apiResult.result.records as unknown as SchoolListItem[];

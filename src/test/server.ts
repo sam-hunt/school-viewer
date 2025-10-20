@@ -104,7 +104,7 @@ export const handlers = [
 
     // Check if it's a single school query (contains WHERE clause with School_Id)
     if (sql.includes('WHERE') && sql.includes('School_Id')) {
-      const schoolIdMatch = sql.match(/"School_Id"\s*=\s*'(\d+)'/);
+      const schoolIdMatch = /"School_Id"\s*=\s*'(\d+)'/.exec(sql);
       const schoolId = schoolIdMatch ? schoolIdMatch[1] : null;
 
       if (schoolId === '999') {

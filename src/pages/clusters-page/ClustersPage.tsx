@@ -7,27 +7,32 @@ import { useMemo, useState } from 'react';
 import { Button, FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useFocusOnNavigation } from '../../hooks/useFocusOnNavigation/useFocusOnNavigation';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle/useDocumentTitle';
 
 type SchoolFeature = Feature<Point, { schoolId: string; name: string; total: number }>;
 
 export const ClustersPage: React.FC = () => {
+  const headingRef = useFocusOnNavigation();
   const [mapGrouping, setMapGrouping] = useState<keyof SchoolListItem>('count');
   const { data: schoolsList, error, isPending } = useSchoolList();
   const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
   const navigate = useNavigate();
 
-  const onFeatureClick = (feature: SchoolFeature) => navigate(`/schools/${feature.properties.schoolId}`);
+  useDocumentTitle('School Clusters Map - Schools Viewer');
+
+  const onFeatureClick = (feature: SchoolFeature) => void navigate(`/schools/${feature.properties.schoolId}`);
 
   const featureCollection: FeatureCollection = useMemo(() => ({
     type: 'FeatureCollection',
-    features: (schoolsList || [])
+    features: (schoolsList ?? [])
       .filter(school => school.lat && school.lng)
       .map(
         (school: SchoolListItem): SchoolFeature => ({
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [+school.lng, +school.lat],
+            coordinates: [school.lng, school.lat],
           },
           properties: school,
         }),
@@ -35,13 +40,13 @@ export const ClustersPage: React.FC = () => {
   }), [schoolsList]);
 
   // TODO: Better way to do this, or maybe react-map-gl can handle this?
-  const mapHeight = `calc(${mapContainerEl?.clientHeight || '85vh'} - 50px)`;
-  const mapWidth = mapContainerEl?.clientWidth ? mapContainerEl?.clientWidth : '95vw';
+  const mapHeight = `calc(${mapContainerEl?.clientHeight ? `${mapContainerEl.clientHeight.toString()}px` : '85vh'} - 50px)`;
+  const mapWidth = mapContainerEl?.clientWidth ? `${mapContainerEl.clientWidth.toString()}px` : '95vw';
 
   return (
     <Container id="home-section" component="section" maxWidth="xl">
       <Stack direction="row" alignItems="center" my={3} gap={2}>
-        <Typography variant="h4" component="h1" flexGrow="1">
+        <Typography variant="h4" component="h1" flexGrow="1" ref={headingRef} tabIndex={-1} sx={{ outline: 'none' }}>
           NZ Schools Directory
         </Typography>
         <FormControl>
@@ -73,7 +78,7 @@ export const ClustersPage: React.FC = () => {
       </Stack>
 
       {schoolsList && (
-        <Box ref={(el: any) => setMapContainerEl(el)}>
+        <Box ref={(el: HTMLDivElement) => setMapContainerEl(el)}>
           <MapboxGLClusteredMap
             width={mapWidth}
             height={mapHeight}
@@ -88,13 +93,21 @@ export const ClustersPage: React.FC = () => {
       )}
 
       {isPending && (
-        <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
+        <Stack
+          height="50vh"
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading data"
+        >
           <CircularProgress />
         </Stack>
       )}
 
       {error && (
-        <Stack spacing={2} alignItems="flex-start">
+        <Stack spacing={2} alignItems="flex-start" role="alert">
           <Typography variant="h6" color="error">
             Unable to Load Map
           </Typography>

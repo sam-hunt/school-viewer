@@ -19,6 +19,7 @@ const mockMap = {
   addControl: vi.fn(),
   queryRenderedFeatures: vi.fn(),
   getSource: vi.fn(() => ({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
     getClusterExpansionZoom: vi.fn((_id, callback) => callback(null, 12)),
   })),
   easeTo: vi.fn(),
@@ -307,6 +308,7 @@ describe('MapboxGLClusteredMap', () => {
 
     await waitFor(() => {
       const onCalls = mockMap.on.mock.calls;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       const clickCalls = onCalls.filter((call: any) => call[0] === 'click');
       expect(clickCalls.length).toBeGreaterThan(0);
     });
@@ -327,10 +329,12 @@ describe('MapboxGLClusteredMap', () => {
 
     await waitFor(() => {
       const onCalls = mockMap.on.mock.calls;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
       expect(onCalls.some((call: any) => call[0] === 'mouseenter')).toBe(true);
     });
 
     const onCalls = mockMap.on.mock.calls;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
     expect(onCalls.some((call: any) => call[0] === 'mouseleave')).toBe(true);
   });
 
@@ -353,6 +357,7 @@ describe('MapboxGLClusteredMap', () => {
     await waitFor(() => {
       const onCalls = mockMap.on.mock.calls;
       const unclusteredClickHandler = onCalls.find(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
         (call: any) => call[0] === 'click' && call[1] === 'unclustered-point'
       );
       expect(unclusteredClickHandler).toBeDefined();

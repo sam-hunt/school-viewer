@@ -12,20 +12,20 @@ export const ContactCard = ({ school }: ContactCardProps) => (
     </Typography>
     <Divider sx={{ mt: 1 }} />
     <TableContainer>
-      <Table aria-label="simple table">
+      <Table aria-label="School contact information">
         <TableBody>
           <TableRow>
             <TableCell size="small" component="th" scope="row">
               Name
             </TableCell>
-            <TableCell size="small">{school?.contact1Name}</TableCell>
+            <TableCell size="small">{school.contact1Name}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell size="small" component="th" scope="row">
               Phone
             </TableCell>
             <TableCell size="small">
-              <a href={'tel:' + school?.telephone.replace(/[.,\s\-_()]/g, '')}>{school?.telephone}</a>
+              <a href={'tel:' + school.telephone.replace(/[.,\s\-_()]/g, '')}>{school.telephone}</a>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -33,7 +33,7 @@ export const ContactCard = ({ school }: ContactCardProps) => (
               Email
             </TableCell>
             <TableCell size="small">
-              <a href={'mailto:' + school?.email}>{school?.email}</a>
+              <a href={'mailto:' + school.email}>{school.email}</a>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -41,7 +41,9 @@ export const ContactCard = ({ school }: ContactCardProps) => (
               Web
             </TableCell>
             <TableCell size="small">
-              <a href={school?.url}>{school?.url}</a>
+              <a href={school.url} target="_blank" rel="noopener noreferrer">
+                {school.url}
+              </a>
             </TableCell>
           </TableRow>
         </TableBody>

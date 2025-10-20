@@ -8,6 +8,11 @@ import { PropsWithChildren } from 'react';
 // Mock the useSchool hook
 vi.mock('../../hooks/useSchool/useSchool');
 
+// Mock the useFocusOnNavigation hook
+vi.mock('../../hooks/useFocusOnNavigation/useFocusOnNavigation', () => ({
+  useFocusOnNavigation: vi.fn(() => ({ current: null })),
+}));
+
 // Mock all the card components
 vi.mock('./cards/DetailsCard/DetailsCard', () => ({
   DetailsCard: () => <div data-testid="details-card">DetailsCard</div>,
@@ -30,7 +35,7 @@ vi.mock('./cards/MapCard/MapCard', () => ({
 }));
 
 // Helper to create render options with router wrapper
-const createRenderOptions = (schoolId: string = '123') => ({
+const createRenderOptions = (schoolId = '123') => ({
   wrapper: ({ children }: PropsWithChildren) => (
     <MemoryRouter initialEntries={[`/schools/${schoolId}`]}>
       <Routes>
@@ -162,5 +167,46 @@ describe('SchoolPage', () => {
     expect(screen.queryByTestId('contact-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('enrolments-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('map-card')).not.toBeInTheDocument();
+  });
+
+  it('should use the focus navigation hook', async () => {
+    const { useFocusOnNavigation } = await import('../../hooks/useFocusOnNavigation/useFocusOnNavigation');
+    const { useSchool } = await import('../../hooks/useSchool/useSchool');
+    vi.mocked(useSchool).mockReturnValue({
+      data: mockSchool,
+      error: null,
+      isPending: false,
+    });
+
+    render(<SchoolPage />, createRenderOptions());
+
+    expect(useFocusOnNavigation).toHaveBeenCalled();
+  });
+
+  it('should attach ref to the main heading with proper accessibility attributes', async () => {
+    const { useSchool } = await import('../../hooks/useSchool/useSchool');
+    vi.mocked(useSchool).mockReturnValue({
+      data: mockSchool,
+      error: null,
+      isPending: false,
+    });
+
+    render(<SchoolPage />, createRenderOptions());
+
+    const heading = screen.getByRole('heading', { name: mockSchool.orgName });
+    expect(heading).toHaveAttribute('tabIndex', '-1');
+  });
+
+  it('should set dynamic page title with school name for accessibility', async () => {
+    const { useSchool } = await import('../../hooks/useSchool/useSchool');
+    vi.mocked(useSchool).mockReturnValue({
+      data: mockSchool,
+      error: null,
+      isPending: false,
+    });
+
+    render(<SchoolPage />, createRenderOptions());
+
+    expect(document.title).toBe(`${mockSchool.orgName} - Schools Viewer`);
   });
 });

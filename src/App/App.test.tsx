@@ -45,8 +45,8 @@ describe('App route resolution', () => {
 
   it('should render NotFound for unknown routes', () => {
     renderAtRoute('/unknown-route');
-    expect(screen.getByText('Page not found')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Get me home' })).toBeInTheDocument();
+    expect(screen.getByText('Page Not Found')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Return to home page' })).toBeInTheDocument();
   });
 
   it('should render Layout with Header for all routes', async () => {
@@ -58,7 +58,7 @@ describe('App route resolution', () => {
 
   it('should render footer with copyright', async () => {
     renderAtRoute('/schools');
-    expect(screen.getByText(`Sam Hunt ${new Date().getFullYear()}`)).toBeInTheDocument();
+    expect(screen.getByText(`Sam Hunt ${new Date().getFullYear().toString()}`)).toBeInTheDocument();
     // Wait for the lazy-loaded page to render
     await screen.findByText('SchoolsListPage');
   });

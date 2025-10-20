@@ -12,22 +12,22 @@ export const DetailsCard = ({ school }: DetailsCardProps) => (
     </Typography>
     <Divider sx={{ mt: 1 }} />
     <TableContainer>
-      <Table aria-label="simple table" sx={{ border: 0 }}>
+      <Table aria-label="School details and classification" sx={{ border: 0 }}>
         <TableBody>
           <TableRow>
             <TableCell size="small" component="th" scope="row">
               Organisation Type
             </TableCell>
-            <TableCell size="small">{school?.orgType}</TableCell>
+            <TableCell size="small">{school.orgType}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell size="small" component="th" scope="row">
               Address 1
             </TableCell>
             <TableCell size="small">
-              <Typography>{school?.add1Line1}</Typography>
-              {!!school?.add1Suburb && <Typography>{school?.add1Suburb}</Typography>}
-              <Typography>{school?.add1City}</Typography>
+              <Typography>{school.add1Line1}</Typography>
+              {!!school.add1Suburb && <Typography>{school.add1Suburb}</Typography>}
+              <Typography>{school.add1City}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -36,18 +36,18 @@ export const DetailsCard = ({ school }: DetailsCardProps) => (
             </TableCell>
             <TableCell size="small">
               <Typography>
-                {school?.add2Line1}
+                {school.add2Line1}
                 <br />
               </Typography>
               <Typography>
-                {school?.add2Suburb}
-                {school?.add2Suburb && <br />}
+                {school.add2Suburb}
+                {school.add2Suburb && <br />}
               </Typography>
               <Typography>
-                {school?.add2City}
+                {school.add2City}
                 <br />
               </Typography>
-              <Typography>{school?.add2PostalCode}</Typography>
+              <Typography>{school.add2PostalCode}</Typography>
             </TableCell>
           </TableRow>
           <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -55,7 +55,7 @@ export const DetailsCard = ({ school }: DetailsCardProps) => (
               Geolocation
             </TableCell>
             <TableCell size="small">
-              {school?.latitude}, {school?.longitude}
+              {school.latitude}, {school.longitude}
             </TableCell>
           </TableRow>
         </TableBody>

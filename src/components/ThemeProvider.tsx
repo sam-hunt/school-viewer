@@ -1,24 +1,25 @@
 import { ThemeProvider as MuiThemeProvider, CssBaseline, createTheme } from '@mui/material';
-import { createContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage/useLocalStorage';
 import type { PaletteMode } from '@mui/material';
 import type { PropsWithChildren } from 'react';
 import { grey } from '@mui/material/colors';
+import { ThemeContext } from './ThemeContext';
 
-export const lavender = {
+const lavender = {
   main: '#CB9EFF',
   light: '#FFCFFF',
   dark: '#996FCB',
   contrastText: '#FFFFFF',
 };
-export const royal = {
+const royal = {
   main: '#7005FC',
   light: '#AB4CFF',
   dark: '#2600C7',
   contrastText: '#FFFFFF',
 };
 
-export const themeFromMode = (mode: PaletteMode) =>
+const themeFromMode = (mode: PaletteMode) =>
   createTheme({
     palette: {
       mode,
@@ -29,13 +30,6 @@ export const themeFromMode = (mode: PaletteMode) =>
       },
     },
   });
-
-export interface ThemeContextType {
-  currentTheme: string;
-  toggleTheme: () => void;
-}
-
-export const ThemeContext = createContext<ThemeContextType>({ currentTheme: 'dark', toggleTheme: () => { } });
 
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
   const [currentTheme, setCurrentTheme] = useLocalStorage<PaletteMode>('theme', 'dark');

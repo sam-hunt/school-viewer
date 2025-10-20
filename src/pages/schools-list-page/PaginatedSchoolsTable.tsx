@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -24,9 +24,13 @@ const noWrapCss = {
 export const PaginatedSchoolsTable = ({ schools }: PaginatedSchoolsTableProps) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
+  const [prevSchools, setPrevSchools] = useState(schools);
 
   // Reset to first page when filtering changes
-  useEffect(() => setPage(0), [schools]);
+  if (schools !== prevSchools) {
+    setPrevSchools(schools);
+    setPage(0);
+  }
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - schools.length) : 0;
@@ -41,7 +45,7 @@ export const PaginatedSchoolsTable = ({ schools }: PaginatedSchoolsTableProps) =
   };
 
   return (
-    <Table sx={{ minWidth: 300, p: 0 }} aria-label="custom pagination table">
+    <Table sx={{ minWidth: 300, p: 0 }} aria-label="Searchable list of New Zealand schools">
       <TableHead>
         <TableRow>
           <TableCell align="left">Name</TableCell>
@@ -66,7 +70,9 @@ export const PaginatedSchoolsTable = ({ schools }: PaginatedSchoolsTableProps) =
             </TableCell>
             <TableCell sx={{ width: 100 }} align="right">
               <Typography sx={noWrapCss}>
-                <a href={school.url}>{school.url}</a>
+                <a href={school.url} target="_blank" rel="noopener noreferrer">
+                  {school.url}
+                </a>
               </Typography>
             </TableCell>
           </TableRow>

@@ -25,7 +25,7 @@ describe('fetchSchoolList', () => {
     await fetchSchoolList();
 
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining(import.meta.env.VITE_API_QUERY_URL)
+      expect.stringContaining(import.meta.env.VITE_API_QUERY_URL as string)
     );
   });
 });

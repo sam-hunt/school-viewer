@@ -94,25 +94,43 @@ describe('MapboxGLPointMap', () => {
     expect(mapboxgl.default.accessToken).toBeTruthy();
   });
 
-  it('should disable map interactions', async () => {
+  it('should disable all map interactions for static display', async () => {
     render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
 
     await waitFor(() => {
       expect(mockMap.dragPan.disable).toHaveBeenCalled();
     });
 
+    // All interactions should be disabled - this is a static informational map
     expect(mockMap.keyboard.disable).toHaveBeenCalled();
     expect(mockMap.scrollZoom.disable).toHaveBeenCalled();
     expect(mockMap.touchZoomRotate.disable).toHaveBeenCalled();
     expect(mockMap.doubleClickZoom.disable).toHaveBeenCalled();
   });
 
-  it('should add navigation control', async () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+  it('should render with accessible role and aria-label', () => {
+    const { container } = render(
+      <MapboxGLPointMap
+        lat={-41.2865}
+        lng={174.7762}
+        zoom={10}
+        width={500}
+        height={400}
+        ariaLabel="Map showing school location"
+      />,
+    );
 
-    await waitFor(() => {
-      expect(mockMap.addControl).toHaveBeenCalled();
-    });
+    const mapContainer = container.querySelector('.mapboxgl-container');
+    expect(mapContainer).toHaveAttribute('role', 'img');
+    expect(mapContainer).toHaveAttribute('aria-label', 'Map showing school location');
+  });
+
+  it('should render with default aria-label when not provided', () => {
+    const { container } = render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+
+    const mapContainer = container.querySelector('.mapboxgl-container');
+    expect(mapContainer).toHaveAttribute('role', 'img');
+    expect(mapContainer).toHaveAttribute('aria-label', 'Map showing location at coordinates -41.2865, 174.7762');
   });
 
   it('should add marker at correct position', async () => {

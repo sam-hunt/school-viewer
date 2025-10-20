@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useQuery } from '@tanstack/react-query';
+import { QueryFunction, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useSchool } from './useSchool';
 import { clearAllMocks } from '../../test/clearAllMocks';
 import type { School } from '../../models/School';
@@ -54,13 +54,13 @@ describe('useSchool', () => {
       data: undefined,
       error: null,
       isPending: true,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     renderHook(() => useSchool('123'));
 
     expect(mockUseQuery).toHaveBeenCalledWith({
       queryKey: ['school', '123'],
-      queryFn: expect.any(Function),
+      queryFn: expect.any(Function) as QueryFunction<School | null>,
       enabled: true,
     });
   });
@@ -70,13 +70,13 @@ describe('useSchool', () => {
       data: undefined,
       error: null,
       isPending: true,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     renderHook(() => useSchool(''));
 
     expect(mockUseQuery).toHaveBeenCalledWith({
       queryKey: ['school', ''],
-      queryFn: expect.any(Function),
+      queryFn: expect.any(Function) as QueryFunction<School | null>,
       enabled: false,
     });
   });
@@ -86,7 +86,7 @@ describe('useSchool', () => {
       data: undefined,
       error: null,
       isPending: true,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     const { result } = renderHook(() => useSchool('123'));
 
@@ -102,7 +102,7 @@ describe('useSchool', () => {
       data: mockSchoolData,
       error: null,
       isPending: false,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     const { result } = renderHook(() => useSchool('123'));
 
@@ -118,7 +118,7 @@ describe('useSchool', () => {
       data: null,
       error: null,
       isPending: false,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     const { result } = renderHook(() => useSchool(''));
 
@@ -135,7 +135,7 @@ describe('useSchool', () => {
       data: undefined,
       error: mockError,
       isPending: false,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     const { result } = renderHook(() => useSchool('123'));
 
@@ -151,7 +151,7 @@ describe('useSchool', () => {
       data: undefined,
       error: null,
       isPending: true,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     const { rerender } = renderHook(({ id }) => useSchool(id), {
       initialProps: { id: '123' },
@@ -159,7 +159,7 @@ describe('useSchool', () => {
 
     expect(mockUseQuery).toHaveBeenCalledWith({
       queryKey: ['school', '123'],
-      queryFn: expect.any(Function),
+      queryFn: expect.any(Function) as QueryFunction<School | null>,
       enabled: true,
     });
 
@@ -168,7 +168,7 @@ describe('useSchool', () => {
 
     expect(mockUseQuery).toHaveBeenCalledWith({
       queryKey: ['school', '456'],
-      queryFn: expect.any(Function),
+      queryFn: expect.any(Function) as QueryFunction<School | null>,
       enabled: true,
     });
   });
@@ -178,7 +178,7 @@ describe('useSchool', () => {
       data: mockSchoolData,
       error: null,
       isPending: false,
-    } as any);
+    } as UseQueryResult<School | null>);
 
     const { result } = renderHook(() => useSchool('123'));
 

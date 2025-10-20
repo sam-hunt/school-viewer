@@ -10,6 +10,11 @@ import { PropsWithChildren } from 'react';
 // Mock the useSchoolList hook
 vi.mock('../../hooks/useSchoolList/useSchoolList');
 
+// Mock the useFocusOnNavigation hook
+vi.mock('../../hooks/useFocusOnNavigation/useFocusOnNavigation', () => ({
+  useFocusOnNavigation: vi.fn(() => ({ current: null })),
+}));
+
 // Mock the MapboxGLClusteredMap component - keep it simple since we test it separately
 vi.mock('./MapboxglClusteredMap', () => ({
   MapboxGLClusteredMap: ({ clusterByProperty }: { clusterByProperty: string }) => (
@@ -215,5 +220,46 @@ describe('ClustersPage', () => {
     expect(screen.getByTestId('mapbox-map')).toBeInTheDocument();
 
     // TODO: Test that the school without coordinates is not rendered
+  });
+
+  it('should use the focus navigation hook', async () => {
+    const { useFocusOnNavigation } = await import('../../hooks/useFocusOnNavigation/useFocusOnNavigation');
+    const { useSchoolList } = await import('../../hooks/useSchoolList/useSchoolList');
+    vi.mocked(useSchoolList).mockReturnValue({
+      data: mockSchoolListItems,
+      error: null,
+      isPending: false,
+    });
+
+    render(<ClustersPage />, renderOptions);
+
+    expect(useFocusOnNavigation).toHaveBeenCalled();
+  });
+
+  it('should attach ref to the main heading with proper accessibility attributes', async () => {
+    const { useSchoolList } = await import('../../hooks/useSchoolList/useSchoolList');
+    vi.mocked(useSchoolList).mockReturnValue({
+      data: mockSchoolListItems,
+      error: null,
+      isPending: false,
+    });
+
+    render(<ClustersPage />, renderOptions);
+
+    const heading = screen.getByRole('heading', { name: 'NZ Schools Directory' });
+    expect(heading).toHaveAttribute('tabIndex', '-1');
+  });
+
+  it('should set dynamic page title for accessibility', async () => {
+    const { useSchoolList } = await import('../../hooks/useSchoolList/useSchoolList');
+    vi.mocked(useSchoolList).mockReturnValue({
+      data: mockSchoolListItems,
+      error: null,
+      isPending: false,
+    });
+
+    render(<ClustersPage />, renderOptions);
+
+    expect(document.title).toBe('School Clusters Map - Schools Viewer');
   });
 });

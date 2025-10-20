@@ -67,8 +67,8 @@ describe('PaginatedSchoolsTable', () => {
     // Create 15 schools to trigger pagination
     const manySchools = Array.from({ length: 15 }, (_, i) => ({
       ...mockSchoolListItems[0],
-      schoolId: `${i + 1}`,
-      name: `School ${i + 1}`,
+      schoolId: (i + 1).toString(),
+      name: `School ${(i + 1).toString()}`,
     }));
 
     render(<PaginatedSchoolsTable schools={manySchools} />, renderOptions);
@@ -87,8 +87,8 @@ describe('PaginatedSchoolsTable', () => {
     // Create 15 schools to trigger pagination
     const manySchools = Array.from({ length: 15 }, (_, i) => ({
       ...mockSchoolListItems[0],
-      schoolId: `${i + 1}`,
-      name: `School ${i + 1}`,
+      schoolId: (i + 1).toString(),
+      name: `School ${(i + 1).toString()}`,
     }));
 
     render(<PaginatedSchoolsTable schools={manySchools} />, renderOptions);
@@ -110,8 +110,8 @@ describe('PaginatedSchoolsTable', () => {
     // Create 30 schools
     const manySchools = Array.from({ length: 30 }, (_, i) => ({
       ...mockSchoolListItems[0],
-      schoolId: `${i + 1}`,
-      name: `School ${i + 1}`,
+      schoolId: (i + 1).toString(),
+      name: `School ${(i + 1).toString()}`,
     }));
 
     render(<PaginatedSchoolsTable schools={manySchools} />, renderOptions);
@@ -155,8 +155,8 @@ describe('PaginatedSchoolsTable', () => {
     // Create 13 schools (1 on second page)
     const schools = Array.from({ length: 13 }, (_, i) => ({
       ...mockSchoolListItems[0],
-      schoolId: `${i + 1}`,
-      name: `School ${i + 1}`,
+      schoolId: (i + 1).toString(),
+      name: `School ${(i + 1).toString()}`,
     }));
 
     const { container } = render(<PaginatedSchoolsTable schools={schools} />, renderOptions);
@@ -169,7 +169,7 @@ describe('PaginatedSchoolsTable', () => {
   it('should render table with accessible labels', () => {
     render(<PaginatedSchoolsTable schools={mockSchoolListItems} />, renderOptions);
 
-    const table = screen.getByRole('table', { name: 'custom pagination table' });
+    const table = screen.getByRole('table', { name: 'Searchable list of New Zealand schools' });
     expect(table).toBeInTheDocument();
   });
 });

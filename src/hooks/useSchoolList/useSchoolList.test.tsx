@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useQuery } from '@tanstack/react-query';
+import { QueryFunction, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useSchoolList } from './useSchoolList';
 import { clearAllMocks } from '../../test/clearAllMocks';
 import type { SchoolListItem } from '../../models/SchoolListItem';
@@ -54,13 +54,13 @@ describe('useSchoolList', () => {
       data: undefined,
       error: null,
       isPending: true,
-    } as any);
+    } as UseQueryResult<SchoolListItem[]>);
 
     renderHook(() => useSchoolList());
 
     expect(mockUseQuery).toHaveBeenCalledWith({
       queryKey: ['schools'],
-      queryFn: expect.any(Function),
+      queryFn: expect.any(Function) as QueryFunction<SchoolListItem[]>,
     });
   });
 
@@ -69,7 +69,7 @@ describe('useSchoolList', () => {
       data: undefined,
       error: null,
       isPending: true,
-    } as any);
+    } as UseQueryResult<SchoolListItem[]>);
 
     const { result } = renderHook(() => useSchoolList());
 
@@ -85,7 +85,7 @@ describe('useSchoolList', () => {
       data: mockSchoolListData,
       error: null,
       isPending: false,
-    } as any);
+    } as UseQueryResult<SchoolListItem[]>);
 
     const { result } = renderHook(() => useSchoolList());
 
@@ -102,7 +102,7 @@ describe('useSchoolList', () => {
       data: undefined,
       error: mockError,
       isPending: false,
-    } as any);
+    } as UseQueryResult<SchoolListItem[]>);
 
     const { result } = renderHook(() => useSchoolList());
 
@@ -118,13 +118,13 @@ describe('useSchoolList', () => {
       data: mockSchoolListData,
       error: null,
       isPending: false,
-    } as any);
+    } as UseQueryResult<SchoolListItem[]>);
 
     const { result } = renderHook(() => useSchoolList());
 
     expect(result.current.data).toHaveLength(2);
 
-    const firstSchool = result.current.data![0];
+    const firstSchool = result.current.data?.[0];
     expect(firstSchool).toHaveProperty('schoolId');
     expect(firstSchool).toHaveProperty('name');
     expect(firstSchool).toHaveProperty('city');
@@ -140,7 +140,7 @@ describe('useSchoolList', () => {
       data: mockSchoolListData,
       error: null,
       isPending: false,
-    } as any);
+    } as UseQueryResult<SchoolListItem[]>);
 
     const { result } = renderHook(() => useSchoolList());
 

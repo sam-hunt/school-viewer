@@ -3,6 +3,9 @@ import { Feature, FeatureCollection, Point } from 'geojson';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 
+// NOTE: Mapbox GL JS has incomplete TypeScript definitions. These suppressions are temporary
+// and will be removed when we migrate to react-map-gl (which has better type support).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface MapboxGLClusteredMapProps<T = any> {
   lng: number;
   lat: number;
@@ -30,14 +33,17 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
   useEffect(() => {
     if (!mapContainerEl) return;
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY as string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const initializeMap = ({ setMap, mapContainerEl }: any) => {
       const map = new mapboxgl.Map({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         container: mapContainerEl,
         style: 'mapbox://styles/mapbox/dark-v10', // stylesheet location
         center: [lng, lat],
         zoom,
       });
       map.on('load', () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         setMap(map);
         map.resize();
         initLayers(map);
@@ -48,6 +54,7 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
     };
 
     const initLayers = (map: mapboxgl.Map) => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (map && features !== null) {
         map.addSource('points', {
           type: 'geojson',
@@ -57,8 +64,9 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
           clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
           clusterProperties: { [clusterByProperty]: ['+', ['get', clusterByProperty]] },
         });
-        const total = features?.features.map((f: any) => f.properties[clusterByProperty as string]).reduce((acc, val) => acc + val, 0);
-        const c = Math.log(total) - 7;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/restrict-plus-operands
+        const total = features.features.map((f: any) => f.properties[clusterByProperty]).reduce((acc, val) => acc + val, 0);
+        const c = Math.log(total as number) - 7;
         const clusterCircleSizeSteps = [10, 20 * c, 15, 50 * c, 25, 125 * c, 30, 250 * c, 35, 500 * c, 40, 750 * c, 45, 1500 * c, 50];
         // const clusterCircleSizeSteps = [10, 20, 15, 50, 25, 125, 30, 250, 35, 500, 40, 750, 45, 1500, 50];
         map.addLayer({
@@ -84,7 +92,7 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
           source: 'points',
           filter: ['has', 'point_count'],
           layout: {
-            'text-field': `{${clusterByProperty?.toString()}}`,
+            'text-field': `{${clusterByProperty}}`,
             'text-font': ['Arial Unicode MS Bold'],
             'text-size': 14,
           },
@@ -107,7 +115,7 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
           source: 'points',
           filter: ['!', ['has', 'point_count']],
           layout: {
-            'text-field': `{${clusterByProperty?.toString()}}`,
+            'text-field': `{${clusterByProperty}}`,
             'text-font': ['Arial Unicode MS Bold'],
             'text-size': 14,
           },
@@ -117,11 +125,14 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
           const features = map.queryRenderedFeatures(e.point, {
             layers: ['clusters'],
           });
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
           const clusterId = (features[0] as any).properties.cluster_id;
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
           (map.getSource('points') as any).getClusterExpansionZoom(clusterId, function (err: any, zoom: number) {
             if (err) return;
 
             map.easeTo({
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
               center: (features[0].geometry as any).coordinates,
               zoom: zoom,
             });
@@ -146,6 +157,7 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
         // });
         if (onFeatureClick) {
           map.on('click', 'unclustered-point', e => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
             onFeatureClick((e as any).features[0]);
           });
         }
@@ -177,5 +189,13 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
     }
   }, [map, lat, lng, zoom, features, onFeatureClick, clusterByProperty, mapContainerEl]);
 
-  return <div className="mapboxgl-container" ref={el => setMapContainerEl(el!)} style={{ height, width }} />;
+  return (
+    <div
+      className="mapboxgl-container"
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ref={el => setMapContainerEl(el!)}
+      style={{ height, width }}
+    />
+  );
+
 };

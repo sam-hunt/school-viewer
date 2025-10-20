@@ -5,14 +5,25 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
 import { SchoolListItem } from '../../models/SchoolListItem';
 import { PaginatedSchoolsTable } from './PaginatedSchoolsTable';
+import { useFocusOnNavigation } from '../../hooks/useFocusOnNavigation/useFocusOnNavigation';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle/useDocumentTitle';
 
 export const SchoolsListPage = () => {
+  const headingRef = useFocusOnNavigation();
   const [searchTerm, setSearchTerm] = useState<string>('');
   // Defer the search term to avoid blocking the input while filtering
   const deferredSearchTerm = useDeferredValue(searchTerm);
   const { data: schools, error, isPending } = useSchoolList();
 
-  const schoolsMap = useMemo(() => schools?.reduce((acc, school) => acc.set(school.schoolId, school), new Map()), [schools]);
+  useDocumentTitle('Find a School - Schools Viewer');
+
+  const schoolsMap = useMemo(
+    () => schools?.reduce(
+      (acc, school) => acc.set(school.schoolId, school),
+      new Map<SchoolListItem['schoolId'], SchoolListItem>()
+    ),
+    [schools]
+  );
 
   // Memoize optimized search strings so we don't have to do it on each key press
   const optimizedSchoolsList = useMemo(
@@ -44,7 +55,7 @@ export const SchoolsListPage = () => {
   return (
     <Container id="schools-list-section" component="section" maxWidth="xl">
       <Stack direction="row" my={3} alignItems="center">
-        <Typography variant="h4" component="h1">
+        <Typography variant="h4" component="h1" ref={headingRef} tabIndex={-1} sx={{ outline: 'none' }}>
           Find a school
         </Typography>
         <Box flexGrow={1} />
@@ -52,13 +63,13 @@ export const SchoolsListPage = () => {
           value={searchTerm}
           onChange={event => setSearchTerm(event.target.value.toLowerCase())}
           sx={{ minWidth: 300 }}
-          placeholder="Search"
+          label="Search schools"
           slotProps={{ input: { startAdornment: <SearchIcon sx={{ mr: 1 }} /> } }}
           size="small"
         />
       </Stack>
       {error && (
-        <Stack spacing={2} alignItems="flex-start" mb={3}>
+        <Stack spacing={2} alignItems="flex-start" mb={3} role="alert">
           <Typography variant="h6" color="error">
             Unable to Load Schools
           </Typography>
@@ -72,7 +83,15 @@ export const SchoolsListPage = () => {
       )}
       {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
       {isPending && (
-        <Stack height="50vh" direction="column" alignItems="center" justifyContent="center">
+        <Stack
+          height="50vh"
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading data"
+        >
           <CircularProgress />
         </Stack>
       )}
