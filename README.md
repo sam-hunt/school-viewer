@@ -20,6 +20,7 @@ A visualizer for the New Zealand Government's Schooling Directory API, featuring
 - **Nivo v0.99** - Data visualizations
 - **React Router v7** - Client-side routing
 - **Vitest** - Unit testing framework
+- **ESLint** with jsx-a11y plugin - Accessibility linting
 
 ## Getting Started
 
@@ -89,24 +90,29 @@ Manually trigger a deployment to github pages, pushing the build to the `gh-page
 
 ```
 src/
-├── App/              # Root app component and routing
-├── components/       # Reusable components (Header, Maps, etc.)
-├── hooks/            # Custom React hooks
-├── models/           # TypeScript interfaces
-├── pages/            # Page components
+├── App/                    # Root app component and routing
+├── components/             # Reusable components (Header, ThemeProvider, etc.)
+├── hooks/                  # Custom React hooks
+│   ├── useDocumentTitle/   # Document title management
+│   ├── useFocusOnNavigation/ # Accessibility focus management
+│   ├── useLocalStorage/    # Persistent local storage
+│   ├── useSchool/          # Individual school data fetching
+│   └── useSchoolList/      # School list data fetching
+├── models/                 # TypeScript interfaces
+├── pages/                  # Page components
 │   ├── about-page/
 │   ├── clusters-page/
 │   ├── school-page/
 │   └── schools-list-page/
-└── test/             # Test utilities and setup
+└── test/                   # Test utilities and setup
 ```
 
 ## Testing
 
 The project has comprehensive test coverage (97%+) using Vitest and React Testing Library:
 
-- **158 tests** across 21 test files
-- All custom hooks tested (useSchool, useSchoolList, useLocalStorage, useWindowSize)
+- **219 tests** across 25 test files
+- All custom hooks tested (useSchool, useSchoolList, useLocalStorage, useDocumentTitle, useFocusOnNavigation)
 - All page components tested (with proper routing context)
 - All display components tested (cards, tables, maps)
 - Integration tests for key user flows
@@ -125,6 +131,8 @@ npm test -- --watch         # Run in watch mode
 - 📊 **Demographics** - View enrollment breakdowns by ethnicity
 - 📍 **Location** - School addresses and coordinates
 - 📱 **Responsive** - Works on mobile, tablet, and desktop
+- ♿ **Accessible** - WCAG compliant with semantic HTML, ARIA labels, and keyboard navigation
+- 🌓 **Dark Mode** - Toggle between light and dark themes
 
 ## Data Source
 
