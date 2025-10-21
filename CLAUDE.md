@@ -99,9 +99,8 @@ Routes are defined in `src/App/App.tsx`:
 **SchoolPage** (`src/pages/school-page/`):
 
 - Detailed view split into multiple card components (in `cards/` subdirectory):
-  - `ContactCard.tsx`: Contact information
-  - `DetailsCard.tsx`: School type, authority, education region
-  - `EnrolmentsCard.tsx`: Enrolment demographics with Nivo visualizations
+  - `DetailsCard.tsx`: School type, authority, education region, contact information
+  - `EnrolmentsCard.tsx`: Enrolment demographics with Nivo visualizations and toggle between chart/table view
   - `MapCard.tsx`: Single school location using react-map-gl with MapLibre GL
   - `MiscellaneousCard.tsx`: Additional school metadata
 
@@ -152,8 +151,9 @@ Required environment variable (create `.env` file based on `.env.example`):
 
 ## Important Notes
 
-- The API sometimes returns null for ethnicity counts; queries use CASE statements to convert nulls to 0
+- The API sometimes returns null for ethnicity counts; null handling is done in the fetchSchool layer
 - Map clustering (via MapLibre GL) uses custom properties to aggregate enrolment numbers across clusters
 - All API responses follow the structure: `{ success: boolean, result: { records: Array }, help: string, error?: Object }`
 - React 19 changes: Ref callbacks must return void or a cleanup function (not the element itself)
-- Maps use MapTiler's dark style (`streets-v2-dark`) for consistent dark theme appearance
+- Maps use theme-aware MapTiler styles: `streets-v2-dark` for dark mode and `streets-v2-light` for light mode
+- MUI Skeleton components are used for loading states across all pages for better UX

@@ -25,7 +25,7 @@ export const SchoolPage = () => {
 
       {isPending && (
         <Grid container spacing={4} role="status" aria-live="polite" aria-label="Loading school data">
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Stack direction="column" spacing={4}>
               <Card sx={{ p: 2 }}>
                 <Skeleton variant="text" width="40%" height={40} sx={{ mb: 2 }} />
@@ -36,7 +36,7 @@ export const SchoolPage = () => {
               </Card>
             </Stack>
           </Grid>
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Stack direction="column" spacing={4}>
               <Card sx={{ p: 2 }}>
                 <Skeleton variant="text" width="50%" height={40} sx={{ mb: 2 }} />
@@ -70,13 +70,13 @@ export const SchoolPage = () => {
 
       {school && (
         <Grid container spacing={4}>
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Stack direction="column" spacing={4}>
               <DetailsCard school={school} />
               <MapCard school={school} />
             </Stack>
           </Grid>
-          <Grid size={{ md: 6, sm: 12 }}>
+          <Grid size={{ md: 6, xs: 12 }}>
             <Stack direction="column" spacing={4} sx={{ height: '100%' }}>
               <EnrolmentsCard school={school} />
               <MiscCard school={school} />

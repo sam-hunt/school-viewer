@@ -6,9 +6,9 @@ A visualizer for the New Zealand Government's Schooling Directory API, featuring
 
 **Live Demo:** [https://sam-hunt.github.io/school-viewer/](https://sam-hunt.github.io/school-viewer/)
 
-![Map View](screenshot1.png?raw=true 'Map View')
-![School Search](screenshot2.png?raw=true 'School Search')
-![School View](screenshot3.png?raw=true 'School View')
+![Map View](doc/v3/screenshot1.png?raw=true 'Map View')
+![School Search](doc/v3/screenshot2.png?raw=true 'School Search')
+![School View](doc/v3/screenshot3.png?raw=true 'School View')
 
 ## Tech Stack
 
@@ -16,7 +16,7 @@ A visualizer for the New Zealand Government's Schooling Directory API, featuring
 - **Vite 7** - Build tool and dev server
 - **Material-UI (MUI) v7** - Component library
 - **TanStack Query v5** - Data fetching and caching
-- **Mapbox GL JS v2** - Interactive mapping
+- **react-map-gl with MapLibre GL** - Interactive mapping with MapTiler
 - **Nivo v0.99** - Data visualizations
 - **React Router v7** - Client-side routing
 - **Vitest** - Unit testing framework
@@ -42,10 +42,10 @@ Create a `.env` file based on `.env.example`:
 cp .env.example .env
 ```
 
-Then add your Mapbox API key:
+Then add your MapTiler API key:
 
 ```
-VITE_MAPBOX_KEY=your_mapbox_key_here
+VITE_MAPTILER_KEY=your_maptiler_key_here
 ```
 
 ## Available Scripts
@@ -111,11 +111,12 @@ src/
 
 The project has comprehensive test coverage (97%+) using Vitest and React Testing Library:
 
-- **219 tests** across 25 test files
-- All custom hooks tested (useSchool, useSchoolList, useLocalStorage, useDocumentTitle, useFocusOnNavigation)
+- **223 tests** across 25 test files
+- All custom hooks tested (useSchool, useSchoolList, useLocalStorage, useDocumentTitle, useFocusOnNavigation, useWindowSize)
 - All page components tested (with proper routing context)
 - All display components tested (cards, tables, maps)
 - Integration tests for key user flows
+- Skeleton loading states and accessibility features tested
 
 Run tests with:
 
@@ -127,13 +128,13 @@ npm test -- --watch         # Run in watch mode
 
 ## Features
 
-- 🗺️ **Interactive Map** - Clustered view of all NZ schools with Mapbox GL
+- 🗺️ **Interactive Map** - Clustered view of all NZ schools with react-map-gl and MapLibre GL
 - 🔍 **Search** - Find schools by name
 - 📊 **Demographics** - View enrolment breakdowns by ethnicity
 - 📍 **Location** - School addresses and coordinates
 - 📱 **Responsive** - Works on mobile, tablet, and desktop
-- ♿ **Accessible** - WCAG compliant with semantic HTML, ARIA labels, and keyboard navigation
-- 🌓 **Dark Mode** - Toggle between light and dark themes
+- ♿ **Accessible** - WCAG compliant with semantic HTML, ARIA labels, keyboard navigation, and skeleton loading states
+- 🌓 **Dark Mode** - Toggle between light and dark themes with theme-aware map tiles
 
 ## Data Source
 

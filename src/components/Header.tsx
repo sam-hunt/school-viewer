@@ -2,6 +2,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import SearchIcon from '@mui/icons-material/Search';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { AppBar, Toolbar, Typography, IconButton, Tooltip, useTheme, Box, Stack } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -31,7 +32,7 @@ export const Header = () => {
     <AppBar position="static">
       <Toolbar>
         <SchoolIcon sx={{ mr: 1.5, width: 32, height: 32 }} aria-hidden="true" />
-        <Typography variant="h5" component="div" pr={3}>
+        <Typography variant="h5" component="div" pr={3} fontSize={{ xs: '1rem', sm: '1.25rem', md: '1.5rem' }}>
           School Viewer
         </Typography>
 
@@ -56,8 +57,8 @@ export const Header = () => {
                 style={({ isActive }) => (isActive ? activeLinkStyle : inactiveLinkStyle)}
               >
                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                  <SearchIcon aria-hidden="true" />
-                  <Typography variant="h6" component="span">
+                  <SearchIcon aria-hidden="true" sx={{ display: { xs: 'none', sm: 'block' } }} />
+                  <Typography variant="h6" component="span" fontSize={{ xs: '0.875rem', sm: '1rem', md: '1.125rem' }}>
                     Schools
                   </Typography>
                 </Stack>
@@ -71,8 +72,8 @@ export const Header = () => {
                 style={({ isActive }) => (isActive ? activeLinkStyle : inactiveLinkStyle)}
               >
                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                  <BubbleChartIcon aria-hidden="true" />
-                  <Typography variant="h6" component="span">
+                  <BubbleChartIcon aria-hidden="true" sx={{ display: { xs: 'none', sm: 'block' } }} />
+                  <Typography variant="h6" component="span" fontSize={{ xs: '0.875rem', sm: '1rem', md: '1.125rem' }}>
                     Clusters
                   </Typography>
                 </Stack>
@@ -86,8 +87,8 @@ export const Header = () => {
                 style={({ isActive }) => (isActive ? activeLinkStyle : inactiveLinkStyle)}
               >
                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                  <InfoOutlinedIcon aria-hidden="true" />
-                  <Typography variant="h6" component="span">
+                  <InfoOutlinedIcon aria-hidden="true" sx={{ display: { xs: 'none', sm: 'block' } }} />
+                  <Typography variant="h6" component="span" fontSize={{ xs: '0.875rem', sm: '1rem', md: '1.125rem' }}>
                     About
                   </Typography>
                 </Stack>
@@ -97,6 +98,19 @@ export const Header = () => {
         </nav>
 
         <Box flexGrow="1" />
+
+        <Tooltip title="View on GitHub">
+          <IconButton
+            component="a"
+            href="https://github.com/sam-hunt/school-viewer"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            aria-label="View source code on GitHub"
+          >
+            <GitHubIcon />
+          </IconButton>
+        </Tooltip>
 
         <Tooltip title="Toggle Dark Mode">
           <IconButton

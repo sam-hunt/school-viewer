@@ -6,6 +6,10 @@
     "name": "Sam Hunt",
     "url": "https://samhunt.dev"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sam-hunt/school-viewer.git"
+  },
   "homepage": "https://sam-hunt.github.io/school-viewer",
   "scripts": {
     "dev": "vite",
