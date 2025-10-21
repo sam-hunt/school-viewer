@@ -194,7 +194,7 @@ describe('Header', () => {
   });
 
   it('should hide navigation icons on xs screens', () => {
-    const { container } = renderHeader();
+    renderHeader();
 
     // Navigation icons should have responsive display styling
     const searchIcon = screen.getByTestId('SearchIcon');
@@ -214,7 +214,7 @@ describe('Header', () => {
   });
 
   it('should have responsive font sizes for app title', () => {
-    const { container } = renderHeader();
+    renderHeader();
 
     const titleElement = screen.getByText('School Viewer');
     expect(titleElement).toBeInTheDocument();
