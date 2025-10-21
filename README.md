@@ -1,7 +1,5 @@
 # School Viewer
 
-[![Deploy to GitHub Pages](https://github.com/sam-hunt/school-viewer/actions/workflows/deploy.yml/badge.svg)](https://github.com/sam-hunt/school-viewer/actions/workflows/deploy.yml)
-
 A visualizer for the New Zealand Government's Schooling Directory API, featuring interactive maps and data exploration.
 
 **Live Demo:** [https://sam-hunt.github.io/school-viewer/](https://sam-hunt.github.io/school-viewer/)
