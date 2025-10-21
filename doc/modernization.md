@@ -72,19 +72,18 @@ Last Updated: 2025-10-20
 - [x] Test that lazy loading works correctly in production build
 - [x] Verify bundle sizes are under 500KB per chunk
 
-### 8. Evaluate Mapbox GL vs React-Map-GL Migration
-- [ ] Update Mapbox GL v2.15.0 → v3.15.0 (major rewrite) or migrate to map-tiler
-- [ ] Analyze current Mapbox GL usage in MapboxglClusteredMap.tsx
-- [ ] Analyze current Mapbox GL usage in MapboxglPointMap.tsx
-- [ ] Research react-map-gl clustering capabilities
-- [ ] Research react-map-gl custom layer support
-- [ ] Create proof-of-concept for clustering in react-map-gl
-- [ ] Document findings and recommendation
+### 8. Evaluate Mapbox GL vs React-Map-GL Migration ✅ Complete
+- [x] Analyze current Mapbox GL usage in MapboxglClusteredMap.tsx
+- [x] Analyze current Mapbox GL usage in MapboxglPointMap.tsx
+- [x] **Decision:** Migrate to react-map-gl with MapLibre GL and MapTiler
+- [x] Install react-map-gl and maplibre-gl dependencies
+- [x] Migrate MapboxglPointMap to react-map-gl (simplified to 37 lines, removed all TypeScript suppressions)
+- [x] Migrate MapboxglClusteredMap to react-map-gl with clustering (cleaner declarative API)
+- [x] Update environment variables to use VITE_MAPTILER_KEY
+- [x] Remove old mapbox-gl and @types/mapbox-gl dependencies
+- [x] Update CLAUDE.md to reflect new mapping technology
+- [x] Verify build succeeds and all TypeScript errors resolved
 - [ ] Update README screenshots (outdated - from before major style refactor)
-- [ ] **Decision:** Migrate / Stay with Mapbox GL / Hybrid approach
-- [ ] If migrating: Create migration plan
-- [ ] If migrating: Execute migration
-- [ ] If migrating: Update CLAUDE.md
 
 ### 9. Improve TypeScript Strictness ✅ Complete
 - [x] Document all TypeScript strict mode linting errors (`doc/typescript-strict-errors.md` since cleaned up)

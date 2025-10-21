@@ -1,48 +1,37 @@
-import { render, waitFor } from '@testing-library/react';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { FeatureCollection } from 'geojson';
+import { ThemeProvider, createTheme } from '@mui/material';
 
-// Mock mapbox-gl
-const mockMap = {
-  on: vi.fn((event: string, callback: () => void) => {
-    if (event === 'load') {
-      // Immediately invoke load callback for testing
-      setTimeout(callback, 0);
-    }
-  }),
-  resize: vi.fn(),
-  addSource: vi.fn(),
-  addLayer: vi.fn(),
-  removeLayer: vi.fn(),
-  removeSource: vi.fn(),
-  addControl: vi.fn(),
-  queryRenderedFeatures: vi.fn(),
-  getSource: vi.fn(() => ({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    getClusterExpansionZoom: vi.fn((_id, callback) => callback(null, 12)),
-  })),
-  easeTo: vi.fn(),
-  getCanvas: vi.fn(() => ({
-    style: { cursor: '' },
-  })),
-};
-
-vi.mock('mapbox-gl', () => ({
-  default: {
-    accessToken: '',
-    Map: vi.fn(() => mockMap),
-    NavigationControl: vi.fn(),
-  },
+// Mock react-map-gl components
+vi.mock('react-map-gl/maplibre', () => ({
+  default: vi.fn(({ children, ...props }) => (
+    <div data-testid="mock-map" data-map-props={JSON.stringify(props)}>
+      {children}
+    </div>
+  )),
+  Source: vi.fn(({ children, ...props }) => (
+    <div data-testid="mock-source" data-source-props={JSON.stringify(props)}>
+      {children}
+    </div>
+  )),
+  Layer: vi.fn((props) => <div data-testid="mock-layer" data-layer-props={JSON.stringify(props)} />),
+  NavigationControl: vi.fn((props) => <div data-testid="mock-nav-control" data-nav-props={JSON.stringify(props)} />),
 }));
 
-// Mock CSS import
-vi.mock('mapbox-gl/dist/mapbox-gl.css', () => ({}));
+// Mock maplibre-gl CSS import
+vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
 
 // Mock environment variable
 vi.stubGlobal('import.meta', {
   env: {
-    VITE_MAPBOX_KEY: 'test-mapbox-key',
+    VITE_MAPTILER_KEY: 'test-maptiler-key',
   },
 });
 
@@ -83,7 +72,7 @@ describe('MapboxGLClusteredMap', () => {
     vi.clearAllMocks();
   });
 
-  it('should render map container', () => {
+  it('should render map container with correct dimensions', () => {
     const { container } = render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -93,33 +82,14 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    const mapContainer = container.querySelector('.mapboxgl-container');
-    expect(mapContainer).toBeInTheDocument();
+    const mapContainer = container.firstChild as HTMLElement;
+    expect(mapContainer).toHaveStyle({ width: '800px', height: '600px' });
   });
 
-  it('should set container dimensions from props', () => {
-    const { container } = render(
-      <MapboxGLClusteredMap
-        lat={-41.2865}
-        lng={174.7762}
-        zoom={5}
-        width={900}
-        height={700}
-        features={mockFeatures}
-        clusterByProperty="count"
-      />
-    );
-
-    const mapContainer = container.querySelector('.mapboxgl-container');
-    expect(mapContainer).toHaveStyle({ width: '900px', height: '700px' });
-  });
-
-  it('should initialize map with correct center coordinates', async () => {
-    const mapboxgl = await import('mapbox-gl');
-
+  it('should render Map component with correct initial view state', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -129,24 +99,20 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      expect(mapboxgl.default.Map).toHaveBeenCalled();
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps.initialViewState).toEqual({
+      longitude: 174.7762,
+      latitude: -41.2865,
+      zoom: 5,
     });
-
-    expect(mapboxgl.default.Map).toHaveBeenCalledWith(
-      expect.objectContaining({
-        center: [174.7762, -41.2865],
-        zoom: 5,
-      })
-    );
   });
 
-  it('should set mapbox access token', async () => {
-    const mapboxgl = await import('mapbox-gl');
-
+  it('should use MapTiler style URL with correct JSON format', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -156,18 +122,20 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      expect(mapboxgl.default.Map).toHaveBeenCalled();
-    });
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    // Just verify the token is set (will be real env variable in tests)
-    expect(mapboxgl.default.accessToken).toBeTruthy();
+    // Verify MapTiler URL has proper style.json endpoint (not just the style name)
+    // This ensures we get JSON response, not HTML
+    expect(mapProps.mapStyle).toContain('/style.json?key=');
+    // Should use either light or dark theme depending on the current theme
+    expect(mapProps.mapStyle).toMatch(/^https:\/\/api\.maptiler\.com\/maps\/streets-v2-(dark|light)\/style\.json\?key=.+$/);
   });
 
-  it('should add navigation control', async () => {
+  it('should render navigation control', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -177,15 +145,17 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      expect(mockMap.addControl).toHaveBeenCalled();
-    });
+    const navControl = screen.getByTestId('mock-nav-control');
+    expect(navControl).toBeInTheDocument();
+
+    const navProps = JSON.parse(navControl.getAttribute('data-nav-props') || '{}');
+    expect(navProps.position).toBe('top-right');
   });
 
-  it('should add data source with clustering enabled', async () => {
+  it('should render Source component with clustering configuration', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -195,26 +165,20 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      expect(mockMap.addSource).toHaveBeenCalled();
-    });
+    const source = screen.getByTestId('mock-source');
+    const sourceProps = JSON.parse(source.getAttribute('data-source-props') || '{}');
 
-    expect(mockMap.addSource).toHaveBeenCalledWith(
-      'points',
-      expect.objectContaining({
-        type: 'geojson',
-        data: mockFeatures,
-        cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 50,
-      })
-    );
+    expect(sourceProps.id).toBe('schools');
+    expect(sourceProps.type).toBe('geojson');
+    expect(sourceProps.cluster).toBe(true);
+    expect(sourceProps.clusterMaxZoom).toBe(14);
+    expect(sourceProps.clusterRadius).toBe(50);
   });
 
-  it('should configure clustering by specified property', async () => {
+  it('should configure clustering by specified property', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -224,22 +188,18 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="total"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      expect(mockMap.addSource).toHaveBeenCalled();
+    const source = screen.getByTestId('mock-source');
+    const sourceProps = JSON.parse(source.getAttribute('data-source-props') || '{}');
+
+    expect(sourceProps.clusterProperties).toEqual({
+      total: ['+', ['get', 'total']],
     });
-
-    expect(mockMap.addSource).toHaveBeenCalledWith(
-      'points',
-      expect.objectContaining({
-        clusterProperties: { total: ['+', ['get', 'total']] },
-      })
-    );
   });
 
-  it('should add cluster layers', async () => {
+  it('should render four map layers (clusters, cluster-count, unclustered-point, unclustered-count)', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -249,51 +209,24 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      expect(mockMap.addLayer).toHaveBeenCalled();
+    const layers = screen.getAllByTestId('mock-layer');
+    expect(layers).toHaveLength(4);
+
+    const layerIds = layers.map((layer) => {
+      const props = JSON.parse(layer.getAttribute('data-layer-props') || '{}');
+      return props.id;
     });
 
-    // Check cluster circles layer
-    expect(mockMap.addLayer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: 'clusters',
-        type: 'circle',
-        source: 'points',
-      })
-    );
-
-    // Check cluster count labels
-    expect(mockMap.addLayer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: 'cluster-count',
-        type: 'symbol',
-        source: 'points',
-      })
-    );
-
-    // Check unclustered points
-    expect(mockMap.addLayer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: 'unclustered-point',
-        type: 'circle',
-        source: 'points',
-      })
-    );
-
-    // Check unclustered count labels
-    expect(mockMap.addLayer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: 'unclustered-count',
-        type: 'symbol',
-        source: 'points',
-      })
-    );
+    expect(layerIds).toContain('clusters');
+    expect(layerIds).toContain('cluster-count');
+    expect(layerIds).toContain('unclustered-point');
+    expect(layerIds).toContain('unclustered-count');
   });
 
-  it('should register click handlers for clusters and points', async () => {
+  it('should configure cluster circle layers with correct paint properties', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -303,18 +236,23 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      const onCalls = mockMap.on.mock.calls;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-      const clickCalls = onCalls.filter((call: any) => call[0] === 'click');
-      expect(clickCalls.length).toBeGreaterThan(0);
+    const layers = screen.getAllByTestId('mock-layer');
+    const clusterLayer = layers.find((layer) => {
+      const props = JSON.parse(layer.getAttribute('data-layer-props') || '{}');
+      return props.id === 'clusters';
     });
+
+    expect(clusterLayer).toBeDefined();
+    const clusterProps = JSON.parse(clusterLayer!.getAttribute('data-layer-props') || '{}');
+
+    expect(clusterProps.type).toBe('circle');
+    expect(clusterProps.paint['circle-color']).toBe('#CB9EFF');
   });
 
-  it('should register mouse enter/leave handlers for cursor changes', async () => {
+  it('should set interactive layer IDs', () => {
     render(
       <MapboxGLClusteredMap
         lat={-41.2865}
@@ -324,99 +262,16 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={mockFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      const onCalls = mockMap.on.mock.calls;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-      expect(onCalls.some((call: any) => call[0] === 'mouseenter')).toBe(true);
-    });
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    const onCalls = mockMap.on.mock.calls;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    expect(onCalls.some((call: any) => call[0] === 'mouseleave')).toBe(true);
+    expect(mapProps.interactiveLayerIds).toEqual(['clusters', 'unclustered-point']);
   });
 
-  it('should call onFeatureClick when provided and point is clicked', async () => {
-    const onFeatureClick = vi.fn();
-
-    render(
-      <MapboxGLClusteredMap
-        lat={-41.2865}
-        lng={174.7762}
-        zoom={5}
-        width={800}
-        height={600}
-        features={mockFeatures}
-        clusterByProperty="count"
-        onFeatureClick={onFeatureClick}
-      />
-    );
-
-    await waitFor(() => {
-      const onCalls = mockMap.on.mock.calls;
-      const unclusteredClickHandler = onCalls.find(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-        (call: any) => call[0] === 'click' && call[1] === 'unclustered-point'
-      );
-      expect(unclusteredClickHandler).toBeDefined();
-    });
-  });
-
-  it('should use dark map style', async () => {
-    const mapboxgl = await import('mapbox-gl');
-
-    render(
-      <MapboxGLClusteredMap
-        lat={-41.2865}
-        lng={174.7762}
-        zoom={5}
-        width={800}
-        height={600}
-        features={mockFeatures}
-        clusterByProperty="count"
-      />
-    );
-
-    await waitFor(() => {
-      expect(mapboxgl.default.Map).toHaveBeenCalled();
-    });
-
-    expect(mapboxgl.default.Map).toHaveBeenCalledWith(
-      expect.objectContaining({
-        style: 'mapbox://styles/mapbox/dark-v10',
-      })
-    );
-  });
-
-  it('should handle different zoom levels', async () => {
-    const mapboxgl = await import('mapbox-gl');
-
-    render(
-      <MapboxGLClusteredMap
-        lat={-41.2865}
-        lng={174.7762}
-        zoom={8}
-        width={800}
-        height={600}
-        features={mockFeatures}
-        clusterByProperty="count"
-      />
-    );
-
-    await waitFor(() => {
-      expect(mapboxgl.default.Map).toHaveBeenCalled();
-    });
-
-    expect(mapboxgl.default.Map).toHaveBeenCalledWith(
-      expect.objectContaining({
-        zoom: 8,
-      })
-    );
-  });
-
-  it('should handle empty feature collection', async () => {
+  it('should handle empty feature collection', () => {
     const emptyFeatures: FeatureCollection = {
       type: 'FeatureCollection',
       features: [],
@@ -431,19 +286,96 @@ describe('MapboxGLClusteredMap', () => {
         height={600}
         features={emptyFeatures}
         clusterByProperty="count"
-      />
+      />,
     );
 
-    await waitFor(() => {
-      expect(mockMap.addSource).toHaveBeenCalled();
-    });
+    const source = screen.getByTestId('mock-source');
+    expect(source).toBeInTheDocument();
+  });
 
-    // Should still add source even with empty features
-    expect(mockMap.addSource).toHaveBeenCalledWith(
-      'points',
-      expect.objectContaining({
-        data: emptyFeatures,
-      })
+  it('should accept onFeatureClick callback', () => {
+    const onFeatureClick = vi.fn();
+
+    render(
+      <MapboxGLClusteredMap
+        lat={-41.2865}
+        lng={174.7762}
+        zoom={5}
+        width={800}
+        height={600}
+        features={mockFeatures}
+        clusterByProperty="count"
+        onFeatureClick={onFeatureClick}
+      />,
     );
+
+    const map = screen.getByTestId('mock-map');
+    expect(map).toBeInTheDocument();
+    // The onClick handler is passed but we can't easily test it with mocked components
+  });
+
+  it('should handle different zoom levels', () => {
+    render(
+      <MapboxGLClusteredMap
+        lat={-41.2865}
+        lng={174.7762}
+        zoom={12}
+        width={800}
+        height={600}
+        features={mockFeatures}
+        clusterByProperty="count"
+      />,
+    );
+
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps.initialViewState.zoom).toBe(12);
+  });
+
+  it('should use dark map style when theme is dark', () => {
+    const darkTheme = createTheme({ palette: { mode: 'dark' } });
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <MapboxGLClusteredMap
+          lat={-41.2865}
+          lng={174.7762}
+          zoom={5}
+          width={800}
+          height={600}
+          features={mockFeatures}
+          clusterByProperty="count"
+        />
+      </ThemeProvider>,
+    );
+
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps.mapStyle).toContain('streets-v2-dark');
+  });
+
+  it('should use light map style when theme is light', () => {
+    const lightTheme = createTheme({ palette: { mode: 'light' } });
+
+    render(
+      <ThemeProvider theme={lightTheme}>
+        <MapboxGLClusteredMap
+          lat={-41.2865}
+          lng={174.7762}
+          zoom={5}
+          width={800}
+          height={600}
+          features={mockFeatures}
+          clusterByProperty="count"
+        />
+      </ThemeProvider>,
+    );
+
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps.mapStyle).toContain('streets-v2-light');
   });
 });

@@ -1,12 +1,12 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useCallback, useRef, useState } from 'react';
 import { Feature, FeatureCollection, Point } from 'geojson';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import mapboxgl from 'mapbox-gl';
+import Map, { Layer, NavigationControl, Source } from 'react-map-gl/maplibre';
+import type { MapRef, MapLayerMouseEvent } from 'react-map-gl/maplibre';
+import type { GeoJSONSource } from 'maplibre-gl';
+import { useTheme } from '@mui/material';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
-// NOTE: Mapbox GL JS has incomplete TypeScript definitions. These suppressions are temporary
-// and will be removed when we migrate to react-map-gl (which has better type support).
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface MapboxGLClusteredMapProps<T = any> {
+interface MapboxGLClusteredMapProps<T extends object = object> {
   lng: number;
   lat: number;
   zoom: number;
@@ -17,7 +17,7 @@ interface MapboxGLClusteredMapProps<T = any> {
   clusterByProperty: keyof T & string;
 }
 
-export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
+export const MapboxGLClusteredMap = <T extends object = object>({
   lat,
   lng,
   zoom,
@@ -26,176 +26,166 @@ export const MapboxGLClusteredMap: React.FC<MapboxGLClusteredMapProps> = ({
   features,
   onFeatureClick,
   clusterByProperty,
-}) => {
-  const [map, setMap] = useState<mapboxgl.Map | null>(null);
-  const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
+}: MapboxGLClusteredMapProps<T>) => {
+  const mapRef = useRef<MapRef>(null);
+  const theme = useTheme();
+  const mapTilerKey = import.meta.env.VITE_MAPTILER_KEY as string;
+  const mapStyleName = theme.palette.mode === 'dark' ? 'streets-v2-dark' : 'streets-v2-light';
+  const mapStyle = `https://api.maptiler.com/maps/${mapStyleName}/style.json?key=${mapTilerKey}`;
 
-  useEffect(() => {
-    if (!mapContainerEl) return;
-    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY as string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const initializeMap = ({ setMap, mapContainerEl }: any) => {
-      const map = new mapboxgl.Map({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        container: mapContainerEl,
-        style: 'mapbox://styles/mapbox/dark-v10', // stylesheet location
-        center: [lng, lat],
-        zoom,
-      });
-      map.on('load', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        setMap(map);
-        map.resize();
-        initLayers(map);
-      });
-      // Add nav control
-      const nav = new mapboxgl.NavigationControl();
-      map.addControl(nav, 'top-right');
-    };
+  // Track cursor state for grab/grabbing/pointer
+  const [cursor, setCursor] = useState<string>('grab');
+  const [isDragging, setIsDragging] = useState(false);
 
-    const initLayers = (map: mapboxgl.Map) => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (map && features !== null) {
-        map.addSource('points', {
-          type: 'geojson',
-          data: features,
-          cluster: true,
-          clusterMaxZoom: 14, // Max zoom to cluster points on
-          clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
-          clusterProperties: { [clusterByProperty]: ['+', ['get', clusterByProperty]] },
-        });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/restrict-plus-operands
-        const total = features.features.map((f: any) => f.properties[clusterByProperty]).reduce((acc, val) => acc + val, 0);
-        const c = Math.log(total as number) - 7;
-        const clusterCircleSizeSteps = [10, 20 * c, 15, 50 * c, 25, 125 * c, 30, 250 * c, 35, 500 * c, 40, 750 * c, 45, 1500 * c, 50];
-        // const clusterCircleSizeSteps = [10, 20, 15, 50, 25, 125, 30, 250, 35, 500, 40, 750, 45, 1500, 50];
-        map.addLayer({
-          id: 'clusters',
-          type: 'circle',
-          source: 'points',
-          filter: ['has', 'point_count'],
-          paint: {
-            // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-            // with steps to implement each type of circle:
-            //   * 10px circles when point count is less than 25
-            //   * 15px circles when point count is between 20 and 50
-            //   * 25px circles when point count is between 50 and 250
-            //   * 30px circles when point count is between 250 and 500
-            //   * 45px circles when point count is greater than or equal to 750
-            'circle-color': '#CB9EFF',
-            'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
-          },
-        });
-        map.addLayer({
-          id: 'cluster-count',
-          type: 'symbol',
-          source: 'points',
-          filter: ['has', 'point_count'],
-          layout: {
-            'text-field': `{${clusterByProperty}}`,
-            'text-font': ['Arial Unicode MS Bold'],
-            'text-size': 14,
-          },
-        });
-        map.addLayer({
-          id: 'unclustered-point',
-          type: 'circle',
-          source: 'points',
-          filter: ['!', ['has', 'point_count']],
-          paint: {
-            'circle-color': '#CB9EFF',
-            'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
-            'circle-stroke-width': 1,
-            'circle-stroke-color': '#fff',
-          },
-        });
-        map.addLayer({
-          id: 'unclustered-count',
-          type: 'symbol',
-          source: 'points',
-          filter: ['!', ['has', 'point_count']],
-          layout: {
-            'text-field': `{${clusterByProperty}}`,
-            'text-font': ['Arial Unicode MS Bold'],
-            'text-size': 14,
-          },
-        });
-        // inspect a cluster on click
-        map.on('click', 'clusters', function (e) {
-          const features = map.queryRenderedFeatures(e.point, {
-            layers: ['clusters'],
-          });
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-          const clusterId = (features[0] as any).properties.cluster_id;
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-          (map.getSource('points') as any).getClusterExpansionZoom(clusterId, function (err: any, zoom: number) {
-            if (err) return;
+  // Calculate circle size steps based on total of clustering property
+  const total = features.features.reduce((acc, f) => {
+    const props = f.properties;
+    if (!props) return acc;
+    const value = props[clusterByProperty] as unknown;
+    return acc + (typeof value === 'number' ? value : 0);
+  }, 0);
+  const c = Math.log(total) - 7;
+  const clusterCircleSizeSteps = [10, 20 * c, 15, 50 * c, 25, 125 * c, 30, 250 * c, 35, 500 * c, 40, 750 * c, 45, 1500 * c, 50] as const;
 
-            map.easeTo({
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-              center: (features[0].geometry as any).coordinates,
-              zoom: zoom,
+  const handleMouseEnter = useCallback(() => {
+    setCursor('pointer');
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setCursor(isDragging ? 'grabbing' : 'grab');
+  }, [isDragging]);
+
+  const handleMouseDown = useCallback(() => {
+    setIsDragging(true);
+    setCursor('grabbing');
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    setCursor('grab');
+  }, []);
+
+  const handleMapClick = useCallback(
+    (event: MapLayerMouseEvent) => {
+      const feature = event.features?.[0];
+      if (!feature) return;
+
+      const mapInstance = mapRef.current;
+      if (!mapInstance) return;
+
+      // Handle cluster click
+      if (feature.properties.cluster_id !== undefined) {
+        const clusterId = feature.properties.cluster_id as number;
+        const source = mapInstance.getSource('schools');
+
+        if (!source) return;
+
+        (source as GeoJSONSource)
+          .getClusterExpansionZoom(clusterId)
+          .then((zoom: number) => {
+            if (feature.geometry.type !== 'Point') return;
+
+            mapInstance.easeTo({
+              center: feature.geometry.coordinates as [number, number],
+              zoom,
+              duration: 500,
             });
+          })
+          .catch(() => {
+            // Silently fail if cluster expansion fails
           });
-        });
-        // // When a click event occurs on a feature in
-        // // the unclustered-point layer, open a popup at
-        // // the location of the feature, with
-        // // description HTML from its properties.
-        // map.on('mouseover', 'unclustered-point', function (e) {
-        //   const coordinates = (e as any).features[0].geometry.coordinates.slice();
-        //   const name = (e as any).features[0].properties.name;
-
-        //   // Ensure that if the map is zoomed out such that
-        //   // multiple copies of the feature are visible, the
-        //   // popup appears over the copy being pointed to.
-        //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        //   }
-
-        //   new mapboxgl.Popup().setLngLat(coordinates).setHTML(`<strong><h3>${name}</h3></strong>`).addTo(map);
-        // });
-        if (onFeatureClick) {
-          map.on('click', 'unclustered-point', e => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-            onFeatureClick((e as any).features[0]);
-          });
-        }
-        map.on('mouseenter', 'clusters', () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', 'clusters', () => {
-          map.getCanvas().style.cursor = '';
-        });
-        map.on('mouseenter', 'unclustered-point', () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', 'unclustered-point', () => {
-          map.getCanvas().style.cursor = '';
-        });
       }
-    };
-    if (map) {
-      map.removeLayer('clusters');
-      map.removeLayer('cluster-count');
-      map.removeLayer('unclustered-point');
-      map.removeLayer('unclustered-count');
-      map.removeSource('points');
-      initLayers(map);
-    }
-
-    if (!map) {
-      initializeMap({ setMap, mapContainerEl });
-    }
-  }, [map, lat, lng, zoom, features, onFeatureClick, clusterByProperty, mapContainerEl]);
-
-  return (
-    <div
-      className="mapboxgl-container"
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ref={el => setMapContainerEl(el!)}
-      style={{ height, width }}
-    />
+      // Handle unclustered point click
+      else if (onFeatureClick) {
+        onFeatureClick(feature as unknown as Feature<Point, T>);
+      }
+    },
+    [onFeatureClick],
   );
 
+  return (
+    <div style={{ height, width }}>
+      <Map
+        ref={mapRef}
+        initialViewState={{
+          longitude: lng,
+          latitude: lat,
+          zoom,
+        }}
+        style={{ width: '100%', height: '100%' }}
+        mapStyle={mapStyle}
+        interactiveLayerIds={['clusters', 'unclustered-point']}
+        onClick={handleMapClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        cursor={cursor}
+      >
+        <NavigationControl position="top-right" />
+
+        <Source
+          id="schools"
+          type="geojson"
+          data={features}
+          cluster={true}
+          clusterMaxZoom={14}
+          clusterRadius={50}
+          clusterProperties={
+            {
+              [clusterByProperty]: ['+', ['get', clusterByProperty]],
+            } as Record<string, [string, unknown[]]>
+          }
+        >
+          {/* Clustered circles */}
+          <Layer
+            id="clusters"
+            type="circle"
+            filter={['has', 'point_count']}
+            paint={{
+              'circle-color': '#CB9EFF',
+              'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
+            }}
+          />
+
+          {/* Cluster count labels */}
+          <Layer
+            id="cluster-count"
+            type="symbol"
+            filter={['has', 'point_count']}
+            layout={{
+              'text-field': `{${clusterByProperty}}`,
+              'text-font': ['Noto Sans Regular'],
+              'text-size': 14,
+            }}
+          />
+
+          {/* Unclustered points */}
+          <Layer
+            id="unclustered-point"
+            type="circle"
+            filter={['!', ['has', 'point_count']]}
+            paint={{
+              'circle-color': '#CB9EFF',
+              'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
+              'circle-stroke-width': 1,
+              'circle-stroke-color': '#fff',
+            }}
+          />
+
+          {/* Unclustered point labels */}
+          <Layer
+            id="unclustered-count"
+            type="symbol"
+            filter={['!', ['has', 'point_count']]}
+            layout={{
+              'text-field': `{${clusterByProperty}}`,
+              'text-font': ['Noto Sans Regular'],
+              'text-size': 14,
+            }}
+          />
+        </Source>
+      </Map>
+    </div>
+  );
 };

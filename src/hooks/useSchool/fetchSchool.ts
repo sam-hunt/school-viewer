@@ -28,14 +28,14 @@ export const fetchSchool = async (schoolId: string): Promise<School | null> => {
       "Latitude" as "latitude",
       "Longitude" as "longitude",
 
-      CASE WHEN "Māori" IS NULL THEN 0 ELSE "Māori"::int END as "maori",
-      CASE WHEN "Pacific" IS NULL THEN 0 ELSE "Pacific"::int END as "pacific",
-      CASE WHEN "European" IS NULL THEN 0 ELSE "European"::int END as "european",
-      CASE WHEN "Asian" IS NULL THEN 0 ELSE "Asian"::int END as "asian",
-      CASE WHEN "MELAA" IS NULL THEN 0 ELSE "MELAA"::int END as "melaa",
-      CASE WHEN "International" IS NULL THEN 0 ELSE "International"::int END as "international",
-      CASE WHEN "Other" IS NULL THEN 0 ELSE "Other"::int END as "other",
-      CASE WHEN "Total" IS NULL THEN 0 ELSE "Total"::int END as "total",
+      "Māori" as "maori",
+      "Pacific" as "pacific",
+      "European" as "european",
+      "Asian" as "asian",
+      "MELAA" as "melaa",
+      "International" as "international",
+      "Other" as "other",
+      "Total" as "total",
 
       "Telephone" as "telephone",
       "Email" as "email",
@@ -68,5 +68,24 @@ export const fetchSchool = async (schoolId: string): Promise<School | null> => {
   if (!apiResult.success) {
     throw new Error(apiUnavailableErrorMessage);
   }
-  return apiResult.result.records[0];
+
+  const records = apiResult.result.records;
+  if (records.length === 0) return null;
+
+  const record = records[0];
+
+  // Ensure enrollment numbers are never null (API sometimes returns null)
+  const school: School = {
+    ...record,
+    maori: record.maori ?? 0,
+    pacific: record.pacific ?? 0,
+    european: record.european ?? 0,
+    asian: record.asian ?? 0,
+    melaa: record.melaa ?? 0,
+    international: record.international ?? 0,
+    other: record.other ?? 0,
+    total: record.total ?? 0,
+  };
+
+  return school;
 };

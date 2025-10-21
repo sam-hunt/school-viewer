@@ -6,9 +6,9 @@ A visualizer for the New Zealand Government's Schooling Directory API, featuring
 
 **Live Demo:** [https://sam-hunt.github.io/school-viewer/](https://sam-hunt.github.io/school-viewer/)
 
-![Map View](screenshot1.png?raw=true "Map View")
-![School Search](screenshot2.png?raw=true "School Search")
-![School View](screenshot3.png?raw=true "School View")
+![Map View](screenshot1.png?raw=true 'Map View')
+![School Search](screenshot2.png?raw=true 'School Search')
+![School View](screenshot3.png?raw=true 'School View')
 
 ## Tech Stack
 
@@ -118,6 +118,7 @@ The project has comprehensive test coverage (97%+) using Vitest and React Testin
 - Integration tests for key user flows
 
 Run tests with:
+
 ```bash
 npm test                    # Run all tests
 npm test -- --coverage      # Run with coverage report
@@ -128,7 +129,7 @@ npm test -- --watch         # Run in watch mode
 
 - 🗺️ **Interactive Map** - Clustered view of all NZ schools with Mapbox GL
 - 🔍 **Search** - Find schools by name
-- 📊 **Demographics** - View enrollment breakdowns by ethnicity
+- 📊 **Demographics** - View enrolment breakdowns by ethnicity
 - 📍 **Location** - School addresses and coordinates
 - 📱 **Responsive** - Works on mobile, tablet, and desktop
 - ♿ **Accessible** - WCAG compliant with semantic HTML, ARIA labels, and keyboard navigation

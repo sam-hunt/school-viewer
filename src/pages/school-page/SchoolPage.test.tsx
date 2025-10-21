@@ -22,10 +22,6 @@ vi.mock('./cards/MiscCard/MiscCard', () => ({
   MiscCard: () => <div data-testid="miscellaneous-card">MiscellaneousCard</div>,
 }));
 
-vi.mock('./cards/ContactCard/ContactCard', () => ({
-  ContactCard: () => <div data-testid="contact-card">ContactCard</div>,
-}));
-
 vi.mock('./cards/EnrolmentsCard/EnrolmentsCard', () => ({
   EnrolmentsCard: () => <div data-testid="enrolments-card">EnrolmentsCard</div>,
 }));
@@ -55,10 +51,15 @@ describe('SchoolPage', () => {
       isPending: true,
     });
 
-    render(<SchoolPage />, createRenderOptions());
+    const { container } = render(<SchoolPage />, createRenderOptions());
 
     expect(screen.getByRole('heading', { name: 'Loading School...' })).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Loading school data' })).toBeInTheDocument();
+
+    // Check that skeleton cards are rendered
+    const skeletons = container.querySelectorAll('.MuiSkeleton-root');
+    expect(skeletons.length).toBeGreaterThan(0);
+
     expect(screen.queryByTestId('details-card')).not.toBeInTheDocument();
   });
 
@@ -94,7 +95,6 @@ describe('SchoolPage', () => {
     expect(screen.getByRole('heading', { name: mockSchool.orgName })).toBeInTheDocument();
     expect(screen.getByTestId('details-card')).toBeInTheDocument();
     expect(screen.getByTestId('miscellaneous-card')).toBeInTheDocument();
-    expect(screen.getByTestId('contact-card')).toBeInTheDocument();
     expect(screen.getByTestId('enrolments-card')).toBeInTheDocument();
     expect(screen.getByTestId('map-card')).toBeInTheDocument();
   });
@@ -130,7 +130,6 @@ describe('SchoolPage', () => {
     // Check that all cards are rendered
     expect(screen.getByTestId('details-card')).toBeInTheDocument();
     expect(screen.getByTestId('miscellaneous-card')).toBeInTheDocument();
-    expect(screen.getByTestId('contact-card')).toBeInTheDocument();
     expect(screen.getByTestId('enrolments-card')).toBeInTheDocument();
     expect(screen.getByTestId('map-card')).toBeInTheDocument();
   });
@@ -147,7 +146,6 @@ describe('SchoolPage', () => {
 
     expect(screen.queryByTestId('details-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('miscellaneous-card')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('contact-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('enrolments-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('map-card')).not.toBeInTheDocument();
   });
@@ -164,7 +162,6 @@ describe('SchoolPage', () => {
 
     expect(screen.queryByTestId('details-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('miscellaneous-card')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('contact-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('enrolments-card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('map-card')).not.toBeInTheDocument();
   });

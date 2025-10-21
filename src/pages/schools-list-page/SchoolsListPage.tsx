@@ -1,5 +1,5 @@
 import { useDeferredValue, useMemo, useState } from 'react';
-import { Box, Button, Stack, CircularProgress, Container, TextField, Typography } from '@mui/material';
+import { Box, Button, Stack, Container, TextField, Typography, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
@@ -18,11 +18,8 @@ export const SchoolsListPage = () => {
   useDocumentTitle('Find a School - Schools Viewer');
 
   const schoolsMap = useMemo(
-    () => schools?.reduce(
-      (acc, school) => acc.set(school.schoolId, school),
-      new Map<SchoolListItem['schoolId'], SchoolListItem>()
-    ),
-    [schools]
+    () => schools?.reduce((acc, school) => acc.set(school.schoolId, school), new Map<SchoolListItem['schoolId'], SchoolListItem>()),
+    [schools],
   );
 
   // Memoize optimized search strings so we don't have to do it on each key press
@@ -64,7 +61,7 @@ export const SchoolsListPage = () => {
           onChange={event => setSearchTerm(event.target.value.toLowerCase())}
           sx={{ minWidth: 300 }}
           label="Search schools"
-          slotProps={{ input: { startAdornment: <SearchIcon sx={{ mr: 1 }} /> } }}
+          slotProps={{ input: { endAdornment: <SearchIcon /> } }}
           size="small"
         />
       </Stack>
@@ -83,17 +80,28 @@ export const SchoolsListPage = () => {
       )}
       {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
       {isPending && (
-        <Stack
-          height="50vh"
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          role="status"
-          aria-live="polite"
-          aria-label="Loading data"
-        >
-          <CircularProgress />
-        </Stack>
+        <TableContainer component={Paper} role="status" aria-live="polite" aria-label="Loading schools data">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                <TableCell><Skeleton variant="text" width="80%" /></TableCell>
+                <TableCell><Skeleton variant="text" width="40%" /></TableCell>
+                <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {[...Array(10)].map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell><Skeleton variant="text" /></TableCell>
+                  <TableCell><Skeleton variant="text" /></TableCell>
+                  <TableCell><Skeleton variant="text" /></TableCell>
+                  <TableCell><Skeleton variant="text" /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Container>
   );

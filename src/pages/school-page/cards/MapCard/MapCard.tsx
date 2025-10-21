@@ -20,20 +20,13 @@ export const MapCard = ({ school }: MapCardProps) => {
   }, [mapContainerEl?.clientWidth, mapContainerEl?.clientHeight]);
 
   return (
-    <Box
-
-      ref={(el: HTMLDivElement) => setMapContainerEl(el)}
-      sx={{ minHeight: '450px', maxHeight: '600px' }}
-    >
+    <Box ref={(el: HTMLDivElement) => setMapContainerEl(el)} sx={{ minHeight: '450px', maxHeight: '600px' }}>
       <MapboxGLPointMap
         width={width}
         height={height}
-
         lat={school.latitude}
-
         lng={school.longitude}
         zoom={6.5}
-
         ariaLabel={`Map showing the location of ${school.orgName}`}
       />
     </Box>

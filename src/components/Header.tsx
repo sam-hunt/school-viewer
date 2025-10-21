@@ -30,8 +30,8 @@ export const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <SchoolIcon sx={{ mr: 2, width: 32, height: 32 }} aria-hidden="true" />
-        <Typography variant="h5" component="div">
+        <SchoolIcon sx={{ mr: 1.5, width: 32, height: 32 }} aria-hidden="true" />
+        <Typography variant="h5" component="div" pr={3}>
           School Viewer
         </Typography>
 

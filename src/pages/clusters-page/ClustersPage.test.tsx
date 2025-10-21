@@ -40,9 +40,14 @@ describe('ClustersPage', () => {
       isPending: true,
     });
 
-    render(<ClustersPage />, renderOptions);
+    const { container } = render(<ClustersPage />, renderOptions);
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Loading school map data' })).toBeInTheDocument();
+
+    // Check that skeleton is rendered
+    const skeleton = container.querySelector('.MuiSkeleton-root');
+    expect(skeleton).toBeInTheDocument();
+
     expect(screen.queryByTestId('mapbox-map')).not.toBeInTheDocument();
   });
 
@@ -60,7 +65,7 @@ describe('ClustersPage', () => {
     expect(screen.getByText('Unable to Load Map')).toBeInTheDocument();
     expect(screen.getByText(/We're having trouble loading the schools data for the map/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
-    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.queryByTestId('mapbox-map')).not.toBeInTheDocument();
 
     // The page heading should still be visible

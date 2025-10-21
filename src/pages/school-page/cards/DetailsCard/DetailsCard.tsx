@@ -16,6 +16,16 @@ export const DetailsCard = ({ school }: DetailsCardProps) => (
         <TableBody>
           <TableRow>
             <TableCell size="small" component="th" scope="row">
+              Website
+            </TableCell>
+            <TableCell size="small">
+              <a href={school.url} target="_blank" rel="noopener noreferrer">
+                {school.url}
+              </a>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell size="small" component="th" scope="row">
               Organisation Type
             </TableCell>
             <TableCell size="small">{school.orgType}</TableCell>
@@ -50,12 +60,28 @@ export const DetailsCard = ({ school }: DetailsCardProps) => (
               <Typography>{school.add2PostalCode}</Typography>
             </TableCell>
           </TableRow>
-          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+          <TableRow>
             <TableCell size="small" component="th" scope="row">
               Geolocation
             </TableCell>
             <TableCell size="small">
               {school.latitude}, {school.longitude}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell size="small" component="th" scope="row">
+              Phone
+            </TableCell>
+            <TableCell size="small">
+              <a href={'tel:' + school.telephone.replace(/[.,\s\-_()]/g, '')}>{school.telephone}</a>
+            </TableCell>
+          </TableRow>
+          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableCell size="small" component="th" scope="row">
+              Email
+            </TableCell>
+            <TableCell size="small">
+              <a href={'mailto:' + school.email}>{school.email}</a>
             </TableCell>
           </TableRow>
         </TableBody>

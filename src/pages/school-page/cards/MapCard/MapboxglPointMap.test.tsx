@@ -1,46 +1,28 @@
-import { render, waitFor } from '@testing-library/react';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MapboxGLPointMap } from './MapboxglPointMap';
+import { ThemeProvider, createTheme } from '@mui/material';
 
-// Mock mapbox-gl
-const mockMap = {
-  on: vi.fn((event: string, callback: () => void) => {
-    if (event === 'load') {
-      // Immediately invoke load callback for testing
-      setTimeout(callback, 0);
-    }
-  }),
-  resize: vi.fn(),
-  dragPan: { disable: vi.fn() },
-  keyboard: { disable: vi.fn() },
-  scrollZoom: { disable: vi.fn() },
-  touchZoomRotate: { disable: vi.fn() },
-  doubleClickZoom: { disable: vi.fn() },
-  addControl: vi.fn(),
-};
-
-const mockMarker = {
-  setLngLat: vi.fn().mockReturnThis(),
-  addTo: vi.fn().mockReturnThis(),
-  remove: vi.fn(),
-};
-
-vi.mock('mapbox-gl', () => ({
-  default: {
-    accessToken: '',
-    Map: vi.fn(() => mockMap),
-    Marker: vi.fn(() => mockMarker),
-    NavigationControl: vi.fn(),
-  },
+// Mock react-map-gl components
+vi.mock('react-map-gl/maplibre', () => ({
+  default: vi.fn(({ children, ...props }) => (
+    <div data-testid="mock-map" data-map-props={JSON.stringify(props)}>
+      {children}
+    </div>
+  )),
+  Marker: vi.fn((props) => <div data-testid="mock-marker" data-marker-props={JSON.stringify(props)} />),
 }));
 
-// Mock CSS import
-vi.mock('mapbox-gl/dist/mapbox-gl.css', () => ({}));
+// Mock maplibre-gl CSS import
+vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
 
 // Mock environment variable
 vi.stubGlobal('import.meta', {
   env: {
-    VITE_MAPBOX_KEY: 'test-mapbox-key',
+    VITE_MAPTILER_KEY: 'test-maptiler-key',
   },
 });
 
@@ -49,67 +31,57 @@ describe('MapboxGLPointMap', () => {
     vi.clearAllMocks();
   });
 
-  it('should render map container', () => {
+  it('should render map container with correct dimensions', () => {
     const { container } = render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
 
-    const mapContainer = container.querySelector('.mapboxgl-container');
-    expect(mapContainer).toBeInTheDocument();
+    const mapContainer = container.firstChild as HTMLElement;
+    expect(mapContainer).toHaveStyle({ width: '500px', height: '400px' });
   });
 
   it('should set container dimensions from props', () => {
     const { container } = render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={600} height={450} />);
 
-    const mapContainer = container.querySelector('.mapboxgl-container');
+    const mapContainer = container.firstChild as HTMLElement;
     expect(mapContainer).toHaveStyle({ width: '600px', height: '450px' });
   });
 
-  it('should initialize map with correct center coordinates', async () => {
-    const mapboxgl = await import('mapbox-gl');
-
+  it('should render Map component with correct initial view state', () => {
     render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
 
-    // Wait for map initialization
-    await waitFor(() => {
-      expect(mapboxgl.default.Map).toHaveBeenCalled();
-    });
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    expect(mapboxgl.default.Map).toHaveBeenCalledWith(
-      expect.objectContaining({
-        center: [174.7762, -41.2865],
-        zoom: 10,
-      })
-    );
+    expect(mapProps.initialViewState).toEqual({
+      longitude: 174.7762,
+      latitude: -41.2865,
+      zoom: 10,
+    });
   });
 
-  it('should set mapbox access token', async () => {
-    const mapboxgl = await import('mapbox-gl');
-
+  it('should use MapTiler style URL with correct JSON format', () => {
     render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
 
-    await waitFor(() => {
-      expect(mapboxgl.default.Map).toHaveBeenCalled();
-    });
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    // Just verify the token is set (will be real env variable in tests)
-    expect(mapboxgl.default.accessToken).toBeTruthy();
+    // Verify MapTiler URL has proper style.json endpoint (not just the style name)
+    // This ensures we get JSON response, not HTML
+    expect(mapProps.mapStyle).toContain('/style.json?key=');
+    // Should use either light or dark theme depending on the current theme
+    expect(mapProps.mapStyle).toMatch(/^https:\/\/api\.maptiler\.com\/maps\/streets-v2-(dark|light)\/style\.json\?key=.+$/);
   });
 
-  it('should disable all map interactions for static display', async () => {
+  it('should set map as non-interactive (static display)', () => {
     render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
 
-    await waitFor(() => {
-      expect(mockMap.dragPan.disable).toHaveBeenCalled();
-    });
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    // All interactions should be disabled - this is a static informational map
-    expect(mockMap.keyboard.disable).toHaveBeenCalled();
-    expect(mockMap.scrollZoom.disable).toHaveBeenCalled();
-    expect(mockMap.touchZoomRotate.disable).toHaveBeenCalled();
-    expect(mockMap.doubleClickZoom.disable).toHaveBeenCalled();
+    expect(mapProps.interactive).toBe(false);
   });
 
-  it('should render with accessible role and aria-label', () => {
-    const { container } = render(
+  it('should render with accessible aria-label', () => {
+    render(
       <MapboxGLPointMap
         lat={-41.2865}
         lng={174.7762}
@@ -120,56 +92,95 @@ describe('MapboxGLPointMap', () => {
       />,
     );
 
-    const mapContainer = container.querySelector('.mapboxgl-container');
-    expect(mapContainer).toHaveAttribute('role', 'img');
-    expect(mapContainer).toHaveAttribute('aria-label', 'Map showing school location');
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps['aria-label']).toBe('Map showing school location');
   });
 
   it('should render with default aria-label when not provided', () => {
-    const { container } = render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
-
-    const mapContainer = container.querySelector('.mapboxgl-container');
-    expect(mapContainer).toHaveAttribute('role', 'img');
-    expect(mapContainer).toHaveAttribute('aria-label', 'Map showing location at coordinates -41.2865, 174.7762');
-  });
-
-  it('should add marker at correct position', async () => {
-    const mapboxgl = await import('mapbox-gl');
-
     render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
 
-    await waitFor(() => {
-      expect(mockMarker.addTo).toHaveBeenCalled();
-    });
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    expect(mapboxgl.default.Marker).toHaveBeenCalled();
-    expect(mockMarker.setLngLat).toHaveBeenCalledWith([174.7762, -41.2865]);
-    expect(mockMarker.addTo).toHaveBeenCalledWith(mockMap);
+    expect(mapProps['aria-label']).toBe('Map showing location at coordinates -41.2865, 174.7762');
   });
 
-  it('should handle different coordinate values', async () => {
+  it('should render Marker at correct position', () => {
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+
+    const marker = screen.getByTestId('mock-marker');
+    const markerProps = JSON.parse(marker.getAttribute('data-marker-props') || '{}');
+
+    expect(markerProps.longitude).toBe(174.7762);
+    expect(markerProps.latitude).toBe(-41.2865);
+  });
+
+  it('should render Marker with purple color', () => {
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+
+    const marker = screen.getByTestId('mock-marker');
+    const markerProps = JSON.parse(marker.getAttribute('data-marker-props') || '{}');
+
+    expect(markerProps.color).toBe('#CB9EFF');
+  });
+
+  it('should handle different coordinate values', () => {
     render(<MapboxGLPointMap lat={-36.8485} lng={174.7633} zoom={12} width={500} height={400} />);
 
-    await waitFor(() => {
-      expect(mockMarker.setLngLat).toHaveBeenCalled();
-    });
+    const marker = screen.getByTestId('mock-marker');
+    const markerProps = JSON.parse(marker.getAttribute('data-marker-props') || '{}');
 
-    expect(mockMarker.setLngLat).toHaveBeenCalledWith([174.7633, -36.8485]);
+    expect(markerProps.longitude).toBe(174.7633);
+    expect(markerProps.latitude).toBe(-36.8485);
   });
 
-  it('should use dark map style', async () => {
-    const mapboxgl = await import('mapbox-gl');
+  it('should handle different zoom levels', () => {
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={15} width={500} height={400} />);
 
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps.initialViewState.zoom).toBe(15);
+  });
+
+  it('should enable attribution control', () => {
     render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
 
-    await waitFor(() => {
-      expect(mapboxgl.default.Map).toHaveBeenCalled();
-    });
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    expect(mapboxgl.default.Map).toHaveBeenCalledWith(
-      expect.objectContaining({
-        style: 'mapbox://styles/mapbox/dark-v10',
-      })
+    expect(mapProps.attributionControl).toEqual({ compact: false });
+  });
+
+  it('should use dark map style when theme is dark', () => {
+    const darkTheme = createTheme({ palette: { mode: 'dark' } });
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />
+      </ThemeProvider>,
     );
+
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps.mapStyle).toContain('streets-v2-dark');
+  });
+
+  it('should use light map style when theme is light', () => {
+    const lightTheme = createTheme({ palette: { mode: 'light' } });
+
+    render(
+      <ThemeProvider theme={lightTheme}>
+        <MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />
+      </ThemeProvider>,
+    );
+
+    const map = screen.getByTestId('mock-map');
+    const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
+
+    expect(mapProps.mapStyle).toContain('streets-v2-light');
   });
 });

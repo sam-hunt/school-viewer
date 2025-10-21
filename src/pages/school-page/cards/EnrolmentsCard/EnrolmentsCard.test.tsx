@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EnrolmentsCard } from './EnrolmentsCard';
 import { mockSchool } from '../../../../test/mockData';
@@ -93,17 +94,28 @@ describe('EnrolmentsCard', () => {
     expect(chartWrapper).toHaveAttribute('aria-label');
     const ariaLabel = chartWrapper?.getAttribute('aria-label');
     expect(ariaLabel).toContain(mockSchool.orgName);
-    expect(ariaLabel).toContain('Enrollment by ethnicity');
+    expect(ariaLabel).toContain('Enrolment by ethnicity');
   });
 
-  it('should render accessible data table with enrollment data', () => {
+  it('should render accessible data table with enrolment data when button is clicked', async () => {
+    const user = userEvent.setup();
     render(<EnrolmentsCard school={mockSchool} />);
 
-    // Should render the table heading
-    expect(screen.getByRole('heading', { name: 'Enrollment Data Table' })).toBeInTheDocument();
+    // Should have a button to show the table
+    const showTableButton = screen.getByRole('button', { name: 'Show Data Table' });
+    expect(showTableButton).toBeInTheDocument();
+
+    // Table should not be visible initially
+    expect(screen.queryByRole('heading', { name: 'Enrolment Data Table' })).not.toBeInTheDocument();
+
+    // Click the button to show the table
+    await user.click(showTableButton);
+
+    // Now table should be visible
+    expect(screen.getByRole('heading', { name: 'Enrolment Data Table' })).toBeInTheDocument();
 
     // Should render table with proper aria-label
-    const table = screen.getByRole('table', { name: 'Enrollment by ethnicity data table' });
+    const table = screen.getByRole('table', { name: 'Enrolment by ethnicity data table' });
     expect(table).toBeInTheDocument();
 
     // Should render column headers
@@ -112,8 +124,12 @@ describe('EnrolmentsCard', () => {
     expect(screen.getByRole('columnheader', { name: 'Percentage' })).toBeInTheDocument();
   });
 
-  it('should display all ethnicity data rows in table', () => {
+  it('should display all ethnicity data rows in table when expanded', async () => {
+    const user = userEvent.setup();
     render(<EnrolmentsCard school={mockSchool} />);
+
+    // Show the table
+    await user.click(screen.getByRole('button', { name: 'Show Data Table' }));
 
     // Check for ethnicity labels in the table
     expect(screen.getByText('Māori')).toBeInTheDocument();
@@ -129,8 +145,12 @@ describe('EnrolmentsCard', () => {
     expect(totalRow).toHaveTextContent('100%');
   });
 
-  it('should display correct percentages in table', () => {
+  it('should display correct percentages in table when expanded', async () => {
+    const user = userEvent.setup();
     render(<EnrolmentsCard school={mockSchool} />);
+
+    // Show the table
+    await user.click(screen.getByRole('button', { name: 'Show Data Table' }));
 
     // Verify percentage calculations
     // mockSchool has: maori=100, pacific=50, european=80, asian=25, total=255
@@ -141,16 +161,24 @@ describe('EnrolmentsCard', () => {
     expect(table).toHaveTextContent('100%'); // Total row
   });
 
-  it('should include color swatches hidden from screen readers', () => {
+  it('should include color swatches hidden from screen readers', async () => {
+    const user = userEvent.setup();
     const { container } = render(<EnrolmentsCard school={mockSchool} />);
+
+    // Show the table
+    await user.click(screen.getByRole('button', { name: 'Show Data Table' }));
 
     // Color swatches should be marked aria-hidden
     const colorSwatches = container.querySelectorAll('[aria-hidden="true"]');
     expect(colorSwatches.length).toBeGreaterThan(0);
   });
 
-  it('should mark Māori text with language attribute', () => {
+  it('should mark Māori text with language attribute', async () => {
+    const user = userEvent.setup();
     const { container } = render(<EnrolmentsCard school={mockSchool} />);
+
+    // Show the table
+    await user.click(screen.getByRole('button', { name: 'Show Data Table' }));
 
     // Find the span with lang="mi"
     const maoriText = container.querySelector('span[lang="mi"]');
@@ -175,14 +203,18 @@ describe('EnrolmentsCard', () => {
 
     // Should not render the table
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
-    expect(screen.queryByText('Enrollment Data Table')).not.toBeInTheDocument();
+    expect(screen.queryByText('Enrolment Data Table')).not.toBeInTheDocument();
 
     // Should show no data message instead
     expect(screen.getByText('No Enrolment Data')).toBeInTheDocument();
   });
 
-  it('should use proper semantic HTML with th elements and scope attributes', () => {
+  it('should use proper semantic HTML with th elements and scope attributes', async () => {
+    const user = userEvent.setup();
     const { container } = render(<EnrolmentsCard school={mockSchool} />);
+
+    // Show the table
+    await user.click(screen.getByRole('button', { name: 'Show Data Table' }));
 
     // Column headers should use th with scope="col"
     const columnHeaders = container.querySelectorAll('thead th[scope="col"]');

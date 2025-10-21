@@ -23,7 +23,7 @@ export const mockSchool: School = {
   latitude: -41.2865,
   longitude: 174.7762,
 
-  // Enrollment numbers
+  // Enrolment numbers
   maori: 50,
   pacific: 30,
   european: 100,

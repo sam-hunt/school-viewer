@@ -33,9 +33,14 @@ describe('SchoolsListPage', () => {
       isPending: true,
     });
 
-    render(<SchoolsListPage />);
+    const { container } = render(<SchoolsListPage />);
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'Loading schools data' })).toBeInTheDocument();
+
+    // Check that skeleton table is rendered
+    const skeletons = container.querySelectorAll('.MuiSkeleton-root');
+    expect(skeletons.length).toBeGreaterThan(0);
+
     expect(screen.queryByTestId('paginated-table')).not.toBeInTheDocument();
   });
 
@@ -52,7 +57,7 @@ describe('SchoolsListPage', () => {
     const loadingContainer = screen.getByRole('status');
     expect(loadingContainer).toBeInTheDocument();
     expect(loadingContainer).toHaveAttribute('aria-live', 'polite');
-    expect(loadingContainer).toHaveAttribute('aria-label', 'Loading data');
+    expect(loadingContainer).toHaveAttribute('aria-label', 'Loading schools data');
   });
 
   it('should render error state', async () => {
@@ -69,7 +74,7 @@ describe('SchoolsListPage', () => {
     expect(screen.getByText('Unable to Load Schools')).toBeInTheDocument();
     expect(screen.getByText(/We're having trouble connecting to the schools database/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
-    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
   it('should render error state with alert role for screen readers', async () => {

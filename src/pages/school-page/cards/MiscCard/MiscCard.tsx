@@ -16,12 +16,6 @@ export const MiscCard = ({ school }: MiscCardProps) => (
         <TableBody>
           <TableRow>
             <TableCell size="small" component="th" scope="row">
-              Definition
-            </TableCell>
-            <TableCell size="small">{school.definition}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell size="small" component="th" scope="row">
               Roll Date
             </TableCell>
             <TableCell size="small">{school.rollDate}</TableCell>
@@ -68,11 +62,17 @@ export const MiscCard = ({ school }: MiscCardProps) => (
             </TableCell>
             <TableCell size="small">{school.schoolDonations}</TableCell>
           </TableRow>
-          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+          <TableRow>
             <TableCell size="small" component="th" scope="row">
               Authority
             </TableCell>
             <TableCell size="small">{school.authority}</TableCell>
+          </TableRow>
+          <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableCell size="small" component="th" scope="row">
+              Definition
+            </TableCell>
+            <TableCell size="small">{school.definition}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

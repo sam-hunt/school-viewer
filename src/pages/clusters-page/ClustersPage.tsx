@@ -4,13 +4,13 @@ import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
 import { SchoolListItem } from '../../models/SchoolListItem';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { useMemo, useState } from 'react';
-import { Button, FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, CircularProgress, Tooltip } from '@mui/material';
+import { Button, FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, Skeleton, Tooltip } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useFocusOnNavigation } from '../../hooks/useFocusOnNavigation/useFocusOnNavigation';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle/useDocumentTitle';
 
-type SchoolFeature = Feature<Point, { schoolId: string; name: string; total: number }>;
+type SchoolFeature = Feature<Point, SchoolListItem>;
 
 export const ClustersPage: React.FC = () => {
   const headingRef = useFocusOnNavigation();
@@ -79,7 +79,7 @@ export const ClustersPage: React.FC = () => {
 
       {schoolsList && (
         <Box ref={(el: HTMLDivElement) => setMapContainerEl(el)}>
-          <MapboxGLClusteredMap
+          <MapboxGLClusteredMap<SchoolListItem>
             width={mapWidth}
             height={mapHeight}
             lat={-41}
@@ -93,17 +93,14 @@ export const ClustersPage: React.FC = () => {
       )}
 
       {isPending && (
-        <Stack
-          height="50vh"
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
+        <Box
           role="status"
           aria-live="polite"
-          aria-label="Loading data"
+          aria-label="Loading school map data"
+          sx={{ width: '100%', height: '85vh' }}
         >
-          <CircularProgress />
-        </Stack>
+          <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 1 }} />
+        </Box>
       )}
 
       {error && (
