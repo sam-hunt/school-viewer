@@ -20,10 +20,12 @@ export const AboutPage = () => {
         provided by the New Zealand Government.
       </Typography>
       <Typography>
-        Built with <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a>,{' '}
-        <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener noreferrer">Typescript</a>,{' '}
+        Built with <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">React</a>,{' '}
+        <a href="https://www.typescriptlang.org/" target="_blank" rel="noopener noreferrer">TypeScript</a>,{' '}
         <a href="https://mui.com/" target="_blank" rel="noopener noreferrer">MUI</a>,{' '}
-        <a href="https://www.mapbox.com/mapbox-gljs" target="_blank" rel="noopener noreferrer">Mapbox GLJS</a>, and{' '}
+        <a href="https://visgl.github.io/react-map-gl/" target="_blank" rel="noopener noreferrer">react-map-gl</a> with{' '}
+        <a href="https://maplibre.org/" target="_blank" rel="noopener noreferrer">MapLibre GL</a>,{' '}
+        <a href="https://www.maptiler.com/" target="_blank" rel="noopener noreferrer">MapTiler</a>, and{' '}
         <a href="https://nivo.rocks/" target="_blank" rel="noopener noreferrer">Nivo</a>.
       </Typography>
     </Container>

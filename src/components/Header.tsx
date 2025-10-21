@@ -31,10 +31,21 @@ export const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <SchoolIcon sx={{ mr: 1.5, width: 32, height: 32 }} aria-hidden="true" />
-        <Typography variant="h5" component="div" pr={3} fontSize={{ xs: '1rem', sm: '1.25rem', md: '1.5rem' }}>
-          School Viewer
-        </Typography>
+        <NavLink
+          to="/"
+          aria-label="School Viewer home"
+          style={{
+            color: 'white',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <SchoolIcon sx={{ mr: 1.5, width: 32, height: 32 }} aria-hidden="true" />
+          <Typography variant="h5" component="div" pr={3} fontSize={{ xs: '1rem', sm: '1.25rem', md: '1.5rem' }}>
+            School Viewer
+          </Typography>
+        </NavLink>
 
         <nav aria-label="Main navigation">
           <Stack

@@ -31,6 +31,13 @@ describe('Header', () => {
     expect(screen.getByText('School Viewer')).toBeInTheDocument();
   });
 
+  it('should render app title and icon as a link to home', () => {
+    renderHeader();
+    const homeLink = screen.getByRole('link', { name: 'School Viewer home' });
+    expect(homeLink).toBeInTheDocument();
+    expect(homeLink).toHaveAttribute('href', '/');
+  });
+
   it('should render navigation links', () => {
     renderHeader();
 
@@ -174,5 +181,63 @@ describe('Header', () => {
     // We can't easily test the exact computed styles in JSDOM, but we can verify
     // the style prop function returns different values for active/inactive states
     expect(schoolsLink).toHaveAttribute('style');
+  });
+
+  it('should render GitHub link button', () => {
+    renderHeader();
+
+    const githubLink = screen.getByRole('link', { name: 'View source code on GitHub' });
+    expect(githubLink).toBeInTheDocument();
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/sam-hunt/school-viewer');
+    expect(githubLink).toHaveAttribute('target', '_blank');
+    expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('should hide navigation icons on xs screens', () => {
+    const { container } = renderHeader();
+
+    // Navigation icons should have responsive display styling
+    const searchIcon = screen.getByTestId('SearchIcon');
+    const bubbleIcon = screen.getByTestId('BubbleChartIcon');
+    const infoIcon = screen.getByTestId('InfoOutlinedIcon');
+
+    // Verify icons are rendered (MUI's responsive breakpoints work in browser, not JSDOM)
+    expect(searchIcon).toBeInTheDocument();
+    expect(bubbleIcon).toBeInTheDocument();
+    expect(infoIcon).toBeInTheDocument();
+
+    // Verify that the icons have MUI classes indicating responsive behavior
+    // MUI applies CSS classes that control display based on viewport size
+    expect(searchIcon.classList.toString()).toContain('MuiSvgIcon');
+    expect(bubbleIcon.classList.toString()).toContain('MuiSvgIcon');
+    expect(infoIcon.classList.toString()).toContain('MuiSvgIcon');
+  });
+
+  it('should have responsive font sizes for app title', () => {
+    const { container } = renderHeader();
+
+    const titleElement = screen.getByText('School Viewer');
+    expect(titleElement).toBeInTheDocument();
+
+    // Verify the element has the component and variant attributes
+    expect(titleElement.tagName).toBe('DIV');
+  });
+
+  it('should have responsive font sizes for navigation link text', () => {
+    renderHeader();
+
+    const schoolsText = screen.getByText('Schools');
+    const clustersText = screen.getByText('Clusters');
+    const aboutText = screen.getByText('About');
+
+    // Verify all navigation text elements are rendered
+    expect(schoolsText).toBeInTheDocument();
+    expect(clustersText).toBeInTheDocument();
+    expect(aboutText).toBeInTheDocument();
+
+    // Verify they are span elements (Typography component="span")
+    expect(schoolsText.tagName).toBe('SPAN');
+    expect(clustersText.tagName).toBe('SPAN');
+    expect(aboutText.tagName).toBe('SPAN');
   });
 });

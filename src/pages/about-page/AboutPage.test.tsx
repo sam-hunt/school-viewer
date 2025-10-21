@@ -44,16 +44,22 @@ describe('AboutPage', () => {
     render(<AboutPage />);
 
     const reactLink = screen.getByRole('link', { name: 'React' });
-    expect(reactLink).toHaveAttribute('href', 'https://reactjs.org/');
+    expect(reactLink).toHaveAttribute('href', 'https://react.dev/');
 
-    const typescriptLink = screen.getByRole('link', { name: 'Typescript' });
+    const typescriptLink = screen.getByRole('link', { name: 'TypeScript' });
     expect(typescriptLink).toHaveAttribute('href', 'https://www.typescriptlang.org/');
 
     const muiLink = screen.getByRole('link', { name: 'MUI' });
     expect(muiLink).toHaveAttribute('href', 'https://mui.com/');
 
-    const mapboxLink = screen.getByRole('link', { name: 'Mapbox GLJS' });
-    expect(mapboxLink).toHaveAttribute('href', 'https://www.mapbox.com/mapbox-gljs');
+    const reactMapGlLink = screen.getByRole('link', { name: 'react-map-gl' });
+    expect(reactMapGlLink).toHaveAttribute('href', 'https://visgl.github.io/react-map-gl/');
+
+    const mapLibreLink = screen.getByRole('link', { name: 'MapLibre GL' });
+    expect(mapLibreLink).toHaveAttribute('href', 'https://maplibre.org/');
+
+    const mapTilerLink = screen.getByRole('link', { name: 'MapTiler' });
+    expect(mapTilerLink).toHaveAttribute('href', 'https://www.maptiler.com/');
 
     const nivoLink = screen.getByRole('link', { name: 'Nivo' });
     expect(nivoLink).toHaveAttribute('href', 'https://nivo.rocks/');
@@ -77,7 +83,7 @@ describe('AboutPage', () => {
     expect(reactLink).toHaveAttribute('target', '_blank');
     expect(reactLink).toHaveAttribute('rel', 'noopener noreferrer');
 
-    const typescriptLink = screen.getByRole('link', { name: 'Typescript' });
+    const typescriptLink = screen.getByRole('link', { name: 'TypeScript' });
     expect(typescriptLink).toHaveAttribute('target', '_blank');
     expect(typescriptLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
