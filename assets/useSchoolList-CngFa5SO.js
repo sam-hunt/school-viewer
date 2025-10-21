@@ -1,4 +1,4 @@
-import{u as r}from"./vendor-tanstack-Cjudyj3h.js";const s="https://catalogue.data.govt.nz/api/3/action/datastore_search_sql",o="4b292323-9fcc-41f8-814b-3c7b19cf14b3",i=async()=>{const a=new URL(s),t=`
+import{u as n}from"./vendor-tanstack-CPi_boHc.js";const s="https://catalogue.data.govt.nz/api/3/action/datastore_search_sql",o="4b292323-9fcc-41f8-814b-3c7b19cf14b3",i="Unable to connect to the schools database. Please check your internet connection and try again.",E="The schools database is currently unavailable. Please try again later.",c=async()=>{const a=new URL(s),e=`
     SELECT
       "School_Id" as "schoolId",
       "Org_Name" as "name",
@@ -17,4 +17,4 @@ import{u as r}from"./vendor-tanstack-Cjudyj3h.js";const s="https://catalogue.dat
       1 as "count"
     FROM
       "${o}"
-    `.trim().replace(/\s\s+/g," ");a.search=new URLSearchParams({sql:t}).toString();const e=await fetch(a.toString()).then(n=>n.json()).catch(()=>{throw new Error("Unable to connect to the schools database. Please check your internet connection and try again.")});if(!e.success)throw new Error("The schools database is currently unavailable. Please try again later.");return e.result.records},c=()=>{const{data:a,error:t,isPending:e}=r({queryKey:["schools"],queryFn:i});return e?{isPending:!0,data:void 0,error:null}:t?{isPending:!1,data:void 0,error:t}:{isPending:!1,data:a,error:null}};export{c as u};
+    `.trim().replace(/\s\s+/g," ");a.search=new URLSearchParams({sql:e}).toString();const t=await fetch(a.toString()).then(r=>r.json()).catch(()=>Promise.reject(new Error(i)));if(!t.success)throw new Error(E);return t.result.records},L=()=>{const{data:a,error:e,isPending:t}=n({queryKey:["schools"],queryFn:c});return t?{isPending:!0,data:void 0,error:null}:e?{isPending:!1,data:void 0,error:e}:{isPending:!1,data:a,error:null}};export{L as u};
