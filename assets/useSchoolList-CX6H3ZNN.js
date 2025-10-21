@@ -1,4 +1,4 @@
-import{u as n}from"./vendor-tanstack-CPi_boHc.js";const s="https://catalogue.data.govt.nz/api/3/action/datastore_search_sql",o="4b292323-9fcc-41f8-814b-3c7b19cf14b3",i="Unable to connect to the schools database. Please check your internet connection and try again.",E="The schools database is currently unavailable. Please try again later.",c=async()=>{const a=new URL(s),e=`
+import{u as n}from"./vendor-tanstack-DTWbCzqv.js";const s="https://catalogue.data.govt.nz/api/3/action/datastore_search_sql",o="4b292323-9fcc-41f8-814b-3c7b19cf14b3",i="Unable to connect to the schools database. Please check your internet connection and try again.",E="The schools database is currently unavailable. Please try again later.",c=async()=>{const a=new URL(s),e=`
     SELECT
       "School_Id" as "schoolId",
       "Org_Name" as "name",
