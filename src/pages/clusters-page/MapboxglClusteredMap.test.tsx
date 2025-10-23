@@ -72,21 +72,19 @@ describe('MapboxGLClusteredMap', () => {
     vi.clearAllMocks();
   });
 
-  it('should render map container with correct dimensions', () => {
-    const { container } = render(
+  it('should render map component', () => {
+    render(
       <MapboxGLClusteredMap
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
     );
 
-    const mapContainer = container.firstChild as HTMLElement;
-    expect(mapContainer).toHaveStyle({ width: '800px', height: '600px' });
+    const map = screen.getByTestId('mock-map');
+    expect(map).toBeInTheDocument();
   });
 
   it('should render Map component with correct initial view state', () => {
@@ -95,8 +93,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -118,8 +114,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -132,7 +126,7 @@ describe('MapboxGLClusteredMap', () => {
     // This ensures we get JSON response, not HTML
     expect(mapProps.mapStyle).toContain('/style.json?key=');
     // Should use either light or dark theme depending on the current theme
-    expect(mapProps.mapStyle).toMatch(/^https:\/\/api\.maptiler\.com\/maps\/streets-v2-(dark|light)\/style\.json\?key=.+$/);
+    expect(mapProps.mapStyle).toMatch(/^https:\/\/api\.maptiler\.com\/maps\/dataviz-(dark|light)\/style\.json\?key=.+$/);
   });
 
   it('should render navigation control', () => {
@@ -141,8 +135,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -161,8 +153,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -184,8 +174,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="total"
       />,
@@ -205,8 +193,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -232,8 +218,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -258,8 +242,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -282,8 +264,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={emptyFeatures}
         clusterByProperty="count"
       />,
@@ -301,8 +281,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={5}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
         onFeatureClick={onFeatureClick}
@@ -320,8 +298,6 @@ describe('MapboxGLClusteredMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={12}
-        width={800}
-        height={600}
         features={mockFeatures}
         clusterByProperty="count"
       />,
@@ -342,8 +318,6 @@ describe('MapboxGLClusteredMap', () => {
           lat={-41.2865}
           lng={174.7762}
           zoom={5}
-          width={800}
-          height={600}
           features={mockFeatures}
           clusterByProperty="count"
         />
@@ -353,7 +327,7 @@ describe('MapboxGLClusteredMap', () => {
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    expect(mapProps.mapStyle).toContain('streets-v2-dark');
+    expect(mapProps.mapStyle).toContain('dataviz-dark');
   });
 
   it('should use light map style when theme is light', () => {
@@ -365,8 +339,6 @@ describe('MapboxGLClusteredMap', () => {
           lat={-41.2865}
           lng={174.7762}
           zoom={5}
-          width={800}
-          height={600}
           features={mockFeatures}
           clusterByProperty="count"
         />
@@ -376,6 +348,6 @@ describe('MapboxGLClusteredMap', () => {
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
 
-    expect(mapProps.mapStyle).toContain('streets-v2-light');
+    expect(mapProps.mapStyle).toContain('dataviz-light');
   });
 });

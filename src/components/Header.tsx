@@ -110,29 +110,30 @@ export const Header = () => {
 
         <Box flexGrow="1" />
 
-        <Tooltip title="View on GitHub">
-          <IconButton
-            component="a"
-            href="https://github.com/sam-hunt/school-viewer"
-            target="_blank"
-            rel="noopener noreferrer"
-            color="inherit"
-            aria-label="View source code on GitHub"
-          >
-            <GitHubIcon />
-          </IconButton>
-        </Tooltip>
+        <Stack direction="row" spacing={{ xs: 0, md: 1 }} alignItems="center">
+          <Tooltip title="View on GitHub" sx={{ display: { xs: 'none', sm: 'inline-flex' } }}>
+            <IconButton
+              component="a"
+              href="https://github.com/sam-hunt/school-viewer"
+              target="_blank"
+              rel="noopener noreferrer"
+              color="inherit"
+              aria-label="View source code on GitHub"
+            >
+              <GitHubIcon />
+            </IconButton>
+          </Tooltip>
 
-        <Tooltip title="Toggle Dark Mode">
-          <IconButton
-            sx={{ ml: 1 }}
-            onClick={toggleTheme}
-            color="inherit"
-            aria-label={`Switch to ${theme.palette.mode === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme.palette.mode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
-          </IconButton>
-        </Tooltip>
+          <Tooltip title="Toggle Dark Mode">
+            <IconButton
+              onClick={toggleTheme}
+              color="inherit"
+              aria-label={`Switch to ${theme.palette.mode === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme.palette.mode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Toolbar>
     </AppBar>
   );

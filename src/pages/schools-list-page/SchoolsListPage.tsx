@@ -1,6 +1,23 @@
 import { useDeferredValue, useMemo, useState } from 'react';
-import { Box, Button, Stack, Container, TextField, Typography, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  Container,
+  TextField,
+  Typography,
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
 import { SchoolListItem } from '../../models/SchoolListItem';
@@ -35,7 +52,11 @@ export const SchoolsListPage = () => {
 
   // Use deferred search term for the expensive filtering operation
   const optimizedSearchValue = useMemo(
-    () => deferredSearchTerm.replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, '').toLowerCase(),
+    () =>
+      deferredSearchTerm
+        .trim()
+        .toLocaleLowerCase()
+        .replace(/[.,/#!$%^&*;:{}=\-_'`~()]/g, ''),
     [deferredSearchTerm],
   );
 
@@ -51,17 +72,27 @@ export const SchoolsListPage = () => {
 
   return (
     <Container id="schools-list-section" component="section" maxWidth="xl">
-      <Stack direction="row" my={3} alignItems="center">
+      <Stack direction={{ xs: 'column', sm: 'row' }} my={3} spacing={2} alignItems={{ xs: 'stretch', sm: 'center' }}>
         <Typography variant="h4" component="h1" ref={headingRef} tabIndex={-1} sx={{ outline: 'none' }}>
           Find a school
         </Typography>
-        <Box flexGrow={1} />
+        <Box flexGrow={1} sx={{ display: { xs: 'none', sm: 'block' } }} />
         <TextField
           value={searchTerm}
-          onChange={event => setSearchTerm(event.target.value.toLowerCase())}
-          sx={{ minWidth: 300 }}
+          onChange={event => setSearchTerm(event.target.value)}
+          sx={{ minWidth: { xs: '100%', sm: 300 } }}
           label="Search schools"
-          slotProps={{ input: { endAdornment: <SearchIcon /> } }}
+          slotProps={{
+            input: {
+              endAdornment: searchTerm ? (
+                <IconButton aria-label="Clear search" onClick={() => setSearchTerm('')} edge="end" size="small">
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              ) : (
+                <SearchIcon />
+              ),
+            },
+          }}
           size="small"
         />
       </Stack>
@@ -78,25 +109,51 @@ export const SchoolsListPage = () => {
           </Button>
         </Stack>
       )}
-      {filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
+      {!isPending && !error && filteredSchoolsList.length > 0 && <PaginatedSchoolsTable schools={filteredSchoolsList} />}
+      {!isPending && !error && filteredSchoolsList.length === 0 && deferredSearchTerm && (
+        <Stack spacing={2} alignItems="center" py={6}>
+          <Typography variant="h6" color="text.secondary">
+            No schools found
+          </Typography>
+          <Typography color="text.secondary">
+            No schools match your search for "{deferredSearchTerm}". Try a different search term.
+          </Typography>
+        </Stack>
+      )}
       {isPending && (
         <TableContainer component={Paper} role="status" aria-live="polite" aria-label="Loading schools data">
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><Skeleton variant="text" width="60%" /></TableCell>
-                <TableCell><Skeleton variant="text" width="80%" /></TableCell>
-                <TableCell><Skeleton variant="text" width="40%" /></TableCell>
-                <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                <TableCell>
+                  <Skeleton data-testid="skeleton-schools-table-header-name" variant="text" width="60%" />
+                </TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                  <Skeleton data-testid="skeleton-schools-table-header-city" variant="text" width="80%" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton data-testid="skeleton-schools-table-header-students" variant="text" width="40%" />
+                </TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>
+                  <Skeleton data-testid="skeleton-schools-table-header-website" variant="text" width="50%" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {[...Array(10)].map((_, index) => (
+              {Array.from({ length: 13 }, (_, index) => (
                 <TableRow key={index}>
-                  <TableCell><Skeleton variant="text" /></TableCell>
-                  <TableCell><Skeleton variant="text" /></TableCell>
-                  <TableCell><Skeleton variant="text" /></TableCell>
-                  <TableCell><Skeleton variant="text" /></TableCell>
+                  <TableCell>
+                    <Skeleton data-testid={`skeleton-schools-table-row-${index.toString()}-name`} variant="text" />
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                    <Skeleton data-testid={`skeleton-schools-table-row-${index.toString()}-city`} variant="text" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton data-testid={`skeleton-schools-table-row-${index.toString()}-students`} variant="text" />
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>
+                    <Skeleton data-testid={`skeleton-schools-table-row-${index.toString()}-website`} variant="text" />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

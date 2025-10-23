@@ -1,6 +1,6 @@
 # School Viewer Modernization Plan
 
-Last Updated: 2025-10-20
+Last Updated: 2025-10-23
 
 ## 🚀 Phase 1: Infrastructure & Deployment
 
@@ -55,7 +55,7 @@ Last Updated: 2025-10-20
   - [x] Achieve 97%+ code coverage (158 tests across 21 test files)
   - [x] Fix all act() warnings in async tests using waitFor
   - [x] Configure coverage exclusions (main.tsx, .d.ts files, test utilities)
-- [ ] Add mui skeletons for individual loading states rather than full page spinner
+- [x] Add mui skeletons for individual loading states rather than full page spinner
 
 ### 6. Add Path Aliases
 - [ ] Configure path aliases in tsconfig.json (@/ → src/)
@@ -98,9 +98,9 @@ Last Updated: 2025-10-20
 ## ⚡ Phase 3: Performance & UX
 
 ### 10. Performance Optimizations
-- [ ] Evaluate virtual scrolling for PaginatedSchoolsTable
-- [ ] Install TanStack Virtual if needed
-- [ ] Implement virtual scrolling if beneficial
+- [x] Evaluate virtual scrolling for PaginatedSchoolsTable (not needed - pagination already limits DOM to 12-24 rows)
+- [x] Install TanStack Virtual if needed (skipped - not beneficial)
+- [x] Implement virtual scrolling if beneficial (skipped - pagination is more appropriate)
 - [ ] Add React.memo to expensive map components
 - [x] Use useDeferredValue for search input
 - [ ] Profile application with React DevTools Profiler
@@ -122,9 +122,23 @@ Last Updated: 2025-10-20
 - [x] Add proper ARIA labels where missing (approved) - completed in Phases 1-3
 - [ ] Test with screen reader
 
+### 13. Mobile Layout Improvements
+- [ ] Rebuild Header component with burger navigation menu for xs screens
+  - [ ] Create mobile drawer/menu component
+  - [ ] Move navigation items (Schools, Clusters, About) into burger menu
+  - [ ] Keep theme toggle and (optionally) GitHub link in header
+  - [ ] Ensure proper focus management and keyboard navigation
+  - [ ] Test accessibility with burger menu
+- [ ] Refactor container/layout architecture
+  - [ ] Create/update Layout component to include Container
+  - [ ] Hoist Container from individual pages to Layout component
+  - [ ] Reduce Container padding at xs breakpoint for better mobile spacing
+  - [ ] Audit and fix viewport unit (vw/vh) hacks across the codebase
+  - [ ] Test all pages at various breakpoints to ensure consistent layout
+
 ## 🏗️ Phase 4: Architecture & Developer Experience
 
-### 13. API Service Layer
+### 14. API Service Layer
 - [ ] Create src/services/api.ts
 - [ ] Extract SQL query builders from hooks
 - [ ] Move API endpoint configuration to service
@@ -132,14 +146,19 @@ Last Updated: 2025-10-20
 - [ ] Update hooks to use service layer
 - [ ] Add JSDoc documentation for API functions
 
-### 14. Developer Experience
+### 15. Developer Experience
 - [x] Add bundle analyzer (rollup-plugin-visualizer with `npm run build:analyze`)
 - [x] Analyze bundle size and identify optimizations
+- [ ] Configure Prettier with better defaults
+  - [ ] Create/update .prettierrc configuration file
+  - [ ] Configure print width, quotes, semicolons, trailing commas, etc.
+  - [ ] Ensure ESLint integration remains compatible
+  - [ ] Run formatting across entire codebase
 - [ ] Consider Biome as ESLint+Prettier replacement (research first)
 - [ ] Add pre-push hooks for additional checks
 - [ ] Document development workflow in CLAUDE.md
 
-### 15. Quick Fixes & Polish
+### 16. Quick Fixes & Polish
 - [x] Fix TODO in SchoolsListPage.tsx (migrate to slotProps API)
 - [x] Fix TODO in PaginatedSchoolsTable.tsx (migrate to slotProps API)
 - [x] Add dropdown caret icon to cluster map dataset picker (using MUI ExpandMoreIcon)
@@ -150,7 +169,7 @@ Last Updated: 2025-10-20
 
 ## 🧪 Phase 5: Testing ✅ Complete
 
-### 16. Testing Infrastructure
+### 17. Testing Infrastructure
 - [x] Install Vitest and @testing-library/react
 - [x] Configure Vitest with happy-dom environment
 - [x] Install @testing-library/jest-dom and @testing-library/user-event

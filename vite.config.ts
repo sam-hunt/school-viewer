@@ -19,7 +19,7 @@ export default defineConfig(({ command }) => {
             // Split vendor code into separate chunks for better caching
             'vendor-react': ['react', 'react-dom', 'react-router'],
             'vendor-mui': ['@mui/material', '@mui/icons-material', '@mui/system'],
-            'vendor-nivo': ['@nivo/bar', '@nivo/pie', '@nivo/core'],
+            'vendor-nivo': ['@nivo/pie', '@nivo/core'],
             'vendor-mapbox': ['mapbox-gl'],
             'vendor-tanstack': ['@tanstack/react-query'],
           },

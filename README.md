@@ -109,7 +109,7 @@ src/
 
 The project has comprehensive test coverage (97%+) using Vitest and React Testing Library:
 
-- **223 tests** across 25 test files
+- **228 tests** across 25 test files
 - All custom hooks tested (useSchool, useSchoolList, useLocalStorage, useDocumentTitle, useFocusOnNavigation, useWindowSize)
 - All page components tested (with proper routing context)
 - All display components tested (cards, tables, maps)

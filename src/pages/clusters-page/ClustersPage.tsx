@@ -4,22 +4,30 @@ import { useSchoolList } from '../../hooks/useSchoolList/useSchoolList';
 import { SchoolListItem } from '../../models/SchoolListItem';
 import { MapboxGLClusteredMap } from './MapboxglClusteredMap';
 import { useMemo, useState } from 'react';
-import { Button, FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, Skeleton, Tooltip } from '@mui/material';
+import { Button, FormControl, Box, InputLabel, MenuItem, Select, Stack, Typography, Container, Skeleton, Tooltip, useTheme, Card } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useFocusOnNavigation } from '../../hooks/useFocusOnNavigation/useFocusOnNavigation';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle/useDocumentTitle';
+import { grey } from '@mui/material/colors';
 
 type SchoolFeature = Feature<Point, SchoolListItem>;
 
+// Background colors that match MapTiler's dataviz tile backgrounds
+// These eliminate the white/dark flash while tiles are loading
+const MAP_BG_DARK = '#141414'; // Matches dataviz-dark tile background
+const MAP_BG_LIGHT = '#e0e0e1'; // Matches dataviz-light tile background
+
 export const ClustersPage: React.FC = () => {
   const headingRef = useFocusOnNavigation();
+  const theme = useTheme();
   const [mapGrouping, setMapGrouping] = useState<keyof SchoolListItem>('count');
   const { data: schoolsList, error, isPending } = useSchoolList();
-  const [mapContainerEl, setMapContainerEl] = useState<HTMLDivElement>();
   const navigate = useNavigate();
 
   useDocumentTitle('School Clusters Map - Schools Viewer');
+
+  const mapBackgroundColor = theme.palette.mode === 'dark' ? MAP_BG_DARK : MAP_BG_LIGHT;
 
   const onFeatureClick = (feature: SchoolFeature) => void navigate(`/schools/${feature.properties.schoolId}`);
 
@@ -39,17 +47,18 @@ export const ClustersPage: React.FC = () => {
       ),
   }), [schoolsList]);
 
-  // TODO: Better way to do this, or maybe react-map-gl can handle this?
-  const mapHeight = `calc(${mapContainerEl?.clientHeight ? `${mapContainerEl.clientHeight.toString()}px` : '85vh'} - 50px)`;
-  const mapWidth = mapContainerEl?.clientWidth ? `${mapContainerEl.clientWidth.toString()}px` : '95vw';
-
   return (
     <Container id="home-section" component="section" maxWidth="xl">
-      <Stack direction="row" alignItems="center" my={3} gap={2}>
-        <Typography variant="h4" component="h1" flexGrow="1" ref={headingRef} tabIndex={-1} sx={{ outline: 'none' }}>
-          NZ Schools Directory
-        </Typography>
-        <FormControl>
+      <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'center' }} my={3} gap={2}>
+        <Stack direction="row" alignItems="center" gap={1} flexGrow="1">
+          <Typography variant="h4" component="h1" ref={headingRef} tabIndex={-1} sx={{ outline: 'none' }}>
+            NZ Schools Directory
+          </Typography>
+          <Tooltip title={<Typography>Select a school or cluster for more information</Typography>} enterDelay={0}>
+            <HelpOutlineIcon sx={{ width: '28px', height: '28px', cursor: 'help', color: grey[400] }} />
+          </Tooltip>
+        </Stack>
+        <FormControl sx={{ minWidth: { xs: '100%', sm: 250 } }}>
           <InputLabel id="map-grouping-select-label">Cluster Metric</InputLabel>
           <Select
             labelId="map-grouping-select-label"
@@ -58,7 +67,6 @@ export const ClustersPage: React.FC = () => {
             label="Cluster Metric"
             onChange={event => setMapGrouping(event.target.value as keyof SchoolListItem)}
             IconComponent={ExpandMoreIcon}
-            sx={{ width: 250 }}
             size="small"
           >
             <MenuItem value="count">School Locations</MenuItem>
@@ -72,16 +80,11 @@ export const ClustersPage: React.FC = () => {
             <MenuItem value="total">Total Enrolments</MenuItem>
           </Select>
         </FormControl>
-        <Tooltip title={<Typography>Select a school or cluster for more information</Typography>} enterDelay={0}>
-          <HelpOutlineIcon sx={{ width: '28px', height: '28px', cursor: 'help' }} />
-        </Tooltip>
       </Stack>
 
       {schoolsList && (
-        <Box ref={(el: HTMLDivElement) => setMapContainerEl(el)}>
+        <Box sx={{ width: '100%', height: 'calc(85vh - 50px)', borderRadius: 1, overflow: 'hidden', backgroundColor: mapBackgroundColor }}>
           <MapboxGLClusteredMap<SchoolListItem>
-            width={mapWidth}
-            height={mapHeight}
             lat={-41}
             lng={173}
             zoom={5}
@@ -93,14 +96,20 @@ export const ClustersPage: React.FC = () => {
       )}
 
       {isPending && (
-        <Box
+        <Card
           role="status"
           aria-live="polite"
           aria-label="Loading school map data"
-          sx={{ width: '100%', height: '85vh' }}
+          sx={{ width: '100%', height: '85vh', bgcolor: mapBackgroundColor }}
         >
-          <Skeleton variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 1 }} />
-        </Box>
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height="100%"
+            sx={{ borderRadius: 1, bgcolor: mapBackgroundColor }}
+            data-testid="skeleton-clusters-map"
+          />
+        </Card>
       )}
 
       {error && (

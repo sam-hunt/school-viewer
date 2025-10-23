@@ -1,10 +1,11 @@
 import { ThemeProvider as MuiThemeProvider, CssBaseline, createTheme } from '@mui/material';
 import { useMemo } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage/useLocalStorage';
-import type { PaletteMode } from '@mui/material';
+import type { LinkProps, PaletteMode } from '@mui/material';
 import type { PropsWithChildren } from 'react';
 import { grey } from '@mui/material/colors';
 import { ThemeContext } from './ThemeContext';
+import { LinkBehavior } from '../App/LinkBehavior';
 
 const lavender = {
   main: '#CB9EFF',
@@ -21,12 +22,25 @@ const royal = {
 
 const themeFromMode = (mode: PaletteMode) =>
   createTheme({
+    cssVariables: true,
     palette: {
       mode,
       primary: mode === 'dark' ? lavender : royal,
       secondary: mode === 'dark' ? royal : lavender,
       background: {
         paper: mode === 'dark' ? grey[900] : grey[300],
+      },
+    },
+    components: {
+      MuiLink: {
+        defaultProps: {
+          component: LinkBehavior,
+        } as LinkProps,
+      },
+      MuiButtonBase: {
+        defaultProps: {
+          LinkComponent: LinkBehavior,
+        },
       },
     },
   });

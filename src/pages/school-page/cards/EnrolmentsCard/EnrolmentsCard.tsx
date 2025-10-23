@@ -1,8 +1,7 @@
 import { Box, Button, Card, Stack, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { Bar } from '@nivo/bar';
-import { Pie } from '@nivo/pie';
+import { ResponsivePie } from '@nivo/pie';
 import { School } from '../../../../models/School';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import TableChartIcon from '@mui/icons-material/TableChart';
 
 interface EnrolmentsCardProps {
@@ -10,17 +9,9 @@ interface EnrolmentsCardProps {
 }
 
 export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
-  const [chartContainerEl, setChartContainerEl] = useState<HTMLDivElement>();
-
   // Detect if user prefers reduced motion (common for screen reader users and accessibility needs)
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const [showTable, setShowTable] = useState(prefersReducedMotion);
-
-  const [width, height] = useMemo(() => {
-    const parentWidth = chartContainerEl?.clientWidth ?? 0;
-    const parentHeight = chartContainerEl?.clientHeight ?? 0;
-    return [parentWidth, parentHeight];
-  }, [chartContainerEl?.clientWidth, chartContainerEl?.clientHeight]);
 
   const enrolments = [
     { color: '#b2cefe', label: 'Māori', value: school.maori, id: 'Māori' },
@@ -35,8 +26,8 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
   const totalEnrolments = school.total;
 
   return (
-    <Card sx={{ p: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Card>
+      <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h5" component="h2">
           Enrolments ({totalEnrolments})
         </Typography>
@@ -55,7 +46,7 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
       </Box>
 
       {showTable ? (
-        <Box sx={{ mt: 2 }} id="enrolment-data-display">
+        <Box sx={{ p: 2 }} id="enrolment-data-display">
           <Typography variant="h6" component="h3" gutterBottom>
             Enrolment Data Table
           </Typography>
@@ -108,10 +99,7 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
         </Box>
       ) : (
         <Box
-          ref={(el: HTMLDivElement) => setChartContainerEl(el)}
-          sx={{ minHeight: '450px', maxHeight: '600px' }}
-          px={2}
-          py={0}
+          sx={{ height: '500px', width: '100%' }}
           role="img"
           aria-label={`Enrolment by ethnicity for ${school.orgName}: ${enrolments
             .map(d => `${d.label} ${d.value.toString()} students`)
@@ -119,52 +107,34 @@ export const EnrolmentsCard = ({ school }: EnrolmentsCardProps) => {
           id="enrolment-data-display"
         >
           {totalEnrolments > 0 ? (
-            window.innerWidth > 640 ? (
-              <Pie
-                data-testid="pie-chart"
-                width={width}
-                height={height}
-                isInteractive={false}
-                margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
-                data={enrolments}
-                colors={{ datum: 'data.color' }}
-                startAngle={-90} // Prevent smaller arcs from clustering at the top and getting overlapping labels
-                innerRadius={0.6}
-                padAngle={0.5}
-                cornerRadius={5}
-                enableArcLabels={true} // These are labels on the arc
-                enableArcLinkLabels={true} // These are labels off to the side
-                arcLabel={d => {
-                  const percentage = Math.round((d.value / totalEnrolments) * 100);
-                  return percentage > 2 ? `${percentage.toString()}%` : '';
-                }}
-                arcLinkLabel={d => `${d.id.toString()}: ${d.value.toString()}`}
-                arcLinkLabelsColor={{
-                  from: 'color',
-                }}
-                arcLinkLabelsThickness={3}
-                arcLinkLabelsTextColor={{
-                  from: 'color',
-                  modifiers: [['darker', 1.2]],
-                }}
-              />
-            ) : (
-              <Bar
-                data-testid="bar-chart"
-                layout="horizontal"
-                enableGridX={false}
-                enableGridY={false}
-                labelTextColor="#fff"
-                enableLabel={true}
-                width={chartContainerEl?.clientWidth ?? 0}
-                height={chartContainerEl?.clientHeight ?? 0}
-                data={enrolments}
-                colors={{ datum: 'data.color' }}
-                margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
-              />
-            )
+            <ResponsivePie
+              data-testid="pie-chart"
+              isInteractive={false}
+              margin={{ top: 80, right: 120, bottom: 80, left: 120 }}
+              data={enrolments}
+              colors={{ datum: 'data.color' }}
+              startAngle={-90} // Prevent smaller arcs from clustering at the top and getting overlapping labels
+              innerRadius={0.6}
+              padAngle={0.5}
+              cornerRadius={5}
+              enableArcLabels={true} // These are labels on the arc
+              enableArcLinkLabels={true} // These are labels off to the side
+              arcLabel={d => {
+                const percentage = Math.round((d.value / totalEnrolments) * 100);
+                return percentage > 2 ? `${percentage.toString()}%` : '';
+              }}
+              arcLinkLabel={d => `${d.id.toString()}: ${d.value.toString()}`}
+              arcLinkLabelsColor={{
+                from: 'color',
+              }}
+              arcLinkLabelsThickness={3}
+              arcLinkLabelsTextColor={{
+                from: 'color',
+                modifiers: [['darker', 1.2]],
+              }}
+            />
           ) : (
-            <Stack height={height} justifyContent="center" alignItems="center" pb={5}>
+            <Stack height="100%" justifyContent="center" alignItems="center" pb={5}>
               <Typography fontSize="large">No Enrolment Data</Typography>
             </Stack>
           )}

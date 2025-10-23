@@ -77,7 +77,7 @@ describe('SchoolPage', () => {
     expect(screen.getByRole('heading', { name: 'Unable to Load School' })).toBeInTheDocument();
     expect(screen.getByText(/We're having trouble loading this school's information/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Browse All Schools' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Browse All Schools' })).toBeInTheDocument();
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     expect(screen.queryByTestId('details-card')).not.toBeInTheDocument();
   });

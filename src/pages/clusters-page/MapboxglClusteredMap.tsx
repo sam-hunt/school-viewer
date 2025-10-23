@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Feature, FeatureCollection, Point } from 'geojson';
 import Map, { Layer, NavigationControl, Source } from 'react-map-gl/maplibre';
 import type { MapRef, MapLayerMouseEvent } from 'react-map-gl/maplibre';
@@ -10,8 +10,6 @@ interface MapboxGLClusteredMapProps<T extends object = object> {
   lng: number;
   lat: number;
   zoom: number;
-  height: CSSProperties['height'];
-  width: CSSProperties['width'];
   features: FeatureCollection;
   onFeatureClick?: (feature: Feature<Point, T>) => void;
   clusterByProperty: keyof T & string;
@@ -21,8 +19,6 @@ export const MapboxGLClusteredMap = <T extends object = object>({
   lat,
   lng,
   zoom,
-  width,
-  height,
   features,
   onFeatureClick,
   clusterByProperty,
@@ -30,7 +26,7 @@ export const MapboxGLClusteredMap = <T extends object = object>({
   const mapRef = useRef<MapRef>(null);
   const theme = useTheme();
   const mapTilerKey = import.meta.env.VITE_MAPTILER_KEY as string;
-  const mapStyleName = theme.palette.mode === 'dark' ? 'streets-v2-dark' : 'streets-v2-light';
+  const mapStyleName = theme.palette.mode === 'dark' ? 'dataviz-dark' : 'dataviz-light';
   const mapStyle = `https://api.maptiler.com/maps/${mapStyleName}/style.json?key=${mapTilerKey}`;
 
   // Track cursor state for grab/grabbing/pointer
@@ -104,88 +100,86 @@ export const MapboxGLClusteredMap = <T extends object = object>({
   );
 
   return (
-    <div style={{ height, width }}>
-      <Map
-        ref={mapRef}
-        initialViewState={{
-          longitude: lng,
-          latitude: lat,
-          zoom,
-        }}
-        style={{ width: '100%', height: '100%' }}
-        mapStyle={mapStyle}
-        interactiveLayerIds={['clusters', 'unclustered-point']}
-        onClick={handleMapClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        cursor={cursor}
+    <Map
+      ref={mapRef}
+      initialViewState={{
+        longitude: lng,
+        latitude: lat,
+        zoom,
+      }}
+      style={{ width: '100%', height: '100%' }}
+      mapStyle={mapStyle}
+      interactiveLayerIds={['clusters', 'unclustered-point']}
+      onClick={handleMapClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      cursor={cursor}
+    >
+      <NavigationControl position="top-right" />
+
+      <Source
+        id="schools"
+        type="geojson"
+        data={features}
+        cluster={true}
+        clusterMaxZoom={14}
+        clusterRadius={50}
+        clusterProperties={
+          {
+            [clusterByProperty]: ['+', ['get', clusterByProperty]],
+          } as Record<string, [string, unknown[]]>
+        }
       >
-        <NavigationControl position="top-right" />
+        {/* Clustered circles */}
+        <Layer
+          id="clusters"
+          type="circle"
+          filter={['has', 'point_count']}
+          paint={{
+            'circle-color': '#CB9EFF',
+            'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
+          }}
+        />
 
-        <Source
-          id="schools"
-          type="geojson"
-          data={features}
-          cluster={true}
-          clusterMaxZoom={14}
-          clusterRadius={50}
-          clusterProperties={
-            {
-              [clusterByProperty]: ['+', ['get', clusterByProperty]],
-            } as Record<string, [string, unknown[]]>
-          }
-        >
-          {/* Clustered circles */}
-          <Layer
-            id="clusters"
-            type="circle"
-            filter={['has', 'point_count']}
-            paint={{
-              'circle-color': '#CB9EFF',
-              'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
-            }}
-          />
+        {/* Cluster count labels */}
+        <Layer
+          id="cluster-count"
+          type="symbol"
+          filter={['has', 'point_count']}
+          layout={{
+            'text-field': `{${clusterByProperty}}`,
+            'text-font': ['Noto Sans Regular'],
+            'text-size': 14,
+          }}
+        />
 
-          {/* Cluster count labels */}
-          <Layer
-            id="cluster-count"
-            type="symbol"
-            filter={['has', 'point_count']}
-            layout={{
-              'text-field': `{${clusterByProperty}}`,
-              'text-font': ['Noto Sans Regular'],
-              'text-size': 14,
-            }}
-          />
+        {/* Unclustered points */}
+        <Layer
+          id="unclustered-point"
+          type="circle"
+          filter={['!', ['has', 'point_count']]}
+          paint={{
+            'circle-color': '#CB9EFF',
+            'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#fff',
+          }}
+        />
 
-          {/* Unclustered points */}
-          <Layer
-            id="unclustered-point"
-            type="circle"
-            filter={['!', ['has', 'point_count']]}
-            paint={{
-              'circle-color': '#CB9EFF',
-              'circle-radius': ['step', ['get', clusterByProperty], ...clusterCircleSizeSteps],
-              'circle-stroke-width': 1,
-              'circle-stroke-color': '#fff',
-            }}
-          />
-
-          {/* Unclustered point labels */}
-          <Layer
-            id="unclustered-count"
-            type="symbol"
-            filter={['!', ['has', 'point_count']]}
-            layout={{
-              'text-field': `{${clusterByProperty}}`,
-              'text-font': ['Noto Sans Regular'],
-              'text-size': 14,
-            }}
-          />
-        </Source>
-      </Map>
-    </div>
+        {/* Unclustered point labels */}
+        <Layer
+          id="unclustered-count"
+          type="symbol"
+          filter={['!', ['has', 'point_count']]}
+          layout={{
+            'text-field': `{${clusterByProperty}}`,
+            'text-font': ['Noto Sans Regular'],
+            'text-size': 14,
+          }}
+        />
+      </Source>
+    </Map>
   );
 };

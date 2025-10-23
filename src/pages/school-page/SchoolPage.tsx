@@ -1,19 +1,21 @@
-import { useParams, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
 import { useSchool } from '../../hooks/useSchool/useSchool';
-import { Button, Card, Container, Grid, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Card, Container, Grid, Skeleton, Stack, Typography, useTheme } from '@mui/material';
 import { DetailsCard } from './cards/DetailsCard/DetailsCard';
 import { MiscCard } from './cards/MiscCard/MiscCard';
 import { EnrolmentsCard } from './cards/EnrolmentsCard/EnrolmentsCard';
 import { MapCard } from './cards/MapCard/MapCard';
 import { useFocusOnNavigation } from '../../hooks/useFocusOnNavigation/useFocusOnNavigation';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle/useDocumentTitle';
+import { pointMapBgColorDark, pointMapBgColorLight } from './cards/MapCard/mapBgColors';
 
 export const SchoolPage = () => {
   const headingRef = useFocusOnNavigation();
   const { schoolId } = useParams() as { schoolId: string };
-  const navigate = useNavigate();
   const { data: school, error, isPending } = useSchool(schoolId);
   const title = isPending ? 'Loading School...' : error ? 'Unable to Load School' : school?.orgName;
+  const theme = useTheme();
+  const mapCardBgColor = theme.palette.mode === 'dark' ? pointMapBgColorDark : pointMapBgColorLight;
 
   useDocumentTitle(school ? `${school.orgName} - Schools Viewer` : undefined);
 
@@ -28,23 +30,23 @@ export const SchoolPage = () => {
           <Grid size={{ md: 6, xs: 12 }}>
             <Stack direction="column" spacing={4}>
               <Card sx={{ p: 2 }}>
-                <Skeleton variant="text" width="40%" height={40} sx={{ mb: 2 }} />
-                <Skeleton variant="rectangular" height={300} />
+                <Skeleton data-testid="skeleton-details-card-heading" variant="text" width="40%" height={40} sx={{ mb: 2 }} />
+                <Skeleton data-testid="skeleton-details-card-content" variant="rectangular" height={300} />
               </Card>
-              <Card sx={{ p: 2 }}>
-                <Skeleton variant="rectangular" height={400} />
+              <Card>
+                <Skeleton data-testid="skeleton-map-card" variant="rectangular" height={500} sx={{ bgcolor: mapCardBgColor }} />
               </Card>
             </Stack>
           </Grid>
           <Grid size={{ md: 6, xs: 12 }}>
             <Stack direction="column" spacing={4}>
               <Card sx={{ p: 2 }}>
-                <Skeleton variant="text" width="50%" height={40} sx={{ mb: 2 }} />
-                <Skeleton variant="rectangular" height={300} />
+                <Skeleton data-testid="skeleton-enrolments-card-heading" variant="text" width="50%" height={40} sx={{ mb: 2 }} />
+                <Skeleton data-testid="skeleton-enrolments-card-content" variant="rectangular" height={450} />
               </Card>
               <Card sx={{ p: 2 }}>
-                <Skeleton variant="text" width="40%" height={40} sx={{ mb: 2 }} />
-                <Skeleton variant="rectangular" height={300} />
+                <Skeleton data-testid="skeleton-misc-card-heading" variant="text" width="40%" height={40} sx={{ mb: 2 }} />
+                <Skeleton data-testid="skeleton-misc-card-content" variant="rectangular" height={350} />
               </Card>
             </Stack>
           </Grid>
@@ -61,7 +63,7 @@ export const SchoolPage = () => {
             <Button variant="contained" onClick={() => window.location.reload()}>
               Try Again
             </Button>
-            <Button variant="outlined" onClick={() => void navigate('/schools')}>
+            <Button variant="outlined" href="/schools">
               Browse All Schools
             </Button>
           </Stack>

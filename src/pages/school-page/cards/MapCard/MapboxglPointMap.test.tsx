@@ -31,22 +31,15 @@ describe('MapboxGLPointMap', () => {
     vi.clearAllMocks();
   });
 
-  it('should render map container with correct dimensions', () => {
-    const { container } = render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+  it('should render map component', () => {
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
-    const mapContainer = container.firstChild as HTMLElement;
-    expect(mapContainer).toHaveStyle({ width: '500px', height: '400px' });
-  });
-
-  it('should set container dimensions from props', () => {
-    const { container } = render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={600} height={450} />);
-
-    const mapContainer = container.firstChild as HTMLElement;
-    expect(mapContainer).toHaveStyle({ width: '600px', height: '450px' });
+    const map = screen.getByTestId('mock-map');
+    expect(map).toBeInTheDocument();
   });
 
   it('should render Map component with correct initial view state', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
@@ -59,7 +52,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should use MapTiler style URL with correct JSON format', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
@@ -72,7 +65,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should set map as non-interactive (static display)', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
@@ -86,8 +79,6 @@ describe('MapboxGLPointMap', () => {
         lat={-41.2865}
         lng={174.7762}
         zoom={10}
-        width={500}
-        height={400}
         ariaLabel="Map showing school location"
       />,
     );
@@ -99,7 +90,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should render with default aria-label when not provided', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
@@ -108,7 +99,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should render Marker at correct position', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
     const marker = screen.getByTestId('mock-marker');
     const markerProps = JSON.parse(marker.getAttribute('data-marker-props') || '{}');
@@ -118,7 +109,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should render Marker with purple color', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
     const marker = screen.getByTestId('mock-marker');
     const markerProps = JSON.parse(marker.getAttribute('data-marker-props') || '{}');
@@ -127,7 +118,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should handle different coordinate values', () => {
-    render(<MapboxGLPointMap lat={-36.8485} lng={174.7633} zoom={12} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-36.8485} lng={174.7633} zoom={12} />);
 
     const marker = screen.getByTestId('mock-marker');
     const markerProps = JSON.parse(marker.getAttribute('data-marker-props') || '{}');
@@ -137,7 +128,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should handle different zoom levels', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={15} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={15} />);
 
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
@@ -146,7 +137,7 @@ describe('MapboxGLPointMap', () => {
   });
 
   it('should enable attribution control', () => {
-    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />);
+    render(<MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />);
 
     const map = screen.getByTestId('mock-map');
     const mapProps = JSON.parse(map.getAttribute('data-map-props') || '{}');
@@ -159,7 +150,7 @@ describe('MapboxGLPointMap', () => {
 
     render(
       <ThemeProvider theme={darkTheme}>
-        <MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />
+        <MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />
       </ThemeProvider>,
     );
 
@@ -174,7 +165,7 @@ describe('MapboxGLPointMap', () => {
 
     render(
       <ThemeProvider theme={lightTheme}>
-        <MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} width={500} height={400} />
+        <MapboxGLPointMap lat={-41.2865} lng={174.7762} zoom={10} />
       </ThemeProvider>,
     );
 

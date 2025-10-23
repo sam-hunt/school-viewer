@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { Container, Typography, Button, Stack } from '@mui/material';
 import { useDocumentTitle } from '../hooks/useDocumentTitle/useDocumentTitle';
 
@@ -15,8 +14,7 @@ export const NotFound = () => {
           The page you're looking for doesn't exist or has been moved.
         </Typography>
         <Button
-          component={Link}
-          to="/"
+          href="/"
           variant="contained"
           aria-label="Return to home page"
         >

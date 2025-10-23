@@ -1,25 +1,22 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { TableHead, Typography } from '@mui/material';
+import { TableHead, Typography, Link } from '@mui/material';
 
 import { TablePaginationActions } from './TablePaginationActions';
 import { SchoolListItem } from '../../models/SchoolListItem';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 interface PaginatedSchoolsTableProps {
   schools: SchoolListItem[];
 }
 
-const noWrapCss = {
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-};
+const noWrapCss = { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' };
+const websiteLinkSx = { display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 0.5, ...noWrapCss };
 
 export const PaginatedSchoolsTable = ({ schools }: PaginatedSchoolsTableProps) => {
   const [page, setPage] = useState(0);
@@ -45,35 +42,44 @@ export const PaginatedSchoolsTable = ({ schools }: PaginatedSchoolsTableProps) =
   };
 
   return (
-    <Table sx={{ minWidth: 300, p: 0 }} aria-label="Searchable list of New Zealand schools">
+    <Table sx={{ 'p': 0, '& .MuiTableCell-root': { px: { xs: 1, sm: 2 } } }} aria-label="Searchable list of New Zealand schools">
       <TableHead>
         <TableRow>
-          <TableCell align="left">Name</TableCell>
-          <TableCell align="left">City</TableCell>
+          <TableCell align="left" sx={{ width: '100%' }}>
+            Name
+          </TableCell>
+          <TableCell align="left" sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+            City
+          </TableCell>
           <TableCell align="right">Students</TableCell>
-          <TableCell align="right">Website</TableCell>
+          <TableCell align="right" sx={{ display: { xs: 'none', sm: 'none', md: 'table-cell' } }}>
+            Website
+          </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {(rowsPerPage > 0 ? schools.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : schools).map(school => (
           <TableRow key={school.schoolId}>
-            <TableCell sx={{ width: 300 }} scope="row">
-              <Link to={'/schools/' + school.schoolId} key={school.schoolId} className="school-list-item">
+            <TableCell sx={{ width: '100%', maxWidth: 0 }} scope="row">
+              <Link href={`/schools/${school.schoolId}`} key={school.schoolId} className="school-list-item">
                 <Typography sx={noWrapCss}>{school.name}</Typography>
               </Link>
             </TableCell>
-            <TableCell sx={{ width: 100 }} scope="row">
+            <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }} scope="row">
               <Typography sx={noWrapCss}>{school.city}</Typography>
             </TableCell>
-            <TableCell sx={{ width: 100 }} align="right">
-              {school.total}
-            </TableCell>
-            <TableCell sx={{ width: 100 }} align="right">
-              <Typography sx={noWrapCss}>
-                <a href={school.url} target="_blank" rel="noopener noreferrer">
+            <TableCell align="right">{school.total}</TableCell>
+            <TableCell sx={{ ...noWrapCss, display: { xs: 'none', sm: 'none', md: 'table-cell' } }} align="right">
+              {school.url ? (
+                <Link href={school.url} target="_blank" rel="noopener noreferrer" sx={websiteLinkSx}>
                   {school.url}
-                </a>
-              </Typography>
+                  <LaunchIcon sx={{ fontSize: '1rem' }} />
+                </Link>
+              ) : (
+                <Typography fontSize="small" color="text.secondary" sx={noWrapCss}>
+                  No website available
+                </Typography>
+              )}
             </TableCell>
           </TableRow>
         ))}
