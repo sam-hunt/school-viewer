@@ -136,9 +136,33 @@ Last Updated: 2025-10-23
   - [ ] Audit and fix viewport unit (vw/vh) hacks across the codebase
   - [ ] Test all pages at various breakpoints to ensure consistent layout
 
+### 14. Map Enhancements
+- [ ] Make school map card zoomable and interactive
+  - [ ] Enable zoom controls and drag functionality for MapCard point map
+  - [ ] Add keyboard navigation support (arrow keys, +/- for zoom)
+  - [ ] Ensure proper ARIA labels and roles for map interactions
+  - [ ] Add screen reader announcements for zoom level changes
+  - [ ] Test accessibility with keyboard-only navigation
+- [ ] Improve map clustering algorithm
+  - [ ] Analyze current clustering behavior across different metrics
+  - [ ] Implement normalization/scaling for metrics with different ranges
+  - [ ] Consider logarithmic scaling for metrics with large magnitude differences
+  - [ ] Test clustering with all metric types (count, ethnicity, total enrolment)
+  - [ ] Ensure cluster sizes remain visually intuitive across all metrics
+
+### 15. Data Table Enhancement
+- [ ] Evaluate and implement richer data table for SchoolsListPage
+  - [ ] Research MUI DataGrid vs TanStack Table capabilities and bundle size
+  - [ ] Compare features: sorting, filtering, pagination, virtualization
+  - [ ] Implement client-side column sorting
+  - [ ] Add advanced filtering options (by region, type, enrolment range)
+  - [ ] Maintain or improve current accessibility features
+  - [ ] Ensure responsive behavior on mobile devices
+  - [ ] Update tests to cover new table functionality
+
 ## 🏗️ Phase 4: Architecture & Developer Experience
 
-### 14. API Service Layer
+### 16. API Service Layer
 - [ ] Create src/services/api.ts
 - [ ] Extract SQL query builders from hooks
 - [ ] Move API endpoint configuration to service
@@ -146,7 +170,7 @@ Last Updated: 2025-10-23
 - [ ] Update hooks to use service layer
 - [ ] Add JSDoc documentation for API functions
 
-### 15. Developer Experience
+### 17. Developer Experience
 - [x] Add bundle analyzer (rollup-plugin-visualizer with `npm run build:analyze`)
 - [x] Analyze bundle size and identify optimizations
 - [ ] Configure Prettier with better defaults
@@ -158,7 +182,7 @@ Last Updated: 2025-10-23
 - [ ] Add pre-push hooks for additional checks
 - [ ] Document development workflow in CLAUDE.md
 
-### 16. Quick Fixes & Polish
+### 18. Quick Fixes & Polish
 - [x] Fix TODO in SchoolsListPage.tsx (migrate to slotProps API)
 - [x] Fix TODO in PaginatedSchoolsTable.tsx (migrate to slotProps API)
 - [x] Add dropdown caret icon to cluster map dataset picker (using MUI ExpandMoreIcon)
@@ -169,7 +193,7 @@ Last Updated: 2025-10-23
 
 ## 🧪 Phase 5: Testing ✅ Complete
 
-### 17. Testing Infrastructure
+### 19. Testing Infrastructure
 - [x] Install Vitest and @testing-library/react
 - [x] Configure Vitest with happy-dom environment
 - [x] Install @testing-library/jest-dom and @testing-library/user-event
